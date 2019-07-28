@@ -1,0 +1,47 @@
+﻿<Window x:Class="do_gagan2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:do_gagan2"
+        mc:Ignorable="d"
+        Title="動画眼" Height="450" Width="800">
+    <Grid Background="Black">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="25"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" MinWidth="400"></ColumnDefinition>
+            <ColumnDefinition Width="auto"></ColumnDefinition>
+            <ColumnDefinition Width="1*" MinWidth="280"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <!--メインメニュー-->
+        <Menu VerticalAlignment="Top" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Height="25">
+            <MenuItem x:Name="MI_File" Header="ファイル(_F)" IsCheckable="False">
+                <MenuItem x:Name="MI_OpenMovie" Header="動画ファイルを開く...(_O)" Click="OpenMovie" />
+            </MenuItem>
+            <MenuItem x:Name="MI_Edit" Header="編集(_E)" IsCheckable="False">
+            </MenuItem>
+        </Menu>
+        <!--左動画プレーヤー-->
+        <MediaElement x:Name="Player" Grid.Row="1" Grid.Column="0"/>
+        <!--左動画プレーヤーコントロール-->
+        <StackPanel x:Name="PlayerControlls" Grid.Row="2" Grid.Column="0" Height="25" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Button x:Name="Btn_SkipBack" Content="＜＜"/>
+            <Button x:Name="Btn_Play" Content="再生/一時停止" Click="Btn_PlayPause"/>
+            <Button x:Name="Btn_SkipForward" Content="＞＞"/>
+        </StackPanel>
+        <!--ドラッガブル境界線-->
+        <GridSplitter Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" Width="5" HorizontalAlignment="Stretch"/>
+        <!--右リスト-->
+        <ListBox x:Name="ListBox_Records" Grid.Row="1" Grid.Column="2" Grid.RowSpan="2" ItemsSource="{Binding}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</Window>
