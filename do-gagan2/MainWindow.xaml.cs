@@ -59,7 +59,7 @@ namespace do_gagan2
             ofd.Filter = "メディアファイル(*.mp4;*.mpg;*.avi;*.wmv;*.mp3;*.flac;*.wav;*.aac;*.m4a;*.ogg)|*.mp4;*.mpg;*.avi;*.wmv;*.mp3;*.flac;*.wav;*.aac;*.m4a;*.ogg|すべてのファイル(*.*)|*.*";
             //[ファイルの種類]ではじめに選択されるものを指定する
             //2番目の「すべてのファイル」が選択されているようにする
-            ofd.FilterIndex = 2;
+            ofd.FilterIndex = 1;
             //タイトルを設定する
             ofd.Title = "動画/音声ファイルを選択してください";
             //ダイアログボックスを閉じる前に現在のディレクトリを復元するようにする
@@ -78,8 +78,8 @@ namespace do_gagan2
 
         private void OpenMovie(string moviePath)
         {
-            //if (_storyboard != null)
-            //    Stop();
+            if (_storyboard != null)
+                Stop();
 
             ////メディアタイムラインを作成
             MediaTimeline mediaTimeline = new MediaTimeline(new Uri(moviePath));
@@ -90,10 +90,8 @@ namespace do_gagan2
             _storyboard = new Storyboard();
             _storyboard.Children.Add(mediaTimeline);
             _storyboard.Begin(this, true);
-            //Player.Source = new Uri(moviePath);
             Slider_Time.IsEnabled = true;
             isPlaying = true;
-            Player.Play();
         }
 
         //再生・一時停止ボタン
@@ -126,23 +124,47 @@ namespace do_gagan2
         //前方ジャンプ
         private void Btn_SkipForward_click(object sender, RoutedEventArgs e)
         {
-            SkipForward(30);
+            MoveRelative(Properties.Settings.Default.SkipForwardSec);
         }
-        private void SkipForward(int sec)
-        {
-            TimeSpan offset = new TimeSpan(0, 0, 30);
-            _storyboard.SeekAlignedToLastTick(offset);
-            if (isPlaying)
-                _storyboard.Resume(this);
-            //Player.Position += TimeSpan.FromSeconds(10);
-        }
-
         //後方ジャンプ
         private void Btn_SkipBackward_click(object sender, RoutedEventArgs e)
         {
-
+            MoveRelative(Properties.Settings.Default.SkipForwardSec * -1);
         }
 
+        //指定秒数に相対移動
+        private void MoveRelative(int sec)
+        {
+            TimeSpan offset = Player.Position + new TimeSpan(0, 00, sec);
+            if (offset > Player.NaturalDuration.TimeSpan)
+            {
+                offset = Player.NaturalDuration.TimeSpan - new TimeSpan(0, 0, 2);
+            } else if (offset < new TimeSpan(0))
+            {
+                Console.WriteLine("minus");
+                offset = TimeSpan.Zero;
+            }
+
+            _storyboard.SeekAlignedToLastTick(this,offset,TimeSeekOrigin.BeginTime);
+            if (isPlaying)
+                _storyboard.Resume(this);
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.S)
+            {
+                PlayPause();
+            }
+            if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.W)
+            {
+                MoveRelative(Properties.Settings.Default.SkipForwardSec);
+            }
+            if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.Q)
+            {
+                MoveRelative(Properties.Settings.Default.SkipBackwordSec * -1);
+            }
+        }
         #endregion
 
         #region スライダー関連
@@ -165,7 +187,6 @@ namespace do_gagan2
             //再生を一時停止（mediaTimeline_CurrentTimeInvalidatedの発生を防ぐ）
             if (isPlaying)
                 _storyboard.Pause(this);
-                //Player.Pause();
         }
 
         //タイムスライダがドラッグ完了した時
@@ -191,7 +212,7 @@ namespace do_gagan2
                 Slider_Time.Value = Player.Clock.CurrentTime.Value.TotalMilliseconds;
                 //
                 if (Player.Clock.CurrentTime.HasValue && Player.Clock.NaturalDuration.HasTimeSpan)
-                    TextBlock_Time.Text = Player.Clock.CurrentTime.Value.Minutes.ToString() + ":" + Player.Clock.CurrentTime.Value.Seconds.ToString() + "/" + Player.Clock.NaturalDuration.TimeSpan.Minutes.ToString() + ":" + Player.Clock.NaturalDuration.TimeSpan.Seconds.ToString();
+                    TextBlock_Time.Text = Player.Clock.CurrentTime.Value.Minutes.ToString("D2") + ":" + Player.Clock.CurrentTime.Value.Seconds.ToString("D2") + "/" + Player.Clock.NaturalDuration.TimeSpan.Minutes.ToString() + ":" + Player.Clock.NaturalDuration.TimeSpan.Seconds.ToString();
 
                 //動画が終了している場合
                 if (Player.NaturalDuration.HasTimeSpan == true && Player.Clock.CurrentTime.Value.TotalMilliseconds == Player.NaturalDuration.TimeSpan.TotalMilliseconds)

@@ -34,5 +34,29 @@ namespace do_gagan2.Properties {
                 this["LastMovieFolder"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("30")]
+        public int SkipForwardSec {
+            get {
+                return ((int)(this["SkipForwardSec"]));
+            }
+            set {
+                this["SkipForwardSec"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("15")]
+        public int SkipBackwordSec {
+            get {
+                return ((int)(this["SkipBackwordSec"]));
+            }
+            set {
+                this["SkipBackwordSec"] = value;
+            }
+        }
     }
 }

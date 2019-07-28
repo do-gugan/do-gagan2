@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:do_gagan2"
         mc:Ignorable="d"
+        KeyDown="Window_KeyDown"
         Title="動画眼" Height="450" Width="800">
+    <!--メインレイアウト-->
     <Grid Background="Black">
         <Grid.RowDefinitions>
             <RowDefinition Height="25"></RowDefinition>
@@ -19,10 +21,18 @@
         </Grid.ColumnDefinitions>
         <!--メインメニュー-->
         <Menu VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Height="25">
-            <MenuItem x:Name="MI_File" Header="ファイル(_F)" IsCheckable="False">
+            <MenuItem x:Name="MI_File" Header="ファイル(_F)" IsCheckable="False" Height="22">
                 <MenuItem x:Name="MI_OpenMovie" Header="動画ファイルを開く...(_O)" Click="OpenMovie" />
             </MenuItem>
-            <MenuItem x:Name="MI_Edit" Header="編集(_E)" IsCheckable="False">
+            <MenuItem x:Name="MI_Edit" Header="編集(_E)" IsCheckable="False" Height="22">
+                <MenuItem x:Name="MI_Cut" Header="切り取り(_T)" InputGestureText="Ctrl+X" Command="ApplicationCommands.Cut"/>
+                <MenuItem x:Name="MI_Copy" Header="コピー(_C)" InputGestureText="Ctrl+C" Command="ApplicationCommands.Copy"/>
+                <MenuItem x:Name="MI_Paste" Header="貼り付け(_V)" InputGestureText="Ctrl+V" Command="ApplicationCommands.Paste"/>
+            </MenuItem>
+            <MenuItem x:Name="MI_PlayBackControl" Header="再生操作(_P)" IsCheckable="False" Height="22">
+                <MenuItem x:Name="MI_PlayPause" Header="再生/一時停止(_S)" Click="Btn_PlayPause_click" InputGestureText="Ctrl+S"/>
+                <MenuItem x:Name="MI_SkipForward" Header="前へジャンプ" Click="Btn_SkipForward_click"  InputGestureText="Ctrl+W"/>
+                <MenuItem x:Name="MI_SkipBackword" Header="後ろへジャンプ" Click="Btn_SkipBackward_click"  InputGestureText="Ctrl+Q"/>
             </MenuItem>
         </Menu>
         <!--左動画プレーヤー-->
