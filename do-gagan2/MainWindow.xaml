@@ -10,7 +10,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="25"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="25"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*" MinWidth="400"></ColumnDefinition>
@@ -18,7 +18,7 @@
             <ColumnDefinition Width="1*" MinWidth="280"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <!--メインメニュー-->
-        <Menu VerticalAlignment="Top" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Height="25">
+        <Menu VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Height="25">
             <MenuItem x:Name="MI_File" Header="ファイル(_F)" IsCheckable="False">
                 <MenuItem x:Name="MI_OpenMovie" Header="動画ファイルを開く...(_O)" Click="OpenMovie" />
             </MenuItem>
@@ -26,13 +26,18 @@
             </MenuItem>
         </Menu>
         <!--左動画プレーヤー-->
-        <MediaElement x:Name="Player" Grid.Row="1" Grid.Column="0"/>
+        <MediaElement x:Name="Player" Grid.Row="1" Grid.Column="0" MediaOpened="Element_MediaOpened" LoadedBehavior="Manual" />
         <!--左動画プレーヤーコントロール-->
-        <StackPanel x:Name="PlayerControlls" Grid.Row="2" Grid.Column="0" Height="25" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-            <Button x:Name="Btn_SkipBack" Content="＜＜"/>
-            <Button x:Name="Btn_Play" Content="再生/一時停止" Click="Btn_PlayPause"/>
-            <Button x:Name="Btn_SkipForward" Content="＞＞"/>
+        <StackPanel Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Grid.Row="2" Grid.Column="0" >
+            <StackPanel x:Name="PlayerControlls" Width="auto" Height="30" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2">
+                <Button x:Name="Btn_SkipBackward" Content="＜＜" ToolTip="指定秒数戻します" Click="Btn_SkipBackward_click"/>
+                <Button x:Name="Btn_Play" Content="再生/一時停止" Click="Btn_PlayPause_click"/>
+                <Button x:Name="Btn_SkipForward" Content="＞＞" ToolTip="指定秒数進めます" Click="Btn_SkipForward_click"/>
+                <Slider Name="Slider_Time" Margin="5" Width="250" HorizontalAlignment="Center" IsEnabled="False" Thumb.DragStarted="sliderTime_DragStarted" Thumb.DragCompleted="sliderTime_DragCompleted"/>
+                <TextBlock Name="TextBlock_Time" VerticalAlignment="Center" HorizontalAlignment="Center" >00:00:00</TextBlock>
+            </StackPanel>
         </StackPanel>
+
         <!--ドラッガブル境界線-->
         <GridSplitter Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" Width="5" HorizontalAlignment="Stretch"/>
         <!--右リスト-->
@@ -44,4 +49,5 @@
             </ListBox.ItemTemplate>
         </ListBox>
     </Grid>
+
 </Window>

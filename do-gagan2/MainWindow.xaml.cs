@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
+using System.Windows.Media.Animation;
 
 namespace do_gagan2
 {
@@ -22,11 +23,15 @@ namespace do_gagan2
     /// </summary>
     public partial class MainWindow : Window
     {
+        Storyboard _storyboard = null;
+        bool isPlaying = false;
+
         public MainWindow()
         {
             InitializeComponent();
         }
 
+        #region 基本再生操作
 
         /// <summary>
         /// 動画ファイルを選択するダイアログを表示
@@ -73,21 +78,128 @@ namespace do_gagan2
 
         private void OpenMovie(string moviePath)
         {
-            Player.Source = new Uri(moviePath, UriKind.Absolute);
-            Player.LoadedBehavior = MediaState.Manual;
-            Player.Play();
+            //if (_storyboard != null)
+            //    Stop();
 
+            ////メディアタイムラインを作成
+            MediaTimeline mediaTimeline = new MediaTimeline(new Uri(moviePath));
+            mediaTimeline.CurrentTimeInvalidated += new EventHandler(mediaTimeline_CurrentTimeInvalidated);
+            Storyboard.SetTargetName(mediaTimeline, Player.Name);
+
+            ////ストーリーボードを作成・開始
+            _storyboard = new Storyboard();
+            _storyboard.Children.Add(mediaTimeline);
+            _storyboard.Begin(this, true);
+            //Player.Source = new Uri(moviePath);
+            Slider_Time.IsEnabled = true;
+            isPlaying = true;
+            Player.Play();
         }
 
         //再生・一時停止ボタン
-        private void Btn_PlayPause(object sender, RoutedEventArgs e)
+        private void Btn_PlayPause_click(object sender, RoutedEventArgs e)
         {
             PlayPause();
         }
 
-        //再生一時停止操作
+        //再生一時停止トグル操作
         private void PlayPause()
         {
+            if (isPlaying)
+            {
+                _storyboard.Pause(this);
+                //Player.Pause();
+                isPlaying = false;
+            } else
+            {
+                _storyboard.Resume(this);
+                //Player.Play();
+                isPlaying = true;
+            }
+        }
+
+        private void Stop()
+        {
+            isPlaying = false;
+        }
+
+        //前方ジャンプ
+        private void Btn_SkipForward_click(object sender, RoutedEventArgs e)
+        {
+            SkipForward(30);
+        }
+        private void SkipForward(int sec)
+        {
+            TimeSpan offset = new TimeSpan(0, 0, 30);
+            _storyboard.SeekAlignedToLastTick(offset);
+            if (isPlaying)
+                _storyboard.Resume(this);
+            //Player.Position += TimeSpan.FromSeconds(10);
+        }
+
+        //後方ジャンプ
+        private void Btn_SkipBackward_click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        #endregion
+
+        #region スライダー関連
+        //動画を開いた時にスライダーの最大値を動画の長さにあわせる
+        private void Element_MediaOpened(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("Duraton:" + Player.NaturalDuration.TimeSpan.TotalSeconds + "sec");
+            Slider_Time.Maximum = Player.NaturalDuration.TimeSpan.TotalMilliseconds;
+        }
+        //スライダーを更新
+        private void MediaTimeChanged(object sender, EventArgs e)
+        {
+            Console.WriteLine("tick");
+            Slider_Time.Value = Player.Position.TotalMilliseconds;
+        }
+        //タイムスライダがドラッグ開始した時
+        private void sliderTime_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
+        {
+            Console.WriteLine("Slider DragStarted");
+            //再生を一時停止（mediaTimeline_CurrentTimeInvalidatedの発生を防ぐ）
+            if (isPlaying)
+                _storyboard.Pause(this);
+                //Player.Pause();
+        }
+
+        //タイムスライダがドラッグ完了した時
+        private void sliderTime_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+        {
+            Console.WriteLine("Slider Ended");
+            //シークする
+            _storyboard.Seek(this, new TimeSpan((long)Math.Floor(Slider_Time.Value * TimeSpan.TicksPerMillisecond)), TimeSeekOrigin.BeginTime);
+            //再生を再開
+            if (isPlaying)
+                _storyboard.Resume(this);
+        }
+
+        #endregion
+
+        //メディアタイムラインの現在時間が無効化された時
+        void mediaTimeline_CurrentTimeInvalidated(object sender, EventArgs e)
+        {
+            //ストーリーボードがnullでない（＝再生する（している）動画が存在する）場合
+            if (_storyboard != null)
+            {
+                //タイムスライダの更新
+                Slider_Time.Value = Player.Clock.CurrentTime.Value.TotalMilliseconds;
+                //
+                if (Player.Clock.CurrentTime.HasValue && Player.Clock.NaturalDuration.HasTimeSpan)
+                    TextBlock_Time.Text = Player.Clock.CurrentTime.Value.Minutes.ToString() + ":" + Player.Clock.CurrentTime.Value.Seconds.ToString() + "/" + Player.Clock.NaturalDuration.TimeSpan.Minutes.ToString() + ":" + Player.Clock.NaturalDuration.TimeSpan.Seconds.ToString();
+
+                //動画が終了している場合
+                if (Player.NaturalDuration.HasTimeSpan == true && Player.Clock.CurrentTime.Value.TotalMilliseconds == Player.NaturalDuration.TimeSpan.TotalMilliseconds)
+                {
+                    //再生停止
+                    Stop();
+                }
+            }
         }
 
     }
