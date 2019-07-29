@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,9 +10,9 @@ namespace do_gagan2
 {
     class Do_gagan_Records
     {
-        private List<Dogagan_Record> _records = new List<Dogagan_Record>();
+        private ObservableCollection<Dogagan_Record> _records = new ObservableCollection<Dogagan_Record>();
 
-        public List<Dogagan_Record> Records { get { return _records; } }
+        public ObservableCollection<Dogagan_Record> Records { get { return _records; } }
 
         public void Clear()
         {
@@ -69,12 +71,26 @@ namespace do_gagan2
     /// <summary>
     /// 動画眼形式データの個別レコード
     /// </summary>
-    public class Dogagan_Record
+    public class Dogagan_Record: INotifyPropertyChanged
     {
-        public float TimeStamp;
-        public string Speaker;
-        public string Transcript;
-        public double? Confidence;
+        public float TimeStamp { get; set; }
+        public string Speaker { get; set; }
+        public string Transcript { get; set; }
+        public double? Confidence { get; set; }
+
+        //データバインディングの更新に必要
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string propertyName)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public void Renew()
+        {
+            OnPropertyChanged("TimeStamp");
+            OnPropertyChanged("Transcript");
+        }
+
     }
 
     public enum FileFormatVersion

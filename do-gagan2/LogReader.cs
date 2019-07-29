@@ -8,6 +8,10 @@ using System.Windows;
 
 namespace do_gagan2
 {
+
+    /// <summary>
+    /// ログの読み込みを行う静的オブジェクト
+    /// </summary>
     static class LogReader
     {
         /// <summary>
@@ -23,8 +27,11 @@ namespace do_gagan2
             string logPath = Path.Combine(Path.GetDirectoryName(moviePath), Path.GetFileNameWithoutExtension(moviePath) + ".dggn");
             Console.WriteLine("Search:" + logPath);
             if (!File.Exists(logPath))
+            {
                 //見つからなければfalseを返して終了
+                Console.WriteLine(".dggnファイル無し");
                 return false;
+            }
 
             //読み込み処理
             return false; //未実装なのでfalseを返しておく
@@ -42,8 +49,11 @@ namespace do_gagan2
             string logPath = Path.Combine(Path.GetDirectoryName(moviePath), Path.GetFileNameWithoutExtension(moviePath) + ".txt");
             Console.WriteLine("Search:" + logPath);
             if (!File.Exists(logPath))
+            {
                 //見つからなければfalseを返して終了
+                Console.WriteLine(".txtファイル無し");
                 return false;
+            }
 
             //読み込み処理
             string line = "";
@@ -72,12 +82,15 @@ namespace do_gagan2
                     }
                     rec.Transcript = fields[1];
                     AppModel.Records.Add(rec);
+                    rec.Renew();
                 }
 
                 foreach(var rec in AppModel.Records.Records)
                 {
                     Console.WriteLine("tc:"+rec.TimeStamp + " text:"+rec.Transcript);
                 }
+                AppModel.MainWindow.ListBox_Records.DataContext = AppModel.Records.Records;
+
             }
 
             return true;

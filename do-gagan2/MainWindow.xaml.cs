@@ -28,6 +28,7 @@ namespace do_gagan2
         public MainWindow()
         {
             InitializeComponent();
+            AppModel.MainWindow = this;
             AppModel.Records = new Do_gagan_Records();
         }
 
@@ -81,6 +82,8 @@ namespace do_gagan2
             //既存ログをクリア
             AppModel.Records.Clear();
 
+            Lb_DropHere.Visibility = Visibility.Hidden;
+
             //ログを読み込む
             //Ver2.0形式のファイルが存在したら読み、なければ1.0形式のファイルを探して読む。
 
@@ -93,6 +96,9 @@ namespace do_gagan2
             //動画を再生
             if (_storyboard != null)
                 Stop();
+
+            //ウインドウタイトルにファイル名を表示
+            Title = "動画眼 - " + Path.GetFileName(moviePath);
 
             //メディアタイムラインを作成
             MediaTimeline mediaTimeline = new MediaTimeline(new Uri(moviePath));
@@ -201,6 +207,61 @@ namespace do_gagan2
         }
         #endregion
 
+        #region メディアのドラッグ＆ドロップ
+        private void MediaElement_DragEnter(object sender, DragEventArgs e)
+        {
+            Console.WriteLine("DragEnter");
+
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Effects = DragDropEffects.All;
+                //Lb_DropHere.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                e.Effects = DragDropEffects.None;
+            }
+        }
+
+        //リストにドラッグされたファイルを逐次処理して登録
+        private void MediaElement_Drop(object sender, DragEventArgs e)
+        {
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+            Console.WriteLine("Dropped:" + files.Count());
+            if (files.Count() > 1)
+            {
+                MessageBox.Show("メディアファイルは1つだけドロップしてください。");
+                return;
+            }
+
+            foreach (var file in files)
+            {
+                //Console.WriteLine(file);
+                string ext = System.IO.Path.GetExtension(file).ToLower();
+                if (ext == ".aac" || ext == ".m4a" || ext == ".mp3" || ext == ".wav" || ext == ".flac" || ext == ".ogg" || ext == ".mpg" || ext == ".mp4" || ext == ".mov" || ext == ".avi")
+                {
+                    Lb_DropHere.Visibility = Visibility.Hidden;
+                    OpenMovie(file);
+                }
+                else
+                {
+                    MessageBox.Show(System.IO.Path.GetFileName(file) + "は非対応ファイルです。");
+                }
+            }
+        }
+
+        /// <summary>
+        /// ドラッグがキャンセルされた
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MediaElement_DragLeave(object sender, DragEventArgs e)
+        {
+            Console.WriteLine("DragCancelled");
+            Lb_DropHere.Visibility = Visibility.Visible;
+        }
+        #endregion
+
         #region スライダー関連
         //動画を開いた時にスライダーの最大値を動画の長さにあわせる
         private void Element_MediaOpened(object sender, RoutedEventArgs e)
@@ -234,8 +295,33 @@ namespace do_gagan2
                 _storyboard.Resume(this);
         }
 
+
         #endregion
 
+        #region ヘルプメニュー関連
+        private void MenuItem_UsageGuide(object sender, RoutedEventArgs e)
+        {
+            AppModel.GoUsageGuide();
+        }
 
+        private void MenuItem_VersionInfo(object sender, RoutedEventArgs e)
+        {
+            AppModel.ShowVersionInfo();
+        }
+
+        #endregion
+
+        #region リスト項目関連
+
+        //項目がクリックされた
+        private void LogClicked(object sender, MouseButtonEventArgs e)
+        {
+            Dogagan_Record item = (e.OriginalSource as FrameworkElement)?.DataContext as Dogagan_Record;
+            if (item != null) {
+                Console.WriteLine(item.TimeStamp + " " + item.Transcript);
+                _storyboard.Seek(this, new TimeSpan(0,0,(int)item.TimeStamp), TimeSeekOrigin.BeginTime);
+            }
+        }
+        #endregion
     }
 }

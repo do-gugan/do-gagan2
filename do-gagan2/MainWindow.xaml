@@ -22,7 +22,7 @@
         <!--メインメニュー-->
         <Menu VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Height="25">
             <MenuItem x:Name="MI_File" Header="ファイル(_F)" IsCheckable="False" Height="22">
-                <MenuItem x:Name="MI_OpenMovie" Header="動画ファイルを開く...(_O)" Click="OpenMovie" />
+                <MenuItem x:Name="MI_OpenMovie" Header="動画/音声ファイルを開く...(_O)" Click="OpenMovie" />
             </MenuItem>
             <MenuItem x:Name="MI_Edit" Header="編集(_E)" IsCheckable="False" Height="22">
                 <MenuItem x:Name="MI_Cut" Header="切り取り(_T)" InputGestureText="Ctrl+X" Command="ApplicationCommands.Cut"/>
@@ -34,9 +34,22 @@
                 <MenuItem x:Name="MI_SkipForward" Header="前へジャンプ" Click="Btn_SkipForward_click"  InputGestureText="Ctrl+W"/>
                 <MenuItem x:Name="MI_SkipBackword" Header="後ろへジャンプ" Click="Btn_SkipBackward_click"  InputGestureText="Ctrl+Q"/>
             </MenuItem>
+            <MenuItem Header="ヘルプ(_H)">
+                <MenuItem x:Name="MI_OpenUsagePage" IsCheckable="False" Header="使い方を開く(_U)" Click="MenuItem_UsageGuide" />
+                <Separator></Separator>
+                <MenuItem x:Name="MI_VersionInfo" IsCheckable="False" Header="バージョン情報(_A)" Click="MenuItem_VersionInfo" />
+            </MenuItem>
+
         </Menu>
         <!--左動画プレーヤー-->
-        <MediaElement x:Name="Player" Grid.Row="1" Grid.Column="0" MediaOpened="Element_MediaOpened" LoadedBehavior="Manual" />
+        <DockPanel Grid.Row="1" Grid.Column="0" Background="Black" AllowDrop="True" DragEnter="MediaElement_DragEnter" Drop="MediaElement_Drop" DragLeave="MediaElement_DragLeave">
+            <MediaElement x:Name="Player" MediaOpened="Element_MediaOpened" LoadedBehavior="Manual" />
+        </DockPanel>
+        <Label x:Name="Lb_DropHere" Content="動画、音声ファイルを「ファイル」メニューから読み込むか、&#xa;ここにドラッグ＆ドロップしてください。" AllowDrop="True" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Opacity="0.5" Width="auto" Height="auto" DragEnter="MediaElement_DragEnter" DragLeave="MediaElement_DragLeave" Drop="MediaElement_Drop" >
+            <Label.Foreground>
+                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.HighlightTextColorKey}}"/>
+            </Label.Foreground>
+        </Label>
         <!--左動画プレーヤーコントロール-->
         <StackPanel Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Grid.Row="2" Grid.Column="0" >
             <StackPanel x:Name="PlayerControlls" Width="auto" Height="30" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2">
@@ -54,7 +67,10 @@
         <ListBox x:Name="ListBox_Records" Grid.Row="1" Grid.Column="2" Grid.RowSpan="2" ItemsSource="{Binding}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-
+                    <StackPanel Orientation="Horizontal" MouseLeftButtonUp="LogClicked">
+                        <TextBlock Text="{Binding TimeStamp,FallbackValue='00:00:00'}" FontSize="14" HorizontalAlignment="Left" Margin="0,0,10,0" />
+                        <TextBlock Text="{Binding Path=Transcript,FallbackValue='hoge'}" FontSize="14" HorizontalAlignment="Left" />
+                    </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
