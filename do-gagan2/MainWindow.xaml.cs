@@ -318,7 +318,7 @@ namespace do_gagan2
         {
             Dogagan_Record item = (e.OriginalSource as FrameworkElement)?.DataContext as Dogagan_Record;
             if (item != null) {
-                Console.WriteLine(item.TimeStamp + " " + item.Transcript);
+                //Console.WriteLine(item.TimeStamp + " " + item.Transcript);
                 _storyboard.Seek(this, new TimeSpan(0,0,(int)item.TimeStamp), TimeSeekOrigin.BeginTime);
             }
         }

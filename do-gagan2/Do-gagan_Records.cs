@@ -77,6 +77,12 @@ namespace do_gagan2
         public string Speaker { get; set; }
         public string Transcript { get; set; }
         public double? Confidence { get; set; }
+        public string TimeStampInHhMmSs {
+            get {
+                TimeSpan ts = new TimeSpan(0,0,(int)TimeStamp);
+                return ts.ToString(@"hh\:mm\:ss");
+            }
+        }
 
         //データバインディングの更新に必要
         public event PropertyChangedEventHandler PropertyChanged;

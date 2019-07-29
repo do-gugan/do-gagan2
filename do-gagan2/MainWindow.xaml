@@ -68,8 +68,8 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" MouseLeftButtonUp="LogClicked">
-                        <TextBlock Text="{Binding TimeStamp,FallbackValue='00:00:00'}" FontSize="14" HorizontalAlignment="Left" Margin="0,0,10,0" />
-                        <TextBlock Text="{Binding Path=Transcript,FallbackValue='hoge'}" FontSize="14" HorizontalAlignment="Left" />
+                        <TextBlock Text="{Binding TimeStampInHhMmSs}" FontSize="10" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="#FF619CF5" />
+                        <TextBlock Text="{Binding Path=Transcript}" FontSize="12" HorizontalAlignment="Left" />
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>

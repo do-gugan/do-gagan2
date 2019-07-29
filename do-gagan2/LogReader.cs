@@ -85,10 +85,10 @@ namespace do_gagan2
                     rec.Renew();
                 }
 
-                foreach(var rec in AppModel.Records.Records)
-                {
-                    Console.WriteLine("tc:"+rec.TimeStamp + " text:"+rec.Transcript);
-                }
+                //foreach(var rec in AppModel.Records.Records)
+                //{
+                //    Console.WriteLine("tc:"+rec.TimeStamp + " text:"+rec.Transcript);
+                //}
                 AppModel.MainWindow.ListBox_Records.DataContext = AppModel.Records.Records;
 
             }
