@@ -4,20 +4,25 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:do_gagan2"
+
         mc:Ignorable="d"
         KeyDown="Window_KeyDown"
         Title="動画眼" Height="450" Width="800">
+    <Window.Resources>
+        <local:MathConverter x:Key="MathConverter" />
+    </Window.Resources>
+
     <!--メインレイアウト-->
     <Grid Background="Black">
         <Grid.RowDefinitions>
-            <RowDefinition Height="25"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="25" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="30" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*" MinWidth="400"></ColumnDefinition>
-            <ColumnDefinition Width="auto"></ColumnDefinition>
-            <ColumnDefinition Width="1*" MinWidth="280"></ColumnDefinition>
+            <ColumnDefinition Width="2*" MinWidth="400" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="1*" MinWidth="200" />
         </Grid.ColumnDefinitions>
         <!--メインメニュー-->
         <Menu VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Height="25">
@@ -60,16 +65,15 @@
                 <TextBlock Name="TextBlock_Time" VerticalAlignment="Center" HorizontalAlignment="Center" >00:00:00</TextBlock>
             </StackPanel>
         </StackPanel>
-
         <!--ドラッガブル境界線-->
         <GridSplitter Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" Width="5" HorizontalAlignment="Stretch"/>
         <!--右リスト-->
-        <ListBox x:Name="ListBox_Records" Grid.Row="1" Grid.Column="2" Grid.RowSpan="2" ItemsSource="{Binding}">
+        <ListBox x:Name="ListBox_Records" ItemsSource="{Binding}" Grid.Column="2" Grid.Row="1" Grid.RowSpan="2" HorizontalAlignment="Stretch">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal" MouseLeftButtonUp="LogClicked">
-                        <TextBlock Text="{Binding TimeStampInHhMmSs}" FontSize="10" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="#FF619CF5" />
-                        <TextBlock Text="{Binding Path=Transcript}" FontSize="12" HorizontalAlignment="Left" />
+                    <StackPanel Background="AliceBlue" MouseLeftButtonUp="LogClicked" Orientation="Horizontal" CanHorizontallyScroll="False">
+                        <TextBlock Text="{Binding TimeStampInHhMmSs}" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="3,3,3,0" Foreground="Blue" />
+                        <TextBox Text="{Binding Path=Transcript}" AcceptsReturn="false" TextWrapping="Wrap" BorderBrush="Transparent" FontSize="12" Padding="3,0,0,5" Width="{Binding ElementName=ListBox_Records, Path=ActualWidth,Converter={StaticResource MathConverter},ConverterParameter=@VALUE-74}" />
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
