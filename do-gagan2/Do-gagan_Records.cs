@@ -8,8 +8,19 @@ namespace do_gagan2
 {
     class Do_gagan_Records
     {
-        List<Dogagan_Record> Records = new List<Dogagan_Record>();
+        private List<Dogagan_Record> _records = new List<Dogagan_Record>();
 
+        public List<Dogagan_Record> Records { get { return _records; } }
+
+        public void Clear()
+        {
+            _records.Clear();
+        }
+
+        public void Add(Dogagan_Record rec)
+        {
+            _records.Add(rec);
+        }
         /// <summary>
         /// 全レコードをタブ区切り形式テキストを生成して返す
         /// </summary>
@@ -17,8 +28,8 @@ namespace do_gagan2
         public string ToString(bool WithSpeakerLabel = false, bool WithConfidence = false, FileFormatVersion version = FileFormatVersion.Type2)
         {
             string result = "";
-            Records.OrderBy(r => r.TimeStamp);
-            foreach (var r in Records)
+            _records.OrderBy(r => r.TimeStamp);
+            foreach (var r in _records)
             {
                 switch (version)
                 {

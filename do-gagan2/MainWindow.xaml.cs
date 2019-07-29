@@ -12,7 +12,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.IO;
 using System.Windows.Media.Animation;
 
@@ -29,6 +28,7 @@ namespace do_gagan2
         public MainWindow()
         {
             InitializeComponent();
+            AppModel.Records = new Do_gagan_Records();
         }
 
         #region 基本再生操作
@@ -69,7 +69,7 @@ namespace do_gagan2
             if (ofd.ShowDialog() == true)
             {
                 //最後に使ったフォルダを記憶
-                Properties.Settings.Default.LastMovieFolder = System.IO.Path.GetDirectoryName(ofd.FileName);
+                Properties.Settings.Default.LastMovieFolder = Path.GetDirectoryName(ofd.FileName);
                 Properties.Settings.Default.Save();
                 //OKボタンがクリックされたとき、選択されたファイル名を表示する
                 OpenMovie(ofd.FileName);
@@ -78,15 +78,28 @@ namespace do_gagan2
 
         private void OpenMovie(string moviePath)
         {
+            //既存ログをクリア
+            AppModel.Records.Clear();
+
+            //ログを読み込む
+            //Ver2.0形式のファイルが存在したら読み、なければ1.0形式のファイルを探して読む。
+
+            if (!LogReader.LoadDGGFile(moviePath))
+            {
+                LogReader.LoadTXTFile(moviePath);
+            }
+                
+            
+            //動画を再生
             if (_storyboard != null)
                 Stop();
 
-            ////メディアタイムラインを作成
+            //メディアタイムラインを作成
             MediaTimeline mediaTimeline = new MediaTimeline(new Uri(moviePath));
             mediaTimeline.CurrentTimeInvalidated += new EventHandler(mediaTimeline_CurrentTimeInvalidated);
             Storyboard.SetTargetName(mediaTimeline, Player.Name);
 
-            ////ストーリーボードを作成・開始
+            //ストーリーボードを作成・開始
             _storyboard = new Storyboard();
             _storyboard.Children.Add(mediaTimeline);
             _storyboard.Begin(this, true);
@@ -150,6 +163,27 @@ namespace do_gagan2
                 _storyboard.Resume(this);
         }
 
+        //メディアタイムラインの現在時間が無効化された時
+        void mediaTimeline_CurrentTimeInvalidated(object sender, EventArgs e)
+        {
+            //ストーリーボードがnullでない（＝再生する（している）動画が存在する）場合
+            if (_storyboard != null)
+            {
+                //タイムスライダの更新
+                Slider_Time.Value = Player.Clock.CurrentTime.Value.TotalMilliseconds;
+                //
+                if (Player.Clock.CurrentTime.HasValue && Player.Clock.NaturalDuration.HasTimeSpan)
+                    TextBlock_Time.Text = Player.Clock.CurrentTime.Value.Minutes.ToString("D2") + ":" + Player.Clock.CurrentTime.Value.Seconds.ToString("D2") + "/" + Player.Clock.NaturalDuration.TimeSpan.Minutes.ToString() + ":" + Player.Clock.NaturalDuration.TimeSpan.Seconds.ToString();
+
+                //動画が終了している場合
+                if (Player.NaturalDuration.HasTimeSpan == true && Player.Clock.CurrentTime.Value.TotalMilliseconds == Player.NaturalDuration.TimeSpan.TotalMilliseconds)
+                {
+                    //再生停止
+                    Stop();
+                }
+            }
+        }
+
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.S)
@@ -202,26 +236,6 @@ namespace do_gagan2
 
         #endregion
 
-        //メディアタイムラインの現在時間が無効化された時
-        void mediaTimeline_CurrentTimeInvalidated(object sender, EventArgs e)
-        {
-            //ストーリーボードがnullでない（＝再生する（している）動画が存在する）場合
-            if (_storyboard != null)
-            {
-                //タイムスライダの更新
-                Slider_Time.Value = Player.Clock.CurrentTime.Value.TotalMilliseconds;
-                //
-                if (Player.Clock.CurrentTime.HasValue && Player.Clock.NaturalDuration.HasTimeSpan)
-                    TextBlock_Time.Text = Player.Clock.CurrentTime.Value.Minutes.ToString("D2") + ":" + Player.Clock.CurrentTime.Value.Seconds.ToString("D2") + "/" + Player.Clock.NaturalDuration.TimeSpan.Minutes.ToString() + ":" + Player.Clock.NaturalDuration.TimeSpan.Seconds.ToString();
-
-                //動画が終了している場合
-                if (Player.NaturalDuration.HasTimeSpan == true && Player.Clock.CurrentTime.Value.TotalMilliseconds == Player.NaturalDuration.TimeSpan.TotalMilliseconds)
-                {
-                    //再生停止
-                    Stop();
-                }
-            }
-        }
 
     }
 }

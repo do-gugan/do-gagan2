@@ -68,6 +68,7 @@
     </Compile>
     <Compile Include="AppModel.cs" />
     <Compile Include="Do-gagan_Records.cs" />
+    <Compile Include="LogReader.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
