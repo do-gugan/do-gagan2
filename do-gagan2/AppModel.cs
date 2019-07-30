@@ -31,5 +31,79 @@ namespace do_gagan2
             return ver.FileMajorPart + "." + ver.FileMinorPart + "." + ver.FileBuildPart;
         }
 
+        //設定にあるスキップ秒数から文字列表記を返す
+        public static string SkipSecString(int sec)
+        {
+            string result = "";
+            switch (sec)
+            {
+                case 3:
+                    result = "3秒";
+                    break;
+                case 5:
+                    result = "5秒";
+                    break;
+                case 10:
+                    result = "10秒";
+                    break;
+                case 30:
+                    result = "30秒";
+                    break;
+                case 60:
+                    result = "60秒";
+                    break;
+                case 90:
+                    result = "90秒";
+                    break;
+                case 180:
+                    result = "3分";
+                    break;
+                case 300:
+                    result = "5分";
+                    break;
+                case 600:
+                    result = "10分";
+                    break;
+            }
+            return result;
+    }
+
+        //設定にあるスキップ秒数からメニューのインデックス番号
+        public static int SkipSecIndexNumber(int sec)
+        {
+            int result = 0;
+            switch (sec)
+            {
+                case 3:
+                    result = 0;
+                    break;
+                case 5:
+                    result = 1;
+                    break;
+                case 10:
+                    result = 2;
+                    break;
+                case 30:
+                    result = 3;
+                    break;
+                case 60:
+                    result = 4;
+                    break;
+                case 90:
+                    result = 5;
+                    break;
+                case 180:
+                    result = 6;
+                    break;
+                case 300:
+                    result = 7;
+                    break;
+                case 600:
+                    result = 8;
+                    break;
+            }
+            return result;
+        }
+
     }
 }

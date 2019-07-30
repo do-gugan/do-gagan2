@@ -28,16 +28,21 @@
         <Menu VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Height="25">
             <MenuItem x:Name="MI_File" Header="ファイル(_F)" IsCheckable="False" Height="22">
                 <MenuItem x:Name="MI_OpenMovie" Header="動画/音声ファイルを開く...(_O)" Click="OpenMovie" />
+                <Separator />
+                <MenuItem Header="終了(_X)" Click="Quit" />
             </MenuItem>
             <MenuItem x:Name="MI_Edit" Header="編集(_E)" IsCheckable="False" Height="22">
                 <MenuItem x:Name="MI_Cut" Header="切り取り(_T)" InputGestureText="Ctrl+X" Command="ApplicationCommands.Cut"/>
                 <MenuItem x:Name="MI_Copy" Header="コピー(_C)" InputGestureText="Ctrl+C" Command="ApplicationCommands.Copy"/>
                 <MenuItem x:Name="MI_Paste" Header="貼り付け(_V)" InputGestureText="Ctrl+V" Command="ApplicationCommands.Paste"/>
             </MenuItem>
-            <MenuItem x:Name="MI_PlayBackControl" Header="再生操作(_P)" IsCheckable="False" Height="22">
+            <MenuItem x:Name="MI_PlayBackControl" Header="再生操作(_P)" IsCheckable="False" Height="22" IsEnabled="False">
                 <MenuItem x:Name="MI_PlayPause" Header="再生/一時停止(_S)" Click="Btn_PlayPause_click" InputGestureText="Ctrl+S"/>
                 <MenuItem x:Name="MI_SkipForward" Header="前へジャンプ" Click="Btn_SkipForward_click"  InputGestureText="Ctrl+W"/>
                 <MenuItem x:Name="MI_SkipBackword" Header="後ろへジャンプ" Click="Btn_SkipBackward_click"  InputGestureText="Ctrl+Q"/>
+                <Separator />
+                <MenuItem x:Name="MI_SkipSecFoward" Header="前ジャンプ秒数" />
+                <MenuItem x:Name="MI_SkipSecBackword" Header="後ジャンプ秒数" />
             </MenuItem>
             <MenuItem Header="ヘルプ(_H)">
                 <MenuItem x:Name="MI_OpenUsagePage" IsCheckable="False" Header="使い方を開く(_U)" Click="MenuItem_UsageGuide" />
@@ -58,9 +63,9 @@
         <!--左動画プレーヤーコントロール-->
         <StackPanel Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Grid.Row="2" Grid.Column="0" >
             <StackPanel x:Name="PlayerControlls" Width="auto" Height="30" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2">
-                <Button x:Name="Btn_SkipBackward" Content="＜＜" ToolTip="指定秒数戻します" Click="Btn_SkipBackward_click"/>
-                <Button x:Name="Btn_Play" Content="再生/一時停止" Click="Btn_PlayPause_click"/>
-                <Button x:Name="Btn_SkipForward" Content="＞＞" ToolTip="指定秒数進めます" Click="Btn_SkipForward_click"/>
+                <Button x:Name="Btn_SkipBackward" Content="＜＜" Click="Btn_SkipBackward_click" IsEnabled="false" />
+                <Button x:Name="Btn_Play" Content="再生/一時停止" Click="Btn_PlayPause_click" IsEnabled="false"/>
+                <Button x:Name="Btn_SkipForward" Content="＞＞" Click="Btn_SkipForward_click" IsEnabled="false" />
                 <Slider Name="Slider_Time" Margin="5" Width="250" HorizontalAlignment="Center" IsEnabled="False" Thumb.DragStarted="sliderTime_DragStarted" Thumb.DragCompleted="sliderTime_DragCompleted"/>
                 <TextBlock Name="TextBlock_Time" VerticalAlignment="Center" HorizontalAlignment="Center" >00:00:00</TextBlock>
             </StackPanel>

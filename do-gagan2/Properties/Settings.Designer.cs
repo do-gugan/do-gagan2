@@ -50,12 +50,12 @@ namespace do_gagan2.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("15")]
-        public int SkipBackwordSec {
+        public int SkipBackwardSec {
             get {
-                return ((int)(this["SkipBackwordSec"]));
+                return ((int)(this["SkipBackwardSec"]));
             }
             set {
-                this["SkipBackwordSec"] = value;
+                this["SkipBackwardSec"] = value;
             }
         }
     }
