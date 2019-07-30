@@ -11,6 +11,7 @@ namespace do_gagan2
     static class AppModel
     {
         public static Do_gagan_Records Records;
+        public static List<Dogagan_Record> FilteredRecords;
         public static MainWindow MainWindow;
 
         //使い方ガイドURLを開く

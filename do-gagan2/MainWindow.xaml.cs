@@ -111,6 +111,9 @@ namespace do_gagan2
             _storyboard.Begin(this, true);
             Slider_Time.IsEnabled = true;
             isPlaying = true;
+
+            //検索欄を有効化
+            TB_Search.IsEnabled = true;
         }
 
         //再生・一時停止ボタン
@@ -323,5 +326,25 @@ namespace do_gagan2
             }
         }
         #endregion
+
+        #region 検索（フィルタ）関係
+
+        //検索ボックスをクリア
+        private void Btn_SearchClear_Click(object sender, RoutedEventArgs e)
+        {
+            TB_Search.Text = "";
+            ListBox_Records.DataContext = AppModel.Records.Records;
+        }
+
+        #endregion
+
+        private void TB_Search_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Console.WriteLine(TB_Search.Text);
+            AppModel.FilteredRecords = null;
+            AppModel.FilteredRecords = AppModel.Records.Records.Where(r => r.Transcript.Contains(TB_Search.Text)).ToList();
+            Console.WriteLine("Count:"+AppModel.FilteredRecords.Count);
+            ListBox_Records.DataContext = AppModel.FilteredRecords;
+        }
     }
 }

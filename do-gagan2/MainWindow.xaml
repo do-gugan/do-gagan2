@@ -64,7 +64,23 @@
         <!--ドラッガブル境界線-->
         <GridSplitter Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" Width="5" HorizontalAlignment="Stretch"/>
         <!--右リスト-->
-        <ListBox x:Name="ListBox_Records" Grid.Row="1" Grid.Column="2" Grid.RowSpan="2" ItemsSource="{Binding}">
+        <Grid  Grid.Row="1" Grid.Column="2" Grid.RowSpan="2" Background="White">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="40" />
+                </Grid.ColumnDefinitions>
+                <Label Content="検索:" Grid.Column="0" FontSize="12"/>
+                <TextBox x:Name="TB_Search" Grid.Column="1" FontSize="12" VerticalAlignment="Center" Width="auto" TextChanged="TB_Search_TextChanged" IsEnabled="False"/>
+                <Button Grid.Column="2" FontSize="12" Margin="3,0,0,0" Click="Btn_SearchClear_Click">クリア</Button>
+
+            </Grid>
+            <ListBox x:Name="ListBox_Records" Grid.Row="1"  ItemsSource="{Binding}" Height="auto">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" MouseLeftButtonUp="LogClicked">
@@ -74,6 +90,8 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+        </Grid>
+
     </Grid>
 
 </Window>
