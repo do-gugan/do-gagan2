@@ -177,6 +177,9 @@ namespace do_gagan2
             {
                 //タイムスライダの更新
                 Slider_Time.Value = Player.Clock.CurrentTime.Value.TotalMilliseconds;
+
+                //再生箇所に相当するログをハイライト
+                HighlightLog();
                 //
                 if (Player.Clock.CurrentTime.HasValue && Player.Clock.NaturalDuration.HasTimeSpan)
                     TextBlock_Time.Text = Player.Clock.CurrentTime.Value.Minutes.ToString("D2") + ":" + Player.Clock.CurrentTime.Value.Seconds.ToString("D2") + "/" + Player.Clock.NaturalDuration.TimeSpan.Minutes.ToString() + ":" + Player.Clock.NaturalDuration.TimeSpan.Seconds.ToString();
@@ -269,11 +272,15 @@ namespace do_gagan2
             Console.WriteLine("Duraton:" + Player.NaturalDuration.TimeSpan.TotalSeconds + "sec");
             Slider_Time.Maximum = Player.NaturalDuration.TimeSpan.TotalMilliseconds;
         }
-        //スライダーを更新
+        //スライダーを更新（再生中に定期的に呼ばれる）→呼ばれてない
         private void MediaTimeChanged(object sender, EventArgs e)
         {
-            Console.WriteLine("tick");
+            Console.WriteLine("Tick");
             Slider_Time.Value = Player.Position.TotalMilliseconds;
+
+            //ログのフォーカス行を移動する
+            HighlightLog();
+
         }
         //タイムスライダがドラッグ開始した時
         private void sliderTime_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
@@ -319,9 +326,26 @@ namespace do_gagan2
             Dogagan_Record item = (e.OriginalSource as FrameworkElement)?.DataContext as Dogagan_Record;
             if (item != null) {
                 //Console.WriteLine(item.TimeStamp + " " + item.Transcript);
-                _storyboard.Seek(this, new TimeSpan(0,0,(int)item.TimeStamp), TimeSeekOrigin.BeginTime);
+                _storyboard.Seek(this, new TimeSpan(0,0,(int)item.TimeStamp+1), TimeSeekOrigin.BeginTime);
+            }
+        }
+
+        //動画の再生位置にあわせて該当行をハイライトする
+        private void HighlightLog()
+        {
+            var current = AppModel.Records.Records.Where(r => r.TimeStamp < Player.Position.TotalSeconds).LastOrDefault();
+            if (current != null)
+            {
+                //Console.WriteLine("Time:" + current.TimeStamp + " Text:" + current.Transcript);
+                ListBox_Records.SelectedItem = current;
+                ListBox_Records.ScrollIntoView(current);
             }
         }
         #endregion
+
+        private void ListBox_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            Console.WriteLine("wheel");
+        }
     }
 }
