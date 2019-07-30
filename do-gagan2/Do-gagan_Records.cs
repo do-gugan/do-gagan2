@@ -4,7 +4,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows;
+using Microsoft.VisualBasic;
 
 namespace do_gagan2
 {
@@ -65,8 +68,32 @@ namespace do_gagan2
             return result;
         }
 
+        public void Replace(string from, string to)
+        {
+            //_records.ToList().ForEach(r => r.Transcript.Replace(from, to));
+            int replacedSum = 0;
+            foreach(var rec in _records)
+            {
+                int replaced = rec.ReplaceAndRenew(from, to);
+                replacedSum += replaced;
+            }
+            MessageBox.Show(replacedSum + "ヵ所置換しました");
+        }
+
+        public int GetMatchPlaces(string search)
+        {
+            if (String.IsNullOrEmpty(search))
+            {
+                return 0;
+            } else
+            {
+                return _records.Sum(r => r.GetMatchPlaces(search));
+            }
+        }
 
     }
+
+    #region 個別レコードオブジェクト
 
     /// <summary>
     /// 動画眼形式データの個別レコード
@@ -91,13 +118,35 @@ namespace do_gagan2
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        /// <summary>
+        /// レコード内にある検索語の数を返す
+        /// </summary>
+        /// <param name="search">検索語</param>
+        /// <returns>Transcript内でマッチした回数</returns>
+        public int GetMatchPlaces(string search)
+        {
+            //半角文字を全角に変換してから検索
+            //string transcriptWide = Strings.StrConv(Transcript, VbStrConv.Wide, 0x411);
+            //string searchWide = Strings.StrConv(search, VbStrConv.Wide, 0x411);
+            //MatchCollection matche = Regex.Matches(transcriptWide, searchWide);
+            MatchCollection matche = Regex.Matches(Transcript, search);
+            return matche.Count;
+        }
         public void Renew()
         {
             OnPropertyChanged("TimeStamp");
             OnPropertyChanged("Transcript");
         }
+        public int ReplaceAndRenew(string from, string to)
+        {
+            int match = GetMatchPlaces(from);
+            Transcript.Replace(from, to);
+            if (match > 0) { Renew(); }
+            return match;
+        }
 
     }
+    #endregion
 
     public enum FileFormatVersion
     {

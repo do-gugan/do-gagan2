@@ -346,7 +346,7 @@ namespace do_gagan2
         }
         #endregion
 
-        #region 検索（フィルタ）関係
+        #region 検索（フィルタ）,置換関係
 
         //検索ボックスをクリア
         private void Btn_SearchClear_Click(object sender, RoutedEventArgs e)
@@ -363,11 +363,19 @@ namespace do_gagan2
             Console.WriteLine("Count:"+AppModel.FilteredRecords.Count);
             ListBox_Records.DataContext = AppModel.FilteredRecords;
         }
+        //置換
+        private void MI_Replace_Click(object sender, RoutedEventArgs e)
+        {
+            Window_Replace replace = new Window_Replace();
+            replace.ShowDialog();
+        }
         #endregion
 
         private void ListBox_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             Console.WriteLine("wheel");
         }
+
+        
     }
 }
