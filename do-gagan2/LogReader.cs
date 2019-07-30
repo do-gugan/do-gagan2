@@ -63,7 +63,7 @@ namespace do_gagan2
                 while ((line = sr.ReadLine()) != null)
                 {
                     string[] fields = line.Split('\t');
-                    Console.WriteLine("code:" + fields[0] + " text:" + fields[1]);
+                    //Console.WriteLine("code:" + fields[0] + " text:" + fields[1]);
                     Dogagan_Record rec = new Dogagan_Record();
                     string[] tc = fields[0].Split(':');
 
