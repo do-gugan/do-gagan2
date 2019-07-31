@@ -13,7 +13,7 @@
             <RowDefinition /><!--置換欄-->
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
-        <Label Content="(全角半角、大文字小文字は区別します)" Grid.Row="0" HorizontalAlignment="Right"/>
+        <Label Content="(全角半角、大文字小文字は区別します)" Grid.Row="0" HorizontalAlignment="Right" Foreground="#FF9B9B9B" FontSize="10"/>
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Label Content="検 索:" HorizontalAlignment="Left" VerticalAlignment="Center"/>
             <TextBox x:Name="TB_Search" Width="180" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" TextChanged="TB_Search_TextChanged"/>

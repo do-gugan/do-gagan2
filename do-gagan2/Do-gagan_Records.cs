@@ -140,8 +140,11 @@ namespace do_gagan2
         public int ReplaceAndRenew(string from, string to)
         {
             int match = GetMatchPlaces(from);
-            Transcript.Replace(from, to);
-            if (match > 0) { Renew(); }
+            if (match > 0)
+            {
+                Transcript = Transcript.Replace(from, to);
+                Renew();
+            }
             return match;
         }
 
