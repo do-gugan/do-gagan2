@@ -183,6 +183,9 @@ namespace do_gagan2
             Btn_Play.IsEnabled = true;
             Btn_SkipForward.IsEnabled = true;
             MI_PlayBackControl.IsEnabled = true;
+
+            TB_Search.Focus();
+
         }
 
         //再生・一時停止ボタン
