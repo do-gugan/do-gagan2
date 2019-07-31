@@ -116,7 +116,8 @@ namespace do_gagan2
         public string TimeStampInHhMmSs {
             get {
                 TimeSpan ts = new TimeSpan(0,0,(int)TimeStamp);
-                return ts.ToString(@"hh\:mm\:ss");
+                
+                return (ts.Hours * 60 + ts.Minutes).ToString("D2") + ":" + ts.Seconds.ToString("D2");
             }
         }
 

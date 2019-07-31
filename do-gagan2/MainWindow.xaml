@@ -79,7 +79,7 @@
                     </StackPanel>
                 </Button>
                 <Slider Name="Slider_Time" Margin="5" Width="250" HorizontalAlignment="Center" IsEnabled="False" Thumb.DragStarted="sliderTime_DragStarted" Thumb.DragCompleted="sliderTime_DragCompleted"/>
-                <TextBlock Name="TextBlock_Time" VerticalAlignment="Center" HorizontalAlignment="Center" >00:00:00</TextBlock>
+                <TextBlock Name="TextBlock_Time" VerticalAlignment="Center" HorizontalAlignment="Center" >00:00/00:00</TextBlock>
             </StackPanel>
         </StackPanel>
         <!--ドラッガブル境界線-->
@@ -148,8 +148,8 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Background="AliceBlue" MouseLeftButtonUp="LogClicked" Orientation="Horizontal" CanHorizontallyScroll="False" Margin="3,2,0,2" MouseWheel="ListBox_MouseWheel">
-                            <TextBlock Text="{Binding TimeStampInHhMmSs}" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="1,3,3,0" Foreground="Blue" />
-                            <TextBox Text="{Binding Path=Transcript}" AcceptsReturn="false" TextWrapping="Wrap" BorderBrush="Transparent" FontSize="12" Padding="3,0,1,3" Width="{Binding ElementName=ListBox_Records, Path=ActualWidth,Converter={StaticResource MathConverter},ConverterParameter=@VALUE-68}" />
+                            <TextBlock Text="{Binding TimeStampInHhMmSs}" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="1,3,3,0" Padding="2,0,2,0" Foreground="Blue" />
+                            <TextBox Text="{Binding Path=Transcript}" AcceptsReturn="false" TextWrapping="Wrap" BorderBrush="Transparent" FontSize="12" Padding="3,0,1,3" Width="{Binding ElementName=ListBox_Records, Path=ActualWidth,Converter={StaticResource MathConverter},ConverterParameter=@VALUE-58}" />
                             <StackPanel.ContextMenu>
                                 <ContextMenu x:Name="CM_LogRightClickMenu" >
                                     <MenuItem Header="削除" Click="MI_LogDelete_Clicked" />
