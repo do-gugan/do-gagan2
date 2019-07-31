@@ -67,19 +67,30 @@
             <StackPanel x:Name="PlayerControlls" Width="auto" Height="30" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2">
                 <Button x:Name="Btn_SkipBackward" Click="Btn_SkipBackward_click" IsEnabled="false" FontFamily="Calibri" Width="40" >
                     <StackPanel Orientation="Vertical">
-                        <Label Content="&lt;&lt;" Padding="0,0,0,0" HorizontalAlignment="Center" FontWeight="Bold"/>
+                        <Label Content="7" Padding="0,0,0,0" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="Webdings"/>
                         <Label x:Name="Btn_SkipBackwardSecLabel" Content="10sec" FontSize="9" Padding="0,0,0,0" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </Button>
                 <Button x:Name="Btn_Play" Content="▶/II" Click="Btn_PlayPause_click" IsEnabled="false" Padding="5,0,5,0" FontFamily="Calibri" FontWeight="Bold" Width="40"/>
                 <Button x:Name="Btn_SkipForward" Click="Btn_SkipForward_click" IsEnabled="false" FontFamily="Calibri" Width="40">
                     <StackPanel Orientation="Vertical">
-                        <Label Content="&gt;&gt;" Padding="0,0,0,0" HorizontalAlignment="Center" FontWeight="Bold"/>
+                        <Label Content="8" Padding="0,0,0,0" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="Webdings"/>
                         <Label x:Name="Btn_SkipForwardSecLabel" Content="10sec" FontSize="9" Padding="0,0,0,0" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </Button>
                 <Slider Name="Slider_Time" Margin="5" Width="250" HorizontalAlignment="Center" IsEnabled="False" Thumb.DragStarted="sliderTime_DragStarted" Thumb.DragCompleted="sliderTime_DragCompleted"/>
                 <TextBlock Name="TextBlock_Time" VerticalAlignment="Center" HorizontalAlignment="Center" >00:00/00:00</TextBlock>
+                <Button x:Name="Btn_Volume" Content="🔊" Width="30" Click="Btn_Volume_Click" Background="Transparent" FontFamily="Segoe UI Emoji" BorderBrush="Transparent"/>
+                <Popup x:Name="Popup_VolumeSlider" Width="30" Placement="Top" HorizontalAlignment="Center" PlacementTarget="{Binding ElementName=Btn_Volume}">
+                    <StackPanel Orientation="Vertical" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+                        <Label x:Name="Lbl_CurrentVolume" FontSize="9" HorizontalAlignment="Center" ContentStringFormat="0" Padding="0,6,0,1">
+                            <Label.Content>
+                                <Binding ElementName="Slider_Volume" Path="Value" />
+                            </Label.Content>
+                        </Label>
+                        <Slider x:Name="Slider_Volume" Orientation="Vertical" Height="100" Margin="5,0,5,5" Maximum="100" Minimum="0" ValueChanged="Slider_Volume_ValueChanged" />
+                    </StackPanel>
+                </Popup>
             </StackPanel>
         </StackPanel>
         <!--ドラッガブル境界線-->
@@ -97,7 +108,7 @@
                     <ColumnDefinition Width="40" />
                 </Grid.ColumnDefinitions>
                 <Label Content="検索:" Grid.Column="0" FontSize="12"/>
-                <TextBox x:Name="TB_Search" Grid.Column="1" FontSize="12" VerticalAlignment="Center" Width="auto" TextChanged="TB_Search_TextChanged" IsEnabled="False"/>
+                <TextBox x:Name="TB_Search" Grid.Column="1" FontSize="12" VerticalAlignment="Center" Width="auto" TextChanged="TB_Search_TextChanged" IsEnabled="False" Margin="0,0,5,0"/>
                 <Button Grid.Column="2" FontSize="12" Margin="3,0,0,0" Click="Btn_SearchClear_Click">クリア</Button>
 
             </Grid>

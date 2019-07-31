@@ -58,5 +58,17 @@ namespace do_gagan2.Properties {
                 this["SkipBackwardSec"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.5")]
+        public double LastAudioVolume {
+            get {
+                return ((double)(this["LastAudioVolume"]));
+            }
+            set {
+                this["LastAudioVolume"] = value;
+            }
+        }
     }
 }

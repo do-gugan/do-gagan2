@@ -76,6 +76,8 @@ namespace do_gagan2
             }
 
             SetSkipSecUI();
+            Player.Volume = Properties.Settings.Default.LastAudioVolume;
+            Slider_Volume.Value = Player.Volume *100;
         }
 
         #region 基本再生操作
@@ -185,6 +187,8 @@ namespace do_gagan2
             MI_PlayBackControl.IsEnabled = true;
 
             TB_Search.Focus();
+            Slider_Volume.Value = Player.Volume;
+            Console.WriteLine("Volume"+Player.Volume);
 
         }
 
@@ -532,7 +536,7 @@ namespace do_gagan2
             int ForwardSecIndex = AppModel.SkipSecIndexNumber(ForwardSec);
             string ForwardSecString = AppModel.SkipSecString(ForwardSec);
             string ForwardSecBtnLabel = AppModel.SkipSecBtnLabel(ForwardSec);
-            Console.WriteLine(ForwardSec + "ForwardSecBtnLabel:" + ForwardSecBtnLabel);
+            //Console.WriteLine(ForwardSec + "ForwardSecBtnLabel:" + ForwardSecBtnLabel);
 
             int BackwardSec = Properties.Settings.Default.SkipBackwardSec;
             int BackwardSecIndex = AppModel.SkipSecIndexNumber(BackwardSec);
@@ -557,5 +561,23 @@ namespace do_gagan2
 
         #endregion
 
+        #region 音量スライダー
+        private void Btn_Volume_Click(object sender, RoutedEventArgs e)
+        {
+            Popup_VolumeSlider.IsOpen = !Popup_VolumeSlider.IsOpen;
+        }
+
+        private void Slider_Volume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            Player.Volume = Slider_Volume.Value / 100;
+            Properties.Settings.Default.LastAudioVolume = Player.Volume;
+            Properties.Settings.Default.Save();
+        }
+        #endregion
+
+        private void Popup_VolumeSlider_LostFocus(object sender, RoutedEventArgs e)
+        {
+            Popup_VolumeSlider.IsOpen = false;
+        }
     }
 }
