@@ -36,7 +36,7 @@ namespace do_gagan2
             Btn_SkipForward.ContextMenu = new ContextMenu();
             MenuItem[] MI_SkipForwardFromButton = new MenuItem[10];
             MenuItem[] MI_SkipForwardFromMenu = new MenuItem[10];
-            string[] skipSecsFw = new string[10] {"3秒", "5秒", "10秒", "15秒", "30秒", "60秒", "90秒", "3分", "5分", "10分"};
+            string[] skipSecsFw = new string[10] { "3秒", "5秒", "10秒", "15秒", "30秒", "60秒", "90秒", "3分", "5分", "10分" };
             for (int i = 0; i < 10; i++)
             {
                 //>>ボタン右クリック用
@@ -72,16 +72,10 @@ namespace do_gagan2
                 MI_SkipBackwardFromMenu[i].Header = skipSecsBack[i];
                 MI_SkipBackwardFromMenu[i].Click += MI_SkipBackward_Click;
                 MI_SkipBackwardFromMenu[i].IsCheckable = true;
-                MI_SkipSecBackword.Items.Add(MI_SkipBackwardFromMenu[i]);
+                MI_SkipSecBackward.Items.Add(MI_SkipBackwardFromMenu[i]);
             }
 
-            //スキップボタンのTooltipをセット
-            Btn_SkipForward.ToolTip = AppModel.SkipSecString(Properties.Settings.Default.SkipForwardSec) + "進む";
-            Btn_SkipBackward.ToolTip = AppModel.SkipSecString(Properties.Settings.Default.SkipForwardSec) + "戻る";
-
-            //スキップ秒数選択メニューのチェックをセット
-            CheckAllSkipForwardSecs(AppModel.SkipSecIndexNumber(Properties.Settings.Default.SkipForwardSec));
-            CheckAllSkipBackwardSecs(AppModel.SkipSecIndexNumber(Properties.Settings.Default.SkipBackwardSec));
+            SetSkipSecUI();
         }
 
         #region 基本再生操作
@@ -245,6 +239,9 @@ namespace do_gagan2
             _storyboard.SeekAlignedToLastTick(this,offset,TimeSeekOrigin.BeginTime);
             if (isPlaying)
                 _storyboard.Resume(this);
+
+            ListBoxAutoScrollEnabled = true;
+
         }
 
         //メディアタイムラインの現在時間が無効化された時
@@ -260,7 +257,12 @@ namespace do_gagan2
                 HighlightLog();
                 //
                 if (Player.Clock.CurrentTime.HasValue && Player.Clock.NaturalDuration.HasTimeSpan)
-                    TextBlock_Time.Text = Player.Clock.CurrentTime.Value.Minutes.ToString("D2") + ":" + Player.Clock.CurrentTime.Value.Seconds.ToString("D2") + "/" + Player.Clock.NaturalDuration.TimeSpan.Minutes.ToString() + ":" + Player.Clock.NaturalDuration.TimeSpan.Seconds.ToString();
+                {
+                    //1時間半なら90分と表示
+                    string current = (Player.Clock.CurrentTime.Value.Hours * 60 + Player.Clock.CurrentTime.Value.Minutes).ToString("D2") + ":" + Player.Clock.CurrentTime.Value.Seconds.ToString("D2");
+                    string total = (Player.Clock.NaturalDuration.TimeSpan.Hours * 60 + Player.Clock.NaturalDuration.TimeSpan.Minutes).ToString("D2") + ":" + Player.Clock.NaturalDuration.TimeSpan.Seconds.ToString("D2");
+                    TextBlock_Time.Text = current + "/" + total;
+                }
 
                 //動画が終了している場合
                 if (Player.NaturalDuration.HasTimeSpan == true && Player.Clock.CurrentTime.Value.TotalMilliseconds == Player.NaturalDuration.TimeSpan.TotalMilliseconds)
@@ -378,6 +380,9 @@ namespace do_gagan2
             //再生を再開
             if (isPlaying)
                 _storyboard.Resume(this);
+
+            ListBoxAutoScrollEnabled = true;
+
         }
 
 
@@ -475,120 +480,33 @@ namespace do_gagan2
         #region スキップ秒数変更ボタン
         private void MI_SkipForward_Click(object sender, RoutedEventArgs e)
         {
-            Btn_SkipForward.ToolTip = (sender as MenuItem).Header + "進む";
-            int sec = Properties.Settings.Default.SkipForwardSec;
-            int num = 0;
-            switch ((sender as MenuItem).Header)
-            {
-                case "3秒":
-                    sec = 3;
-                    num = 0;
-                    break;
-                case "5秒":
-                    sec = 5;
-                    num = 1;
-                    break;
-                case "10秒":
-                    sec = 10;
-                    num = 2;
-                    break;
-                case "15秒":
-                    sec = 15;
-                    num = 3;
-                    break;
-                case "30秒":
-                    sec = 30;
-                    num = 4;
-                    break;
-                case "60秒":
-                    sec = 60;
-                    num = 5;
-                    break;
-                case "90秒":
-                    sec = 90;
-                    num = 6;
-                    break;
-                case "3分":
-                    sec = 180;
-                    num = 7;
-                    break;
-                case "5分":
-                    sec = 300;
-                    num = 8;
-                    break;
-                case "10分":
-                    sec = 600;
-                    num = 9;
-                    break;
-            }
+            string btnName = (sender as MenuItem).Header.ToString();
+            int sec = AppModel.SkipSecIndexFromBtnName(btnName);
+
             //設定変更
             Properties.Settings.Default.SkipForwardSec = sec;
             Properties.Settings.Default.Save();
-            //該当メニューにチェック
-            CheckAllSkipForwardSecs(num);
 
+            SetSkipSecUI();
         }
         private void MI_SkipBackward_Click(object sender, RoutedEventArgs e)
         {
-            string btnName = (sender as MenuItem).Header.ToString().Replace("-", "");
-            Btn_SkipBackward.ToolTip = btnName + "戻る";
-            int sec = Properties.Settings.Default.SkipBackwardSec;
-            int num = 0;
-            switch (btnName)
-            {
-                case "3秒":
-                    sec = 3;
-                    num = 0;
-                    break;
-                case "5秒":
-                    sec = 5;
-                    num = 1;
-                    break;
-                case "10秒":
-                    sec = 10;
-                    num = 2;
-                    break;
-                case "15秒":
-                    sec = 15;
-                    num = 3;
-                    break;
-                case "30秒":
-                    sec = 30;
-                    num = 4;
-                    break;
-                case "60秒":
-                    sec = 60;
-                    num = 5;
-                    break;
-                case "90秒":
-                    sec = 90;
-                    num = 6;
-                    break;
-                case "3分":
-                    sec = 180;
-                    num = 7;
-                    break;
-                case "5分":
-                    sec = 300;
-                    num = 8;
-                    break;
-                case "10分":
-                    sec = 600;
-                    num = 9;
-                    break;
-            }
+            string btnName = (sender as MenuItem).Header.ToString().Replace("-", ""); //マイナス記号を抜く
+            int sec = AppModel.SkipSecIndexFromBtnName(btnName);
+            
             //設定変更
             Properties.Settings.Default.SkipBackwardSec = sec;
             Properties.Settings.Default.Save();
-            //該当メニューにチェック
-            CheckAllSkipBackwardSecs(num);
 
+            SetSkipSecUI();
         }
 
-        //スキップ秒数のメニューとボタンコンテクストメニューのチェックを一旦全部外し指定行目をチェック
-        private void CheckAllSkipForwardSecs(int index)
+
+        //スキップ秒数設定変更時に、メニューのチェックとボタン表記、ToolTopを更新する
+        private void SetSkipSecUI()
         {
-            //全部オフ
+            //メニュー全部オフ
+            //Forward
             foreach (MenuItem mi in MI_SkipSecFoward.Items)
             {
                 mi.IsChecked = false;
@@ -597,17 +515,8 @@ namespace do_gagan2
             {
                 mi.IsChecked = false;
             }
-            //指定番目をチェック
-            MenuItem onMenu = MI_SkipSecFoward.Items[index] as MenuItem;
-            onMenu.IsChecked = true;
-            MenuItem onButton = Btn_SkipForward.ContextMenu.Items[index] as MenuItem;
-            onButton.IsChecked = true;
-
-        }
-        private void CheckAllSkipBackwardSecs(int index)
-        {
-            //全部オフ
-            foreach (MenuItem mi in MI_SkipSecBackword.Items)
+            //Backword
+            foreach (MenuItem mi in MI_SkipSecBackward.Items)
             {
                 mi.IsChecked = false;
             }
@@ -615,12 +524,32 @@ namespace do_gagan2
             {
                 mi.IsChecked = false;
             }
-            //指定番目をチェック
-            MenuItem onMenu = MI_SkipSecBackword.Items[index] as MenuItem;
-            onMenu.IsChecked = true;
-            MenuItem onButton = Btn_SkipBackward.ContextMenu.Items[index] as MenuItem;
-            onButton.IsChecked = true;
 
+            int ForwardSec = Properties.Settings.Default.SkipForwardSec;
+            int ForwardSecIndex = AppModel.SkipSecIndexNumber(ForwardSec);
+            string ForwardSecString = AppModel.SkipSecString(ForwardSec);
+            string ForwardSecBtnLabel = AppModel.SkipSecBtnLabel(ForwardSec);
+            Console.WriteLine(ForwardSec + "ForwardSecBtnLabel:" + ForwardSecBtnLabel);
+
+            int BackwardSec = Properties.Settings.Default.SkipBackwardSec;
+            int BackwardSecIndex = AppModel.SkipSecIndexNumber(BackwardSec);
+            string BackwardSecString = AppModel.SkipSecString(BackwardSec);
+            string BackwardSecBtnLabel = AppModel.SkipSecBtnLabel(BackwardSec);
+
+
+            //メニュー指定番目をチェック
+            (MI_SkipSecFoward.Items[ForwardSecIndex] as MenuItem).IsChecked = true;
+            (Btn_SkipForward.ContextMenu.Items[ForwardSecIndex] as MenuItem).IsChecked = true;
+            (MI_SkipSecBackward.Items[BackwardSecIndex] as MenuItem).IsChecked = true;
+            (Btn_SkipBackward.ContextMenu.Items[BackwardSecIndex] as MenuItem).IsChecked = true;
+
+            //ボタンラベル
+            Btn_SkipForwardSecLabel.Content = ForwardSecBtnLabel;
+            Btn_SkipBackwardSecLabel.Content = BackwardSecBtnLabel;
+
+            //ボタンTooltip
+            Btn_SkipForward.ToolTip = ForwardSecString + "進む";
+            Btn_SkipBackward.ToolTip = BackwardSecString + "戻る";
         }
 
         #endregion
