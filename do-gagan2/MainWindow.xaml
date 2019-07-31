@@ -31,10 +31,12 @@
                 <Separator />
                 <MenuItem Header="終了(_X)" Click="Quit" />
             </MenuItem>
-            <MenuItem x:Name="MI_Edit" Header="編集(_E)" IsCheckable="False" Height="22">
-                <MenuItem x:Name="MI_Cut" Header="切り取り(_T)" InputGestureText="Ctrl+X" Command="ApplicationCommands.Cut"/>
-                <MenuItem x:Name="MI_Copy" Header="コピー(_C)" InputGestureText="Ctrl+C" Command="ApplicationCommands.Copy"/>
-                <MenuItem x:Name="MI_Paste" Header="貼り付け(_V)" InputGestureText="Ctrl+V" Command="ApplicationCommands.Paste"/>
+            <MenuItem Header="編集(_E)" IsCheckable="False" Height="22">
+                <MenuItem Header="切り取り(_T)" InputGestureText="Ctrl+X" Command="ApplicationCommands.Cut"/>
+                <MenuItem Header="コピー(_C)" InputGestureText="Ctrl+C" Command="ApplicationCommands.Copy"/>
+                <MenuItem Header="貼り付け(_V)" InputGestureText="Ctrl+V" Command="ApplicationCommands.Paste"/>
+                <Separator />
+                <MenuItem x:Name="MI_Replace" Header="置換" Click="MI_Replace_Click" IsEnabled="False"/>
             </MenuItem>
             <MenuItem x:Name="MI_PlayBackControl" Header="再生操作(_P)" IsCheckable="False" Height="22" IsEnabled="False">
                 <MenuItem x:Name="MI_PlayPause" Header="再生/一時停止(_S)" Click="Btn_PlayPause_click" InputGestureText="Ctrl+S"/>

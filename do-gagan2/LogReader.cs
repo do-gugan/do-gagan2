@@ -90,7 +90,7 @@ namespace do_gagan2
                 //    Console.WriteLine("tc:"+rec.TimeStamp + " text:"+rec.Transcript);
                 //}
                 AppModel.MainWindow.ListBox_Records.DataContext = AppModel.Records.Records;
-
+                AppModel.MainWindow.MI_Replace.IsEnabled = true;
             }
 
             return true;

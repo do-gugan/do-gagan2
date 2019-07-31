@@ -1,0 +1,40 @@
+﻿<Window x:Class="do_gagan2.Window_Replace"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:do_gagan2"
+        mc:Ignorable="d"
+        Title="置 換" Height="171.196" Width="265.45" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition /><!--検索欄-->
+            <RowDefinition /><!--置換欄-->
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+        <Label Content="(全角半角、大文字小文字は区別します)" Grid.Row="0" HorizontalAlignment="Right"/>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Label Content="検 索:" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <TextBox x:Name="TB_Search" Width="180" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" TextChanged="TB_Search_TextChanged"/>
+        </StackPanel>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Label Content="置 換:" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <TextBox x:Name="TB_Replace" Width="180" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        </StackPanel>
+        <!--下部2ボタン-->
+        <Grid Grid.Row="3" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/><!--マッチ数-->
+                <ColumnDefinition Width="2*"/><!--2ボタン-->
+            </Grid.ColumnDefinitions>
+            <Label x:Name="Lbl_MatchCount"  Content="該当数: " Height="25" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,7" />
+            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                <Button Content="キャンセル" Grid.Row="2" Height="25" Width="70" Margin="0,0,10,10" Click="BtnCancel_Clicked"/>
+                <Button Content="置 換" Grid.Row="2" Height="25" Width="70" Margin="0,0,10,10" Click="BtnReplace_Click"/>
+            </StackPanel>
+        </Grid>
+
+
+    </Grid>
+</Window>
