@@ -91,6 +91,15 @@ namespace do_gagan2
             }
         }
 
+        /// <summary>
+        /// レコードを削除
+        /// </summary>
+        /// <param name="rec">削除したいレコード</param>
+        public void Delete(Dogagan_Record item)
+        {
+            _records.Remove(item);
+        }
+
     }
 
     #region 個別レコードオブジェクト

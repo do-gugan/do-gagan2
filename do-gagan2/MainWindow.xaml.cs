@@ -417,6 +417,20 @@ namespace do_gagan2
                 ListBox_Records.ScrollIntoView(current);
             }
         }
+
+        //削除
+        private void MI_LogDelete_Clicked(object sender, RoutedEventArgs e)
+        {
+            Dogagan_Record item = (e.OriginalSource as FrameworkElement)?.DataContext as Dogagan_Record;
+            if (item != null)
+            {
+                AppModel.Records.Delete(item);
+            } else
+            {
+                MessageBox.Show("行削除に失敗しました。");
+            }
+        }
+
         #endregion
 
         #region 検索（フィルタ）,置換関係
