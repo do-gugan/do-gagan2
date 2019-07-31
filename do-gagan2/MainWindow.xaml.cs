@@ -24,6 +24,7 @@ namespace do_gagan2
     {
         Storyboard _storyboard = null;
         bool isPlaying = false;
+        bool ListBoxAutoScrollEnabled = false;
 
         public MainWindow()
         {
@@ -160,8 +161,9 @@ namespace do_gagan2
             {
                 LogReader.LoadTXTFile(moviePath);
             }
-                
-            
+
+            ListBoxAutoScrollEnabled = true;
+
             //動画を再生
             if (_storyboard != null)
                 Stop();
@@ -403,6 +405,7 @@ namespace do_gagan2
             if (item != null) {
                 //Console.WriteLine(item.TimeStamp + " " + item.Transcript);
                 _storyboard.Seek(this, new TimeSpan(0,0,(int)item.TimeStamp+1), TimeSeekOrigin.BeginTime);
+                ListBoxAutoScrollEnabled = true;
             }
         }
 
@@ -410,7 +413,7 @@ namespace do_gagan2
         private void HighlightLog()
         {
             var current = AppModel.Records.Records.Where(r => r.TimeStamp < Player.Position.TotalSeconds).LastOrDefault();
-            if (current != null)
+            if (current != null && ListBoxAutoScrollEnabled==true)
             {
                 //Console.WriteLine("Time:" + current.TimeStamp + " Text:" + current.Transcript);
                 ListBox_Records.SelectedItem = current;
@@ -429,6 +432,16 @@ namespace do_gagan2
             {
                 MessageBox.Show("行削除に失敗しました。");
             }
+        }
+
+        /// <summary>
+        /// リスト上でマウスホイールが操作されたら自動スクロールを無効化する
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ListBox_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            ListBoxAutoScrollEnabled = false;
         }
 
         #endregion
@@ -458,10 +471,6 @@ namespace do_gagan2
         }
         #endregion
 
-        private void ListBox_MouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            Console.WriteLine("wheel");
-        }
 
         #region スキップ秒数変更ボタン
         private void MI_SkipForward_Click(object sender, RoutedEventArgs e)
