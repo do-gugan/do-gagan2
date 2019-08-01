@@ -40,6 +40,7 @@ namespace do_gagan2
                 {
                     case FileFormatVersion.Type1:
                         //動画眼1.x形式（タイムスタンプが00:00:00形式）
+                        //話者、信頼度フィールドは常になし
                         var span = new TimeSpan(0, 0, (int)r.TimeStamp);
                         result += span.ToString(@"hh\:mm\:ss") + "\t" + r.Transcript;
                         break;
@@ -63,7 +64,7 @@ namespace do_gagan2
                         }
                         break;
                 }
-                result += "\r";
+                result += "\r\n";
             }
             return result;
         }
@@ -78,6 +79,8 @@ namespace do_gagan2
                 replacedSum += replaced;
             }
             MessageBox.Show(replacedSum + "ヵ所置換しました");
+            if (replacedSum > 0) { AppModel.IsCurrentFileDirty = true; }
+
         }
 
         public int GetMatchPlaces(string search)
@@ -98,7 +101,8 @@ namespace do_gagan2
         public void Delete(Dogagan_Record item)
         {
             _records.Remove(item);
-        }
+            AppModel.IsCurrentFileDirty = true;
+        }      
 
     }
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.IO;
 
 namespace do_gagan2
 {
@@ -13,6 +14,19 @@ namespace do_gagan2
         public static Do_gagan_Records Records;
         public static List<Dogagan_Record> FilteredRecords;
         public static MainWindow MainWindow;
+        public static string CurrentLogFilePath = "";
+        private static bool _isCurrentFileDirty = false;
+        public static bool IsCurrentFileDirty {
+            get {
+                return _isCurrentFileDirty;
+            }
+            set {
+                _isCurrentFileDirty = value;
+                string dirtyMark = "";
+                if (_isCurrentFileDirty) { dirtyMark = "*"; }
+                AppModel.MainWindow.Title = "動画眼2 - " + Path.GetFileName(CurrentLogFilePath) + dirtyMark;
+            }
+        }
 
         //使い方ガイドURLを開く
         public static void GoUsageGuide()
@@ -192,5 +206,6 @@ namespace do_gagan2
             return sec;
         }
         #endregion
+
     }
 }

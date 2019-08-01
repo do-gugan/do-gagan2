@@ -32,7 +32,7 @@ namespace do_gagan2
                 Console.WriteLine(".dggnファイル無し");
                 return false;
             }
-
+            AppModel.CurrentLogFilePath = logPath;
             //読み込み処理
             return false; //未実装なのでfalseを返しておく
         }
@@ -62,27 +62,31 @@ namespace do_gagan2
 
                 while ((line = sr.ReadLine()) != null)
                 {
-                    string[] fields = line.Split('\t');
-                    //Console.WriteLine("code:" + fields[0] + " text:" + fields[1]);
-                    Dogagan_Record rec = new Dogagan_Record();
-                    string[] tc = fields[0].Split(':');
+                    if (!String.IsNullOrEmpty(line))
+                    {
+                        string[] fields = line.Split('\t');
+                        Console.WriteLine("code:" + fields[0] + " text:" + fields[1]);
+                        Dogagan_Record rec = new Dogagan_Record();
+                        string[] tc = fields[0].Split(':');
 
-                    //タイムコードを変換＆整合性チェック
-                    int hour, min, sec;
-                    bool isIntTc0 = int.TryParse(tc[0], out hour);
-                    bool isIntTc1 = int.TryParse(tc[1], out min);
-                    bool isIntTc2 = int.TryParse(tc[2], out sec);
-                    if (!isIntTc0 || !isIntTc1 || !isIntTc2)
-                    {
-                        MessageBox.Show("タイムコード形式が不正な行があり、ログ読み込みを中断します。\r" + line);
-                        return false;
-                    } else
-                    {
-                        rec.TimeStamp = hour * 3600 + min*60 + sec;
+                        //タイムコードを変換＆整合性チェック
+                        int hour, min, sec;
+                        bool isIntTc0 = int.TryParse(tc[0], out hour);
+                        bool isIntTc1 = int.TryParse(tc[1], out min);
+                        bool isIntTc2 = int.TryParse(tc[2], out sec);
+                        if (!isIntTc0 || !isIntTc1 || !isIntTc2)
+                        {
+                            MessageBox.Show("タイムコード形式が不正な行があり、ログ読み込みを中断します。\r" + line);
+                            return false;
+                        } else
+                        {
+                            rec.TimeStamp = hour * 3600 + min*60 + sec;
+                        }
+                        rec.Transcript = fields[1];
+                        AppModel.Records.Add(rec);
+                        rec.Renew();
                     }
-                    rec.Transcript = fields[1];
-                    AppModel.Records.Add(rec);
-                    rec.Renew();
+
                 }
 
                 //foreach(var rec in AppModel.Records.Records)
@@ -92,7 +96,7 @@ namespace do_gagan2
                 AppModel.MainWindow.ListBox_Records.DataContext = AppModel.Records.Records;
                 AppModel.MainWindow.MI_Replace.IsEnabled = true;
             }
-
+            AppModel.CurrentLogFilePath = logPath;
             return true;
 
         }

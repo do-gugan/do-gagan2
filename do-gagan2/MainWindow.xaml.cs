@@ -91,13 +91,35 @@ namespace do_gagan2
             this.Close();
         }
         //WPFでは終了イベントハンドラが必要
-        protected override void OnClosed(EventArgs e)
+        protected virtual void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            base.OnClosed(e);
             //終了処理
+            if (AppModel.IsCurrentFileDirty)
+            {
+                MessageBoxResult result = System.Windows.MessageBox.Show("変更を上書き保存しますか？", "上書き保存確認", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
 
+                switch (result)
+                {
+                    case MessageBoxResult.Cancel:
+                        //閉じない
+                        e.Cancel = true;
+                        break;
+                    case MessageBoxResult.Yes:
+                        if (SaveLog() )
+                        {
+                            Application.Current.Shutdown();
+                        } else
+                        {
+                            //保存に失敗したら閉じない
+                            e.Cancel = true;
+                        }                        
+                        break;
+                    case MessageBoxResult.No:
+                        Application.Current.Shutdown();
+                        break;
 
-            Application.Current.Shutdown();
+                }
+            }
         }
 
         /// <summary>
@@ -135,9 +157,6 @@ namespace do_gagan2
             //ダイアログを表示する
             if (ofd.ShowDialog() == true)
             {
-                //最後に使ったフォルダを記憶
-                Properties.Settings.Default.LastMovieFolder = Path.GetDirectoryName(ofd.FileName);
-                Properties.Settings.Default.Save();
                 //OKボタンがクリックされたとき、選択されたファイル名を表示する
                 OpenMovie(ofd.FileName);
             }
@@ -145,6 +164,10 @@ namespace do_gagan2
 
         private void OpenMovie(string moviePath)
         {
+            //最後に使ったフォルダを記憶
+            Properties.Settings.Default.LastMovieFolder = Path.GetDirectoryName(moviePath);
+            Properties.Settings.Default.Save();
+
             //既存ログをクリア
             AppModel.Records.Clear();
 
@@ -165,7 +188,7 @@ namespace do_gagan2
                 Stop();
 
             //ウインドウタイトルにファイル名を表示
-            Title = "動画眼 - " + Path.GetFileName(moviePath);
+            AppModel.IsCurrentFileDirty = false;
 
             //メディアタイムラインを作成
             MediaTimeline mediaTimeline = new MediaTimeline(new Uri(moviePath));
@@ -579,5 +602,52 @@ namespace do_gagan2
         {
             Popup_VolumeSlider.IsOpen = false;
         }
+
+        #region ファイル保存関連
+        /// <summary>
+        /// 上書き保存
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MI_Save_Click(object sender, RoutedEventArgs e)
+        {
+            SaveLog();
+        }
+        private bool SaveLog()
+        {
+            string body = "";
+            Encoding enc;
+            if (Path.GetExtension(AppModel.CurrentLogFilePath) == ".dggn")
+            {
+                //V2フォーマットで保存
+                body = AppModel.Records.ToString(true,true,FileFormatVersion.Type2);
+                enc = Encoding.GetEncoding("UTF-8");
+            } else if (Path.GetExtension(AppModel.CurrentLogFilePath) == ".txt")
+            {
+                //V1フォーマットで保存
+                body = AppModel.Records.ToString(false,false,FileFormatVersion.Type1);
+                enc = Encoding.GetEncoding("Shift_JIS");
+            } else
+            {
+                MessageBox.Show("未知の拡張子のため上書き保存できませんでした。");
+                return false;
+            }
+            using (StreamWriter writer = new StreamWriter(AppModel.CurrentLogFilePath, false, enc))
+            {
+                writer.WriteLine(body);
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 新規保存
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MI_SaveNew_Click(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine(AppModel.Records.ToString(false,false,FileFormatVersion.Type2));
+        }
+        #endregion
     }
 }
