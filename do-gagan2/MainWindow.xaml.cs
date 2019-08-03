@@ -210,8 +210,6 @@ namespace do_gagan2
             MI_PlayBackControl.IsEnabled = true;
 
             TB_Search.Focus();
-            Slider_Volume.Value = Player.Volume;
-            Console.WriteLine("Volume"+Player.Volume);
 
         }
 
@@ -595,6 +593,7 @@ namespace do_gagan2
             Player.Volume = Slider_Volume.Value / 100;
             Properties.Settings.Default.LastAudioVolume = Player.Volume;
             Properties.Settings.Default.Save();
+            //Console.WriteLine("Saved Volume:"+Properties.Settings.Default.LastAudioVolume);
         }
         #endregion
 
@@ -617,15 +616,17 @@ namespace do_gagan2
         {
             string body = "";
             Encoding enc;
-            if (Path.GetExtension(AppModel.CurrentLogFilePath) == ".dggn")
+            if (Path.GetFileName(AppModel.CurrentLogFilePath).EndsWith(".dggn.txt"))
             {
                 //V2フォーマットで保存
-                body = AppModel.Records.ToString(true,true,FileFormatVersion.Type2);
+                Console.WriteLine("Save V2");
+                body = AppModel.Records.ToString(true,FileFormatVersion.Type2);
                 enc = Encoding.GetEncoding("UTF-8");
             } else if (Path.GetExtension(AppModel.CurrentLogFilePath) == ".txt")
             {
                 //V1フォーマットで保存
-                body = AppModel.Records.ToString(false,false,FileFormatVersion.Type1);
+                Console.WriteLine("Save V1");
+                body = AppModel.Records.ToString(false,FileFormatVersion.Type1);
                 enc = Encoding.GetEncoding("Shift_JIS");
             } else
             {
@@ -646,7 +647,7 @@ namespace do_gagan2
         /// <param name="e"></param>
         private void MI_SaveNew_Click(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine(AppModel.Records.ToString(false,false,FileFormatVersion.Type2));
+            Console.WriteLine(AppModel.Records.ToString(false,FileFormatVersion.Type2));
         }
         #endregion
     }

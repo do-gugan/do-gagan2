@@ -25,12 +25,13 @@ namespace do_gagan2
         public void Add(Dogagan_Record rec)
         {
             _records.Add(rec);
+            Console.WriteLine("Speaker:"+rec.Speaker + ":"+rec.Transcript);
         }
         /// <summary>
         /// 全レコードをタブ区切り形式テキストを生成して返す
         /// </summary>
         /// <returns>タグ区切りテキスト</returns>
-        public string ToString(bool WithSpeakerLabel = false, bool WithConfidence = false, FileFormatVersion version = FileFormatVersion.Type2)
+        public string ToString(bool WithSpeakerLabel = false, FileFormatVersion version = FileFormatVersion.Type2)
         {
             string result = "";
             _records.OrderBy(r => r.TimeStamp);
@@ -40,14 +41,13 @@ namespace do_gagan2
                 {
                     case FileFormatVersion.Type1:
                         //動画眼1.x形式（タイムスタンプが00:00:00形式）
-                        //話者、信頼度フィールドは常になし
                         var span = new TimeSpan(0, 0, (int)r.TimeStamp);
-                        result += span.ToString(@"hh\:mm\:ss") + "\t" + r.Transcript;
+                        result += span.ToString(@"hh\:mm\:ss") + "\t" + r.Speaker + " 「"+r.Transcript+"」";
                         break;
 
                     default:
-                        //動画眼2.x形式（タイムスタンプそのまま、話者、信頼度フィールド対応）
-                        result += r.TimeStamp + "\t";
+                        //動画眼2.x形式（タイムスタンプそのまま、話者フィールド対応）
+                        result += r.TimeStamp;
                         if (WithSpeakerLabel)
                         {
                             //話者ラベル、「」あり
@@ -57,11 +57,7 @@ namespace do_gagan2
                         {
                             result += "\t" + r.Transcript;
                         }
-                        if (WithConfidence)
-                        {
-                            //信頼度あり
-                            result += "\t" + r.Confidence;
-                        }
+                        result += "\t" + r.Speaker;
                         break;
                 }
                 result += "\r\n";
@@ -124,6 +120,30 @@ namespace do_gagan2
                 return (ts.Hours * 60 + ts.Minutes).ToString("D2") + ":" + ts.Seconds.ToString("D2");
             }
         }
+        public string SpeakerColor {
+            get {
+                switch(Speaker){
+                    case "0":
+                        return "#CCFFFF";
+                    case "1":
+                        return "#FFD5EC";
+                    case "2":
+                        return "#CCFFCC";
+                    case "3":
+                        return "#FFCCFF";
+                    case "4":
+                        return "#FFFFCC";
+                    case "5":
+                        return "#FFDBC9";
+                    case "6":
+                        return "#E6FFE9";
+                    case "7":
+                        return "#EAD9FF";
+                    default:
+                        return "#CCFFFF";
+                }
+            }
+        }
 
         //データバインディングの更新に必要
         public event PropertyChangedEventHandler PropertyChanged;
@@ -150,6 +170,7 @@ namespace do_gagan2
         {
             OnPropertyChanged("TimeStamp");
             OnPropertyChanged("Transcript");
+            OnPropertyChanged("SpeakerColor");
         }
         public int ReplaceAndRenew(string from, string to)
         {

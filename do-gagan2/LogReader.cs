@@ -24,7 +24,7 @@ namespace do_gagan2
         /// 前2フィールドのみ必須
         public static bool LoadDGGFile(string moviePath)
         {
-            string logPath = Path.Combine(Path.GetDirectoryName(moviePath), Path.GetFileNameWithoutExtension(moviePath) + ".dggn");
+            string logPath = Path.Combine(Path.GetDirectoryName(moviePath), Path.GetFileNameWithoutExtension(moviePath) + ".dggn.txt");
             Console.WriteLine("Search:" + logPath);
             if (!File.Exists(logPath))
             {
@@ -34,7 +34,47 @@ namespace do_gagan2
             }
             AppModel.CurrentLogFilePath = logPath;
             //読み込み処理
-            return false; //未実装なのでfalseを返しておく
+            string line = "";
+            using (StreamReader sr = new StreamReader(logPath, Encoding.GetEncoding("UTF-8")))
+            {
+
+                while ((line = sr.ReadLine()) != null)
+                {
+                    if (!String.IsNullOrEmpty(line))
+                    {
+                        string[] fields = line.Split('\t');
+                        Dogagan_Record rec = new Dogagan_Record();
+
+                        //タイムコードを変換＆整合性チェック
+                        float ts;
+                        bool isFloat = float.TryParse(fields[0], out ts);
+                        if (!isFloat)
+                        {
+                            MessageBox.Show("タイムコード形式が不正な行があり、ログ読み込みを中断します。\r" + line);
+                            return false;
+                        }
+                        else
+                        {
+                            rec.TimeStamp = ts;
+                        }
+                        rec.Transcript = fields[1];
+                        rec.Speaker = fields[2];
+                        AppModel.Records.Add(rec);
+                        rec.Renew();
+                    }
+
+                }
+
+                //foreach(var rec in AppModel.Records.Records)
+                //{
+                //    Console.WriteLine("tc:"+rec.TimeStamp + " text:"+rec.Transcript);
+                //}
+                AppModel.MainWindow.ListBox_Records.DataContext = AppModel.Records.Records;
+                AppModel.MainWindow.MI_Replace.IsEnabled = true;
+            }
+            AppModel.CurrentLogFilePath = logPath;
+            return true;
+
         }
 
         /// <summary>
