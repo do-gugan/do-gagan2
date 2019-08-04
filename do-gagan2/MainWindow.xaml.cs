@@ -14,6 +14,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.IO;
 using System.Windows.Media.Animation;
+using System.Windows.Ink;
+using System.Collections.ObjectModel;
 
 namespace do_gagan2
 {
@@ -78,6 +80,9 @@ namespace do_gagan2
             SetSkipSecUI();
             Player.Volume = Properties.Settings.Default.LastAudioVolume;
             Slider_Volume.Value = Player.Volume *100;
+
+            //ジェスチャーインク設定
+            InkCanvas1.DefaultDrawingAttributes.Color = Colors.LightBlue;
         }
 
         #region 基本再生操作
@@ -597,6 +602,43 @@ namespace do_gagan2
         }
         #endregion
 
+        #region ジェスチャの認識
+        private void inkCanvas1_Gesture(object sender, InkCanvasGestureEventArgs e)
+        {
+            // ジェスチャの認識結果を取得
+            var gestureResults = e.GetGestureRecognitionResults();
+
+            // 認識結果の信頼性が高い順にメッセージを表示する
+            if (gestureResults[0].RecognitionConfidence == RecognitionConfidence.Strong)
+            {
+                //Console.WriteLine("Gesture:"+gestureResults[0].ApplicationGesture.ToString());
+                //認識可能ジェスチャー一覧
+                //https://docs.microsoft.com/ja-jp/dotnet/api/system.windows.ink.applicationgesture?redirectedfrom=MSDN&view=netframework-4.8
+
+                if (_storyboard != null)
+                    //動画読み込み後
+                    switch (gestureResults[0].ApplicationGesture.ToString())
+                    {
+                        case "Tap":
+                            PlayPause();
+                            break;
+                        case "Right":
+                            MoveRelative(Properties.Settings.Default.SkipForwardSec);
+                            break;
+                        case "Left":
+                            MoveRelative(Properties.Settings.Default.SkipBackwardSec * -1);
+                            break;
+                        case "Up":
+                            break;
+                        case "Down":
+                            break;
+                        default:
+                            break;
+                    }
+            }
+        }
+        #endregion
+
         private void Popup_VolumeSlider_LostFocus(object sender, RoutedEventArgs e)
         {
             Popup_VolumeSlider.IsOpen = false;
@@ -650,5 +692,6 @@ namespace do_gagan2
             Console.WriteLine(AppModel.Records.ToString(false,FileFormatVersion.Type2));
         }
         #endregion
+
     }
 }
