@@ -535,7 +535,7 @@ namespace do_gagan2
         }
 
 
-        //スキップ秒数設定変更時に、メニューのチェックとボタン表記、ToolTopを更新する
+        //スキップ秒数設定変更時に、メニューのチェックとボタン表記、ToolTipを更新する
         private void SetSkipSecUI()
         {
             //メニュー全部オフ
@@ -581,8 +581,8 @@ namespace do_gagan2
             Btn_SkipBackwardSecLabel.Content = BackwardSecBtnLabel;
 
             //ボタンTooltip
-            Btn_SkipForward.ToolTip = ForwardSecString + "進む";
-            Btn_SkipBackward.ToolTip = BackwardSecString + "戻る";
+            Btn_SkipForward.ToolTip = ForwardSecString + "進む\n右クリックで変更";
+            Btn_SkipBackward.ToolTip = BackwardSecString + "戻る\n右クリックで変更";
         }
 
         #endregion
@@ -692,6 +692,17 @@ namespace do_gagan2
             Console.WriteLine(AppModel.Records.ToString(false,FileFormatVersion.Type2));
         }
         #endregion
+
+        //新規メモボタン
+        private void Btn_NewLog_Click(object sender, RoutedEventArgs e)
+        {
+            OpenNewLogWindow();
+        }
+        private void OpenNewLogWindow()
+        {
+            Window_NewMemo window_NewMemo = new Window_NewMemo();
+            window_NewMemo.Show();
+        }
 
     }
 }
