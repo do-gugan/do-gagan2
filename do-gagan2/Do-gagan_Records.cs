@@ -42,7 +42,15 @@ namespace do_gagan2
                     case FileFormatVersion.Type1:
                         //動画眼1.x形式（タイムスタンプが00:00:00形式）
                         var span = new TimeSpan(0, 0, (int)r.TimeStamp);
-                        result += span.ToString(@"hh\:mm\:ss") + "\t" + r.Speaker + " 「"+r.Transcript+"」";
+                        result += span.ToString(@"hh\:mm\:ss") + "\t";
+                        if (WithSpeakerLabel == true)
+                        {
+                            result += r.Speaker + " 「" + r.Transcript + "」";
+                        }
+                        else
+                        {
+                            result += r.Transcript;
+                        }
                         break;
 
                     default:
