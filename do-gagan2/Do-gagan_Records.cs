@@ -34,8 +34,8 @@ namespace do_gagan2
         public string ToString(bool WithSpeakerLabel = false, FileFormatVersion version = FileFormatVersion.Type2)
         {
             string result = "";
-            _records.OrderBy(r => r.TimeStamp);
-            foreach (var r in _records)
+            List<Dogagan_Record> sortedRecords = _records.OrderBy(r => r.TimeStamp).ToList();
+            foreach (var r in sortedRecords)
             {
                 switch (version)
                 {
@@ -190,6 +190,7 @@ namespace do_gagan2
             }
             return match;
         }
+
 
     }
     #endregion

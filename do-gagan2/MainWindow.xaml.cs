@@ -16,6 +16,7 @@ using System.IO;
 using System.Windows.Media.Animation;
 using System.Windows.Ink;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace do_gagan2
 {
@@ -83,6 +84,11 @@ namespace do_gagan2
 
             //ジェスチャーインク設定
             InkCanvas1.DefaultDrawingAttributes.Color = Colors.LightBlue;
+
+            //リストのソート設定（ビュー側でソートするだけ。コレクション自体は並び変わっていないので、保存時は別途ソートする）
+            var collectionView = CollectionViewSource.GetDefaultView(AppModel.Records.Records);
+            // Ageプロパティで昇順にソートする
+            collectionView.SortDescriptions.Add(new SortDescription("TimeStamp", ListSortDirection.Ascending));
         }
 
         #region 基本再生操作
@@ -213,6 +219,7 @@ namespace do_gagan2
             Btn_Play.IsEnabled = true;
             Btn_SkipForward.IsEnabled = true;
             MI_PlayBackControl.IsEnabled = true;
+            Btn_NewLog.IsEnabled = true;
 
             TB_Search.Focus();
 
@@ -227,16 +234,19 @@ namespace do_gagan2
         //再生一時停止トグル操作
         private void PlayPause()
         {
-            if (isPlaying)
+            if (_storyboard != null)
             {
-                _storyboard.Pause(this);
-                //Player.Pause();
-                isPlaying = false;
-            } else
-            {
-                _storyboard.Resume(this);
-                //Player.Play();
-                isPlaying = true;
+                if (isPlaying)
+                {
+                    _storyboard.Pause(this);
+                    //Player.Pause();
+                    isPlaying = false;
+                } else
+                {
+                    _storyboard.Resume(this);
+                    //Player.Play();
+                    isPlaying = true;
+                }
             }
         }
 
@@ -259,22 +269,46 @@ namespace do_gagan2
         //指定秒数に相対移動
         private void MoveRelative(int sec)
         {
-            TimeSpan offset = Player.Position + new TimeSpan(0, 00, sec);
-            if (offset > Player.NaturalDuration.TimeSpan)
+            if (_storyboard != null)
             {
-                offset = Player.NaturalDuration.TimeSpan - new TimeSpan(0, 0, 2);
-            } else if (offset < new TimeSpan(0))
-            {
-                Console.WriteLine("minus");
-                offset = TimeSpan.Zero;
+                TimeSpan offset = Player.Position + new TimeSpan(0, 00, sec);
+                if (offset > Player.NaturalDuration.TimeSpan)
+                {
+                    offset = Player.NaturalDuration.TimeSpan - new TimeSpan(0, 0, 2);
+                } else if (offset < new TimeSpan(0))
+                {
+                    Console.WriteLine("minus");
+                    offset = TimeSpan.Zero;
+                }
+
+                _storyboard.SeekAlignedToLastTick(this,offset,TimeSeekOrigin.BeginTime);
+                if (isPlaying)
+                    _storyboard.Resume(this);
+
+                ListBoxAutoScrollEnabled = true;
             }
 
-            _storyboard.SeekAlignedToLastTick(this,offset,TimeSeekOrigin.BeginTime);
-            if (isPlaying)
-                _storyboard.Resume(this);
+        }
 
-            ListBoxAutoScrollEnabled = true;
+        //動画の指定位置にジャンプ
+        public void MoveAbsolute(int sec)
+        {
+            if (_storyboard != null)
+            {
+                Console.WriteLine(sec);
+                _storyboard.SeekAlignedToLastTick(this, new TimeSpan(0, 00, sec), TimeSeekOrigin.BeginTime);
+            }
+        }
 
+        //動画の総再生時感を返す
+        public double GetMediaDuration()
+        {
+            if (_storyboard != null)
+            {
+                return Player.NaturalDuration.TimeSpan.TotalSeconds;
+            } else
+            {
+                return 0.0;            }
         }
 
         //メディアタイムラインの現在時間が無効化された時
@@ -306,8 +340,10 @@ namespace do_gagan2
             }
         }
 
+        //キーボード入力に反応
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
+
             if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.S)
             {
                 PlayPause();
@@ -319,6 +355,14 @@ namespace do_gagan2
             if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.Q)
             {
                 MoveRelative(Properties.Settings.Default.SkipBackwardSec * -1);
+            }
+            if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.M)
+            {
+                OpenNewLogWindow();
+            }
+            if (e.Key == Key.F1)
+            {
+                Console.WriteLine("F1");
             }
         }
         #endregion
@@ -700,9 +744,14 @@ namespace do_gagan2
         }
         private void OpenNewLogWindow()
         {
-            Window_NewMemo window_NewMemo = new Window_NewMemo();
-            window_NewMemo.Show();
+            if (_storyboard != null)
+            {
+                Window_NewMemo window_NewMemo = new Window_NewMemo(Player.Position.TotalSeconds,0);
+                window_NewMemo.Show();
+            }
+
         }
+
 
     }
 }
