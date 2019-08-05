@@ -24,6 +24,7 @@ namespace do_gagan2
 
         public void Add(Dogagan_Record rec)
         {
+            if (String.IsNullOrEmpty(rec.Speaker)) rec.Speaker = "0";
             _records.Add(rec);
             Console.WriteLine("Speaker:"+rec.Speaker + ":"+rec.Transcript);
         }

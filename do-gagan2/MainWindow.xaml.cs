@@ -140,6 +140,8 @@ namespace do_gagan2
         /// <param name="e"></param>
         private void OpenMovie(object sender, RoutedEventArgs e)
         {
+            if (_storyboard != null) _storyboard.Pause(this);
+
             OpenFileDialog ofd = new OpenFileDialog();
 
 
@@ -219,6 +221,8 @@ namespace do_gagan2
             Btn_Play.IsEnabled = true;
             Btn_SkipForward.IsEnabled = true;
             MI_PlayBackControl.IsEnabled = true;
+            MI_Save.IsEnabled = true;
+            MI_SaveNew.IsEnabled = true;
             Btn_NewLog.IsEnabled = true;
 
             TB_Search.Focus();
@@ -733,7 +737,81 @@ namespace do_gagan2
         /// <param name="e"></param>
         private void MI_SaveNew_Click(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine(AppModel.Records.ToString(false,FileFormatVersion.Type2));
+            if (_storyboard == null) return;
+            _storyboard.Pause(this);
+
+            var result = MessageBox.Show("動画と異なるファイル名で保存した記録ファイルは、次回動画を開く時に自動では読み込まれません。\n（動画と同じ名前の記録ファイルが自動で読み込まれます）", "確認", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+            if (result == MessageBoxResult.Cancel) return;
+
+            var sfd = new SaveFileDialog();
+
+            //はじめのファイル名を指定する
+            //はじめに「ファイル名」で表示される文字列を指定する
+            sfd.FileName = "新しいログファイル.dggn";
+            //はじめに表示されるフォルダを指定する
+            sfd.InitialDirectory = Path.GetDirectoryName(AppModel.CurrentLogFilePath);
+            //[ファイルの種類]に表示される選択肢を指定する
+            //指定しない（空の文字列）の時は、現在のディレクトリが表示される
+            sfd.Filter = "動画眼2.x形式タブ区切りテキストファイル[UTF-8](.dggn.txt)|*.dggn|動画眼1.x形式タブ区切りテキストファイル[Shift-JIS](.txt)|*.txt";
+            //[ファイルの種類]ではじめに選択されるものを指定する
+            //2番目の「すべてのファイル」が選択されているようにする
+            sfd.FilterIndex = 1;
+            //タイトルを設定する
+            sfd.Title = "保存するログファイルのファイル名と形式を選択してください";
+            //ダイアログボックスを閉じる前に現在のディレクトリを復元するようにする
+            sfd.RestoreDirectory = true;
+            //既に存在するファイル名を指定したとき警告する
+            sfd.OverwritePrompt = true;
+            //存在しないパスが指定されたとき警告を表示する
+            sfd.CheckPathExists = true;
+            //ダイアログを表示する
+            if (sfd.ShowDialog() == true)
+            {
+                //OKボタンがクリックされたとき、選択されたファイル名を表示する
+                Console.WriteLine(sfd.FilterIndex);
+                string body = "";
+                string newFilePath = "";
+                Encoding enc;
+                if (sfd.FilterIndex == 1)
+                {
+                    //2.0形式で保存
+                    //V2フォーマットで保存
+                    body = AppModel.Records.ToString(true, FileFormatVersion.Type2);
+                    enc = Encoding.GetEncoding("UTF-8");
+                    newFilePath = sfd.FileName.Replace(".dggn", ".dggn.txt");
+
+                }
+                else
+                {
+                    //1.0形式で保存
+                    //V1フォーマットで保存
+                    body = AppModel.Records.ToString(false, FileFormatVersion.Type1);
+                    enc = Encoding.GetEncoding("Shift_JIS");
+                    newFilePath = sfd.FileName;
+                }
+                //Console.WriteLine(newFilePath);
+
+                bool go = false; //保存実行フラグ
+                if (File.Exists(newFilePath)){
+                    var result2 = MessageBox.Show(newFilePath +"は存在します。上書きしますか？","上書き確認",MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+                    if (result2 == MessageBoxResult.OK) go = true;
+                } else
+                {
+                    //既存ファイルがないからgo
+                    go = true;
+                }
+
+                if (go)
+                {
+                    Console.WriteLine("Save実行");
+                    using (StreamWriter writer = new StreamWriter(newFilePath, false, enc))
+                    {
+                        writer.WriteLine(body);
+                    }
+                }
+
+            }
+
         }
         #endregion
 

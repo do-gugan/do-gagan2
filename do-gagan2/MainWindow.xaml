@@ -30,8 +30,8 @@
             <MenuItem x:Name="MI_File" Header="ファイル(_F)" IsCheckable="False" Height="22">
                 <MenuItem x:Name="MI_OpenMovie" Header="動画/音声ファイルを開く(_O)..." Click="OpenMovie" />
                 <Separator />
-                <MenuItem x:Name="MI_Save" Header="上書き保存(_S)" Click="MI_Save_Click" />
-                <MenuItem x:Name="MI_SaveNew" Header="名前を付けて保存(_A)..." Click="MI_SaveNew_Click" />
+                <MenuItem x:Name="MI_Save" Header="上書き保存(_S)" Click="MI_Save_Click" IsEnabled="false"/>
+                <MenuItem x:Name="MI_SaveNew" Header="名前を付けて書き出し(_A)..." Click="MI_SaveNew_Click" IsEnabled="False" />
                 <Separator />
                 <MenuItem Header="終了(_X)" Click="Quit" />
             </MenuItem>
