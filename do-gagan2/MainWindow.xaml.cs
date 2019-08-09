@@ -144,6 +144,7 @@ namespace do_gagan2
 
             OpenFileDialog ofd = new OpenFileDialog();
 
+            ofd.Multiselect = false;
 
             //初期ディレクトリをセット
             ofd.InitialDirectory = System.Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory); //デスクトップ
@@ -170,7 +171,6 @@ namespace do_gagan2
             //ダイアログを表示する
             if (ofd.ShowDialog() == true)
             {
-                //OKボタンがクリックされたとき、選択されたファイル名を表示する
                 OpenMovie(ofd.FileName);
             }
         }
@@ -189,9 +189,9 @@ namespace do_gagan2
             //ログを読み込む
             //Ver2.0形式のファイルが存在したら読み、なければ1.0形式のファイルを探して読む。
 
-            if (!LogReader.LoadDGGFile(moviePath))
+            if (!LogReader.SearchDGGFile(moviePath))
             {
-                LogReader.LoadTXTFile(moviePath);
+                LogReader.SearchTXTFile(moviePath);
             }
 
             ListBoxAutoScrollEnabled = true;
@@ -221,6 +221,7 @@ namespace do_gagan2
             Btn_Play.IsEnabled = true;
             Btn_SkipForward.IsEnabled = true;
             MI_PlayBackControl.IsEnabled = true;
+            MI_AddLog.IsEnabled = true;
             MI_Save.IsEnabled = true;
             MI_SaveNew.IsEnabled = true;
             Btn_NewLog.IsEnabled = true;
@@ -506,6 +507,43 @@ namespace do_gagan2
                 ListBox_Records.ScrollIntoView(current);
             }
         }
+
+
+        //リスト項目が右クリックされてコンテクストメニューが開いた
+        private void StackPanel_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            //現在の話者ラベルを変更メニューのチェックに反映
+            Dogagan_Record item = (e.OriginalSource as FrameworkElement)?.DataContext as Dogagan_Record;
+            StackPanel sp = sender as StackPanel;
+            foreach(MenuItem mi in sp.ContextMenu.Items)
+            {
+                if (mi.Header.ToString() == "話者ラベル") {
+                    foreach (MenuItem mi_spk in mi.Items)
+                    {
+                        if (mi_spk.Header.ToString() == item.Speaker)
+                        {
+                            mi_spk.IsChecked = true;
+                        } else
+                        {
+                            mi_spk.IsChecked = false;
+                        }
+                    }
+                }
+
+            }
+        }
+
+
+        //リスト項目の右クリックメニューから話者変更
+        private void MI_SpeakerLabelChange_Click(object sender, RoutedEventArgs e)
+        {
+            Dogagan_Record item = (e.OriginalSource as FrameworkElement)?.DataContext as Dogagan_Record;
+            var newSpeakerLabel = e.Source as MenuItem;
+            item.Speaker = newSpeakerLabel.Header.ToString();
+            item.Renew();
+            AppModel.IsCurrentFileDirty = true;
+        }
+
 
         //削除
         private void MI_LogDelete_Clicked(object sender, RoutedEventArgs e)
@@ -837,6 +875,86 @@ namespace do_gagan2
             //Console.WriteLine("TextChanged:"+changedTextBox.Text);
             //ダーティフラグを立てる
             AppModel.IsCurrentFileDirty = true;
+        }
+
+
+        //今開いているログに、別ファイルのログをマージする
+        private void MI_AddLog_Click(object sender, RoutedEventArgs e)
+        {
+            if (_storyboard != null) _storyboard.Pause(this);
+
+            OpenFileDialog ofd = new OpenFileDialog();
+
+            //初期ディレクトリをセット
+            ofd.InitialDirectory = System.Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory); //デスクトップ
+            if (!String.IsNullOrEmpty(Properties.Settings.Default.LastMovieFolder))
+            {
+                if (Directory.Exists(Properties.Settings.Default.LastMovieFolder))
+                {
+                    //フォルダが存在すればセット
+                    ofd.InitialDirectory = Properties.Settings.Default.LastMovieFolder;
+                }
+            }
+
+            //[ファイルの種類]に表示される選択肢を指定する
+            //指定しないとすべてのファイルが表示される
+            //ofd.Filter = "ログファイル(*.txt)|*.txt|すべてのファイル(*.*)|*.*";
+            ofd.Filter = "動画眼2.x形式タブ区切りテキストファイル[UTF-8](.dggn.txt)|*.dggn.txt|動画眼1.x形式タブ区切りテキストファイル[Shift-JIS](.txt)|*.txt";
+
+            //[ファイルの種類]ではじめに選択されるものを指定する
+            //2番目の「すべてのファイル」が選択されているようにする
+            ofd.FilterIndex = 1;
+            //タイトルを設定する
+            ofd.Title = "追加読み込み（マージ）するログファイルを選択してください";
+            //ダイアログボックスを閉じる前に現在のディレクトリを復元するようにする
+            ofd.RestoreDirectory = true;
+            ofd.Multiselect = false;
+
+            //ダイアログを表示する
+            if (ofd.ShowDialog() == true)
+            {
+                //フィルター選択よりファイル拡張子を信頼して分岐
+                if (Path.GetFileName(ofd.FileName).EndsWith(".dggn.txt")){
+                    LogReader.LoadDGGFile(ofd.FileName);
+                } else
+                {
+                    LogReader.LoadTXTFile(ofd.FileName);
+                }
+            }
+        }
+
+        /// <summary>
+        /// セルを選択位置で分割する
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MI_SeparateCell_Click(object sender, RoutedEventArgs e)
+        {
+            Dogagan_Record item = (e.OriginalSource as FrameworkElement)?.DataContext as Dogagan_Record;
+            MenuItem mi = sender as MenuItem;
+            Console.WriteLine("mi.parent:"+mi.Parent.GetType());
+            ContextMenu cm = mi.Parent as ContextMenu;
+            TextBox tb = cm.PlacementTarget as TextBox; //対象のテキストボックス
+            if (tb.SelectionLength > 0)
+            {
+                MessageBox.Show("1文字以上の文字を選択していると分割できません。");
+            }
+            else if (tb.SelectionStart == 0 || tb.SelectionStart >= tb.Text.Length)
+            {
+                MessageBox.Show("この位置では分割できません。");
+            } else 
+            {
+                string text1 = tb.Text.Substring(0, tb.SelectionStart);
+                string text2 = tb.Text.Substring(tb.SelectionStart, tb.Text.Length- tb.SelectionStart);
+                item.Transcript = text1;
+                item.Renew();
+                Dogagan_Record newItem = new Dogagan_Record();
+                newItem.TimeStamp = item.TimeStamp + 1;
+                newItem.Transcript = text2;
+                newItem.Speaker = "0";
+                AppModel.Records.Add(newItem);
+
+            }
         }
     }
 }

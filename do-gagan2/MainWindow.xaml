@@ -30,6 +30,8 @@
             <MenuItem x:Name="MI_File" Header="ファイル(_F)" IsCheckable="False" Height="22">
                 <MenuItem x:Name="MI_OpenMovie" Header="動画/音声ファイルを開く(_O)..." Click="OpenMovie" />
                 <Separator />
+                <MenuItem x:Name="MI_AddLog" Header="ログを追加する" Click="MI_AddLog_Click" IsEnabled="false"/>
+                <Separator />
                 <MenuItem x:Name="MI_Save" Header="上書き保存(_S)" Click="MI_Save_Click" IsEnabled="false"/>
                 <MenuItem x:Name="MI_SaveNew" Header="名前を付けて書き出し(_A)..." Click="MI_SaveNew_Click" IsEnabled="False" />
                 <Separator />
@@ -171,11 +173,34 @@
                 <!--リストボックスのアイテム定義-->
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Background="{Binding SpeakerColor}" MouseLeftButtonUp="LogClicked" Orientation="Horizontal" CanHorizontallyScroll="False" Margin="3,2,0,2" MouseWheel="ListBox_MouseWheel">
+                        <StackPanel Background="{Binding SpeakerColor}" MouseLeftButtonUp="LogClicked" Orientation="Horizontal" CanHorizontallyScroll="False" Margin="3,2,0,2" MouseWheel="ListBox_MouseWheel" ContextMenuOpening="StackPanel_ContextMenuOpening">
                             <TextBlock Text="{Binding TimeStampInHhMmSs}" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="1,3,3,0" Padding="2,0,2,0" Foreground="Blue" />
-                            <TextBox Text="{Binding Path=Transcript, Mode=TwoWay}" AcceptsReturn="false" TextWrapping="Wrap" BorderBrush="Transparent" FontSize="12" Padding="3,0,1,3" Width="{Binding ElementName=ListBox_Records, Path=ActualWidth,Converter={StaticResource MathConverter},ConverterParameter=@VALUE-58}" TextChanged="TextBox_TextChanged"/>
+                            <TextBox Text="{Binding Path=Transcript, Mode=TwoWay}" AcceptsReturn="false" TextWrapping="Wrap" BorderBrush="Transparent" FontSize="12" Padding="3,0,1,3" Width="{Binding ElementName=ListBox_Records, Path=ActualWidth,Converter={StaticResource MathConverter},ConverterParameter=@VALUE-58}" TextChanged="TextBox_TextChanged" >
+                                <TextBox.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="切り取り" Command="ApplicationCommands.Cut" />
+                                        <MenuItem Header="コピー" Command="ApplicationCommands.Copy" />
+                                        <MenuItem Header="貼り付け" Command="ApplicationCommands.Paste" />
+                                        <Separator />
+                                        <MenuItem Header="ここでセルを分割" Click="MI_SeparateCell_Click"/>
+                                    </ContextMenu>
+                                </TextBox.ContextMenu>
+                            </TextBox>
                             <StackPanel.ContextMenu>
                                 <ContextMenu x:Name="CM_LogRightClickMenu" >
+                                    <MenuItem Header="話者ラベル">
+                                        <MenuItem Header="0" Click="MI_SpeakerLabelChange_Click" />
+                                        <MenuItem Header="1" Click="MI_SpeakerLabelChange_Click" />
+                                        <MenuItem Header="2" Click="MI_SpeakerLabelChange_Click" />
+                                        <MenuItem Header="3" Click="MI_SpeakerLabelChange_Click" />
+                                        <MenuItem Header="4" Click="MI_SpeakerLabelChange_Click" />
+                                        <MenuItem Header="5" Click="MI_SpeakerLabelChange_Click" />
+                                        <MenuItem Header="6" Click="MI_SpeakerLabelChange_Click" />
+                                        <MenuItem Header="7" Click="MI_SpeakerLabelChange_Click" />
+                                        <MenuItem Header="8" Click="MI_SpeakerLabelChange_Click" />
+                                        <MenuItem Header="9" Click="MI_SpeakerLabelChange_Click" />
+                                        <MenuItem Header="10" Click="MI_SpeakerLabelChange_Click" />
+                                    </MenuItem>
                                     <MenuItem Header="削除" Click="MI_LogDelete_Clicked" />
                                 </ContextMenu>
                             </StackPanel.ContextMenu>

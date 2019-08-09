@@ -22,7 +22,7 @@ namespace do_gagan2
         /// ファイル形式（タブ区切りUTF-8テキスト）
         /// 0.0[TAB]発話、メモ[TAB]話者フラグ[TAB]信頼度
         /// 前2フィールドのみ必須
-        public static bool LoadDGGFile(string moviePath)
+        public static bool SearchDGGFile(string moviePath)
         {
             string logPath = Path.Combine(Path.GetDirectoryName(moviePath), Path.GetFileNameWithoutExtension(moviePath) + ".dggn.txt");
             Console.WriteLine("Search:" + logPath);
@@ -32,6 +32,15 @@ namespace do_gagan2
                 Console.WriteLine(".dggnファイル無し");
                 return false;
             }
+            return LoadDGGFile(logPath);
+        }
+
+        /// <summary>
+        /// 指定のログファイルを読み込む
+        /// </summary>
+        /// <param name="logPath"></param>
+        /// <returns>読み込み成功したらtrue</returns>
+        public static bool LoadDGGFile(string logPath) { 
             AppModel.CurrentLogFilePath = logPath;
             //読み込み処理
             string line = "";
@@ -84,7 +93,7 @@ namespace do_gagan2
         /// <returns>読み込み成功したらtrue</returns>
         /// ファイル形式（タブ区切りSJISテキスト）
         /// 00:00:00[TAB]発話、メモ
-        public static bool LoadTXTFile(string moviePath)
+        public static bool SearchTXTFile(string moviePath)
         {
             string logPath = Path.Combine(Path.GetDirectoryName(moviePath), Path.GetFileNameWithoutExtension(moviePath) + ".txt");
             Console.WriteLine("Search:" + logPath);
@@ -94,6 +103,11 @@ namespace do_gagan2
                 Console.WriteLine(".txtファイル無し");
                 return false;
             }
+            return LoadTXTFile(logPath);
+        }
+
+        public static bool LoadTXTFile(string logPath)
+        { 
 
             //読み込み処理
             string line = "";
