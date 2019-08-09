@@ -748,7 +748,7 @@ namespace do_gagan2
             {
                 //V2フォーマットで保存
                 Console.WriteLine("Save V2");
-                body = AppModel.Records.ToString(true,FileFormatVersion.Type2);
+                body = AppModel.Records.ToString(false,FileFormatVersion.Type2);
                 enc = Encoding.GetEncoding("UTF-8");
             } else if (Path.GetExtension(AppModel.CurrentLogFilePath) == ".txt")
             {
@@ -814,7 +814,7 @@ namespace do_gagan2
                 {
                     //2.0形式で保存
                     //V2フォーマットで保存
-                    body = AppModel.Records.ToString(true, FileFormatVersion.Type2);
+                    body = AppModel.Records.ToString(false, FileFormatVersion.Type2);
                     enc = Encoding.GetEncoding("UTF-8");
                     newFilePath = sfd.FileName.Replace(".dggn", ".dggn.txt");
 
