@@ -830,6 +830,13 @@ namespace do_gagan2
 
         }
 
-
+        //セルのテキストが変更された
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            //var changedTextBox = e.Source as TextBox;
+            //Console.WriteLine("TextChanged:"+changedTextBox.Text);
+            //ダーティフラグを立てる
+            AppModel.IsCurrentFileDirty = true;
+        }
     }
 }
