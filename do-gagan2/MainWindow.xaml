@@ -68,7 +68,7 @@
                 <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.HighlightTextColorKey}}"/>
             </Label.Foreground>
         </Label>
-        <InkCanvas x:Name="InkCanvas1" Grid.Row="1" Grid.Column="0" EditingMode="GestureOnly" Background="Transparent" Gesture="inkCanvas1_Gesture"/>
+        <InkCanvas x:Name="InkCanvas1" Grid.Row="1" Grid.Column="0" EditingMode="GestureOnly" Background="Transparent" Gesture="inkCanvas1_Gesture" AllowDrop="True" DragEnter="MediaElement_DragEnter" DragLeave="MediaElement_DragLeave" Drop="MediaElement_Drop"/>
 
         <!--左動画プレーヤーコントロール-->
         <StackPanel Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Stretch">
