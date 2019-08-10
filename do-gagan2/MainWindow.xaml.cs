@@ -227,7 +227,12 @@ namespace do_gagan2
             MI_Save.IsEnabled = true;
             MI_SaveNew.IsEnabled = true;
             Btn_NewLog.IsEnabled = true;
-            Btn_Capture.IsEnabled = true;
+
+            //動画ファイルの時だけキャプチャボタンを有効化
+            if (AppModel.getMediaType() == MediaType.Video)
+            {
+                Btn_Capture.IsEnabled = true;
+            }
 
             TB_Search.Focus();
 
@@ -968,27 +973,35 @@ namespace do_gagan2
             int width = (int)(Player.NaturalVideoWidth);
             int height = (int)(Player.NaturalVideoHeight);
 
-            // 描画用の Visual を用意
-            var visual = new DrawingVisual();
-
-            using (var context = visual.RenderOpen())
+            Console.WriteLine("x:" + Player.ActualWidth + " NaturalX"+Player.NaturalVideoWidth);
+            Console.WriteLine("media w:"+ MediaDockPanel.ActualWidth);
+            //画面のdpiを取得
+            PresentationSource source = PresentationSource.FromVisual(this);
+            double dpiX, dpiY;
+            if (source != null)
             {
-                context.DrawVideo(Player., new System.Windows.Rect(0, 0, width, height));
+                dpiX = 96.0 * source.CompositionTarget.TransformToDevice.M11;
+                dpiY = 96.0 * source.CompositionTarget.TransformToDevice.M22;
+            } else
+            {
+                dpiX = 96.0;
+                dpiY = 96.0;
             }
-
+            Console.WriteLine(source.CompositionTarget.TransformToDevice.M11);
             // レンダリングするビットマップを用意
-            var bitmap = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Pbgra32);
+            var bitmap = new RenderTargetBitmap(width, height, dpiX, dpiY, PixelFormats.Pbgra32);
 
             // ビットマップに Visual をレンダリング
-            bitmap.Render(visual);
+            bitmap.Render(Player);
 
             // PNG として保存
             var encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(bitmap));
 
+            //
+            var current = Player.Position.ToString(@"hh\Hmm\Mss\S");
             //ファイル名
-            string fileName = Path.GetFileNameWithoutExtension(AppModel.CurrentMovieFilePath) + ".png";
-            Console.WriteLine(fileName);
+            string fileName = Path.Combine(Path.GetDirectoryName(AppModel.CurrentMovieFilePath), Path.GetFileNameWithoutExtension(AppModel.CurrentMovieFilePath) + "_" + current + ".png");
             using (var stream = File.OpenWrite(fileName))
             {
                 encoder.Save(stream);

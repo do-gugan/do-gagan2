@@ -21,7 +21,7 @@
             <RowDefinition Height="30" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*" MinWidth="400" />
+            <ColumnDefinition Width="2*" MinWidth="510" />
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="1*" MinWidth="200" />
         </Grid.ColumnDefinitions>
@@ -60,7 +60,7 @@
 
         </Menu>
         <!--左動画プレーヤー-->
-        <DockPanel Grid.Row="1" Grid.Column="0" Background="Black" AllowDrop="True" DragEnter="MediaElement_DragEnter" Drop="MediaElement_Drop" DragLeave="MediaElement_DragLeave">
+        <DockPanel x:Name="MediaDockPanel" Grid.Row="1" Grid.Column="0" Background="Black" AllowDrop="True" DragEnter="MediaElement_DragEnter" Drop="MediaElement_Drop" DragLeave="MediaElement_DragLeave">
             <MediaElement x:Name="Player" MediaOpened="Element_MediaOpened" LoadedBehavior="Manual" />
         </DockPanel>
         <Label x:Name="Lb_DropHere" Content="動画、音声ファイルを「ファイル」メニューから読み込むか、&#xa;ここにドラッグ＆ドロップしてください。" AllowDrop="True" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Opacity="0.5" Width="auto" Height="auto" DragEnter="MediaElement_DragEnter" DragLeave="MediaElement_DragLeave" Drop="MediaElement_Drop" >
@@ -71,10 +71,10 @@
         <InkCanvas x:Name="InkCanvas1" Grid.Row="1" Grid.Column="0" EditingMode="GestureOnly" Background="Transparent" Gesture="inkCanvas1_Gesture"/>
 
         <!--左動画プレーヤーコントロール-->
-        <StackPanel Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Grid.Row="2" Grid.Column="0" >
-            <StackPanel x:Name="PlayerControls" Width="auto" Height="30" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.ColumnSpan="2" Margin="0,0,11,0">
+        <StackPanel Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Stretch">
+            <StackPanel x:Name="PlayerControls" Width="auto" Height="30" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2" Margin="0,0,11,0">
                 <!--キャプチャボタン-->
-                <Button x:Name="Btn_Capture" Content="📷" ToolTip="静止画で保存"  IsEnabled="false" Click="Btn_Capture_Click" Background="Transparent" FontFamily="Segoe UI Emoji" BorderBrush="Transparent" />
+                <Button x:Name="Btn_Capture" Content="📷" ToolTip="静止画で保存" Width="30"  IsEnabled="false" Click="Btn_Capture_Click" Background="Transparent" FontFamily="Segoe UI Emoji" BorderBrush="Transparent" />
                 <!--後方ジャンプボタン-->
                 <Button x:Name="Btn_SkipBackward" Click="Btn_SkipBackward_click" IsEnabled="false" FontFamily="Calibri" Width="40" >
                     <StackPanel Orientation="Vertical">

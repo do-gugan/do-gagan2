@@ -46,6 +46,53 @@ namespace do_gagan2
             return ver.FileMajorPart + "." + ver.FileMinorPart + "." + ver.FileBuildPart;
         }
 
+        /// <summary>
+        /// 拡張子を元に音声、動画、その他を返す
+        /// </summary>
+        /// <returns>列挙体MediaType</returns>
+        public static MediaType getMediaType()
+        {
+            MediaType result = MediaType.Other;
+            switch (Path.GetExtension(CurrentMovieFilePath).ToLower())
+            {
+                case ".mp3":
+                    result = MediaType.AudioOnly;
+                    break;
+                case ".ogg":
+                    result = MediaType.AudioOnly;
+                    break;
+                case ".wav":
+                    result = MediaType.AudioOnly;
+                    break;
+                case ".flac":
+                    result = MediaType.AudioOnly;
+                    break;
+                case ".aac":
+                    result = MediaType.AudioOnly;
+                    break;
+                case ".m4a":
+                    result = MediaType.AudioOnly;
+                    break;
+                case ".mp4":
+                    result = MediaType.Video;
+                    break;
+                case ".mpg":
+                    result = MediaType.Video;
+                    break;
+                case ".avi":
+                    result = MediaType.Video;
+                    break;
+                case ".mov":
+                    result = MediaType.Video;
+                    break;
+                default:
+                    result = MediaType.Other;
+                    break;
+            }
+
+            return result;
+        }
+
         #region スキップ秒数周り
         //設定にあるスキップ秒数から文字列表記を返す
         public static string SkipSecString(int sec)
@@ -208,5 +255,12 @@ namespace do_gagan2
         }
         #endregion
 
+    }
+
+    enum MediaType
+    {
+        AudioOnly,
+        Video,
+        Other
     }
 }
