@@ -94,7 +94,7 @@
                 <Slider Name="Slider_Time" Margin="5" Width="250" HorizontalAlignment="Center" IsEnabled="False" Thumb.DragStarted="sliderTime_DragStarted" Thumb.DragCompleted="sliderTime_DragCompleted"/>
                 <TextBlock Name="TextBlock_Time" VerticalAlignment="Center" HorizontalAlignment="Center" >00:00/00:00</TextBlock>
                 <Button x:Name="Btn_Volume" Content="🔊" Width="30" Click="Btn_Volume_Click" Background="Transparent" FontFamily="Segoe UI Emoji" BorderBrush="Transparent"/>
-                <Popup x:Name="Popup_VolumeSlider" Width="30" Placement="Top" HorizontalAlignment="Center" PlacementTarget="{Binding ElementName=Btn_Volume}">
+                <Popup x:Name="Popup_VolumeSlider" Width="30" Placement="Top" HorizontalAlignment="Center" PlacementTarget="{Binding ElementName=Btn_Volume}" MouseEnter="Popup_VolumeSlider_MouseEnter" MouseLeave="Popup_VolumeSlider_MouseLeave">
                     <StackPanel Orientation="Vertical" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
                         <Label x:Name="Lbl_CurrentVolume" FontSize="9" HorizontalAlignment="Center" ContentStringFormat="0" Padding="0,6,0,1">
                             <Label.Content>

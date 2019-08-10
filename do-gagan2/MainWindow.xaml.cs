@@ -17,6 +17,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Ink;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows.Threading;
 
 namespace do_gagan2
 {
@@ -28,6 +29,7 @@ namespace do_gagan2
         Storyboard _storyboard = null;
         bool isPlaying = false;
         bool ListBoxAutoScrollEnabled = false;
+        DispatcherTimer Timer_KeepVolumeSliderOpen;
 
         public MainWindow()
         {
@@ -40,6 +42,7 @@ namespace do_gagan2
             MenuItem[] MI_SkipForwardFromButton = new MenuItem[10];
             MenuItem[] MI_SkipForwardFromMenu = new MenuItem[10];
             string[] skipSecsFw = new string[10] { "3秒", "5秒", "10秒", "15秒", "30秒", "60秒", "90秒", "3分", "5分", "10分" };
+
             for (int i = 0; i < 10; i++)
             {
                 //>>ボタン右クリック用
@@ -685,6 +688,16 @@ namespace do_gagan2
         private void Btn_Volume_Click(object sender, RoutedEventArgs e)
         {
             Popup_VolumeSlider.IsOpen = !Popup_VolumeSlider.IsOpen;
+            //表示されたら自動非表示までのタイマーをセット
+            if (Popup_VolumeSlider.IsOpen == true)
+            {
+                //表示した
+                SetVolumeSliderDisappearTimer();
+            } else
+            {
+                //消した
+                Timer_KeepVolumeSliderOpen.Stop();
+            }
         }
 
         private void Slider_Volume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -694,6 +707,38 @@ namespace do_gagan2
             Properties.Settings.Default.Save();
             //Console.WriteLine("Saved Volume:"+Properties.Settings.Default.LastAudioVolume);
         }
+
+        private void Popup_VolumeSlider_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Timer_KeepVolumeSliderOpen.Stop();
+        }
+
+        private void Popup_VolumeSlider_MouseLeave(object sender, MouseEventArgs e)
+        {
+            SetVolumeSliderDisappearTimer(1);
+        }
+
+        private void SetVolumeSliderDisappearTimer(int sec = 3)
+        {
+            if (Timer_KeepVolumeSliderOpen != null)
+            {
+                Timer_KeepVolumeSliderOpen.Stop();
+                Timer_KeepVolumeSliderOpen = null;
+            }
+            Timer_KeepVolumeSliderOpen = new DispatcherTimer(DispatcherPriority.Normal, this.Dispatcher);
+            Timer_KeepVolumeSliderOpen.Interval = TimeSpan.FromSeconds(sec);
+            Timer_KeepVolumeSliderOpen.Tick += new EventHandler(DispatcherTimer_Tick);
+            Timer_KeepVolumeSliderOpen.Start();
+        }
+
+        //時間が経ったらスライダーを非表示にする
+        private void DispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            Popup_VolumeSlider.IsOpen = false;
+            Timer_KeepVolumeSliderOpen.Stop();
+        }
+
+
         #endregion
 
         #region ジェスチャの認識
@@ -1007,5 +1052,6 @@ namespace do_gagan2
                 encoder.Save(stream);
             }
         }
+
     }
 }
