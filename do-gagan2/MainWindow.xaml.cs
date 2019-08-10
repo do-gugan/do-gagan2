@@ -181,6 +181,8 @@ namespace do_gagan2
             Properties.Settings.Default.LastMovieFolder = Path.GetDirectoryName(moviePath);
             Properties.Settings.Default.Save();
 
+            AppModel.CurrentMovieFilePath = moviePath;
+
             //既存ログをクリア
             AppModel.Records.Clear();
 
@@ -225,6 +227,7 @@ namespace do_gagan2
             MI_Save.IsEnabled = true;
             MI_SaveNew.IsEnabled = true;
             Btn_NewLog.IsEnabled = true;
+            Btn_Capture.IsEnabled = true;
 
             TB_Search.Focus();
 
@@ -954,6 +957,41 @@ namespace do_gagan2
                 newItem.Speaker = "0";
                 AppModel.Records.Add(newItem);
 
+            }
+        }
+
+
+        //現在のコマを静止画で保存
+        private void Btn_Capture_Click(object sender, RoutedEventArgs e)
+        {
+
+            int width = (int)(Player.NaturalVideoWidth);
+            int height = (int)(Player.NaturalVideoHeight);
+
+            // 描画用の Visual を用意
+            var visual = new DrawingVisual();
+
+            using (var context = visual.RenderOpen())
+            {
+                context.DrawVideo(Player., new System.Windows.Rect(0, 0, width, height));
+            }
+
+            // レンダリングするビットマップを用意
+            var bitmap = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Pbgra32);
+
+            // ビットマップに Visual をレンダリング
+            bitmap.Render(visual);
+
+            // PNG として保存
+            var encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(bitmap));
+
+            //ファイル名
+            string fileName = Path.GetFileNameWithoutExtension(AppModel.CurrentMovieFilePath) + ".png";
+            Console.WriteLine(fileName);
+            using (var stream = File.OpenWrite(fileName))
+            {
+                encoder.Save(stream);
             }
         }
     }

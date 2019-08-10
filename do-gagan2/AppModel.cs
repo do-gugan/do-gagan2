@@ -15,6 +15,7 @@ namespace do_gagan2
         public static List<Dogagan_Record> FilteredRecords;
         public static MainWindow MainWindow;
         public static string CurrentLogFilePath = "";
+        public static string CurrentMovieFilePath = "";
         private static bool _isCurrentFileDirty = false;
         public static bool IsCurrentFileDirty {
             get {
