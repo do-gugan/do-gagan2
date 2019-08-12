@@ -18,6 +18,8 @@ using System.Windows.Ink;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Threading;
+using Microsoft.VisualBasic;
+
 
 namespace do_gagan2
 {
@@ -30,6 +32,7 @@ namespace do_gagan2
         bool isPlaying = false;
         bool ListBoxAutoScrollEnabled = false;
         DispatcherTimer Timer_KeepVolumeSliderOpen;
+        bool isWhileFiltering = false;
 
         public MainWindow()
         {
@@ -586,17 +589,21 @@ namespace do_gagan2
         //検索ボックスをクリア
         private void Btn_SearchClear_Click(object sender, RoutedEventArgs e)
         {
+            isWhileFiltering = true;
             TB_Search.Text = "";
             ListBox_Records.DataContext = AppModel.Records.Records;
+            isWhileFiltering = false;
+
         }
 
         private void TB_Search_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Console.WriteLine(TB_Search.Text);
+            isWhileFiltering = true;
             AppModel.FilteredRecords = null;
-            AppModel.FilteredRecords = AppModel.Records.Records.Where(r => r.Transcript.Contains(TB_Search.Text)).ToList();
-            Console.WriteLine("Count:"+AppModel.FilteredRecords.Count);
+            AppModel.FilteredRecords = AppModel.Records.Records.Where(r => r.TranscriptForSearch.Contains(Strings.StrConv(TB_Search.Text, VbStrConv.Wide, 0x411).ToLower())).ToList();
+            //Console.WriteLine("Count:"+AppModel.FilteredRecords.Count);
             ListBox_Records.DataContext = AppModel.FilteredRecords;
+            isWhileFiltering = false;
         }
         //置換
         private void MI_Replace_Click(object sender, RoutedEventArgs e)
@@ -924,10 +931,15 @@ namespace do_gagan2
         //セルのテキストが変更された
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            //var changedTextBox = e.Source as TextBox;
-            //Console.WriteLine("TextChanged:"+changedTextBox.Text);
-            //ダーティフラグを立てる
-            AppModel.IsCurrentFileDirty = true;
+            //フィルタリング時になぜか呼ばれるのでフラグで除外
+            if (isWhileFiltering == false)
+            {
+                //var changedTextBox = e.Source as TextBox;
+                //Console.WriteLine("TextChanged:"+changedTextBox.Text);
+                //ダーティフラグを立てる
+                AppModel.IsCurrentFileDirty = true;
+            }
+
         }
 
 

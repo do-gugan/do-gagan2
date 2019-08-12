@@ -129,6 +129,15 @@ namespace do_gagan2
                 return (ts.Hours * 60 + ts.Minutes).ToString("D2") + ":" + ts.Seconds.ToString("D2");
             }
         }
+
+        /// <summary>
+        /// 検索用に小文字化、全角化をしたTranscriptを返す仮想プロパティ
+        /// </summary>
+        public string TranscriptForSearch {
+            get {
+                return Strings.StrConv(Transcript, VbStrConv.Wide, 0x411).ToLower();
+            }
+        }
         public string SpeakerColor {
             get {
                 switch(Speaker){
