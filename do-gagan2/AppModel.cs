@@ -32,7 +32,7 @@ namespace do_gagan2
         //使い方ガイドURLを開く
         public static void GoUsageGuide()
         {
-            System.Diagnostics.Process.Start("https://do-gugan.com/tools/do-gagan2/usage.html");
+            System.Diagnostics.Process.Start("https://do-gugan.com/tools/do-gagan2/");
         }
 
         //バージョン情報を開く
@@ -80,6 +80,9 @@ namespace do_gagan2
                     result = MediaType.Video;
                     break;
                 case ".avi":
+                    result = MediaType.Video;
+                    break;
+                case ".wmv":
                     result = MediaType.Video;
                     break;
                 case ".mov":

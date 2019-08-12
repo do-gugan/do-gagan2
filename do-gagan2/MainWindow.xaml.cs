@@ -162,7 +162,7 @@ namespace do_gagan2
 
             //[ファイルの種類]に表示される選択肢を指定する
             //指定しないとすべてのファイルが表示される
-            ofd.Filter = "メディアファイル(*.mp4;*.mpg;*.avi;*.wmv;*.mp3;*.flac;*.wav;*.aac;*.m4a;*.ogg)|*.mp4;*.mpg;*.avi;*.wmv;*.mp3;*.flac;*.wav;*.aac;*.m4a;*.ogg|すべてのファイル(*.*)|*.*";
+            ofd.Filter = "メディアファイル(*.mp4;*.mpg;*.avi;*.wmv;*.mov;*.mp3;*.flac;*.wav;*.aac;*.m4a;*.ogg)|*.mp4;*.mpg;*.avi;*.wmv;*.mov;*.mp3;*.flac;*.wav;*.aac;*.m4a;*.ogg|すべてのファイル(*.*)|*.*";
             //[ファイルの種類]ではじめに選択されるものを指定する
             //2番目の「すべてのファイル」が選択されているようにする
             ofd.FilterIndex = 1;
@@ -414,7 +414,7 @@ namespace do_gagan2
             {
                 //Console.WriteLine(file);
                 string ext = System.IO.Path.GetExtension(file).ToLower();
-                if (ext == ".aac" || ext == ".m4a" || ext == ".mp3" || ext == ".wav" || ext == ".flac" || ext == ".ogg" || ext == ".mpg" || ext == ".mp4" || ext == ".mov" || ext == ".avi")
+                if (ext == ".aac" || ext == ".m4a" || ext == ".mp3" || ext == ".wav" || ext == ".flac" || ext == ".ogg" || ext == ".mpg" || ext == ".mp4" || ext == ".mov" || ext == ".avi" || ext == ".wmv")
                 {
                     Lb_DropHere.Visibility = Visibility.Hidden;
                     OpenMovie(file);

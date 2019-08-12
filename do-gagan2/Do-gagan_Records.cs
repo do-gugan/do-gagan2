@@ -26,7 +26,7 @@ namespace do_gagan2
         {
             if (String.IsNullOrEmpty(rec.Speaker)) rec.Speaker = "0";
             _records.Add(rec);
-            Console.WriteLine("Speaker:"+rec.Speaker + ":"+rec.Transcript);
+            //Console.WriteLine("Speaker:"+rec.Speaker + ":"+rec.Transcript);
         }
         /// <summary>
         /// 全レコードをタブ区切り形式テキストを生成して返す

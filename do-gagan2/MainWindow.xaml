@@ -53,7 +53,7 @@
                 <MenuItem x:Name="MI_SkipSecBackward" Header="後ジャンプ秒数" />
             </MenuItem>
             <MenuItem Header="ヘルプ(_H)">
-                <MenuItem x:Name="MI_OpenUsagePage" IsCheckable="False" Header="使い方を開く(_U)" Click="MenuItem_UsageGuide" />
+                <MenuItem x:Name="MI_OpenUsagePage" IsCheckable="False" Header="サポートページ(_S)" Click="MenuItem_UsageGuide" />
                 <Separator></Separator>
                 <MenuItem x:Name="MI_VersionInfo" IsCheckable="False" Header="バージョン情報(_A)" Click="MenuItem_VersionInfo" />
             </MenuItem>
