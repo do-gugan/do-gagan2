@@ -31,6 +31,7 @@ namespace do_gagan2
             SpeakerID = speaker;
             OnPropertyChanged("LockedPosition");
             OnPropertyChanged("SpeakerID");
+            TB_Memo.Focus();
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -100,6 +101,10 @@ namespace do_gagan2
             {
                 Btn_F5_Click(null, null);
             }
+            if (e.Key == Key.Enter)
+            {
+                Btn_Save_Click(null, null);
+            }
         }
 
         private void Btn_LoclOn_Decrease1sec_Click(object sender, RoutedEventArgs e)
@@ -113,6 +118,7 @@ namespace do_gagan2
             }
             OnPropertyChanged("LockedPosition");
             AppModel.MainWindow.MoveAbsolute((int)LockedPosition); //再生位置を移動
+            TB_Memo.Focus();
         }
 
         private void Btn_LoclOn_Increase1sec_Click(object sender, RoutedEventArgs e)
@@ -128,6 +134,7 @@ namespace do_gagan2
 
             OnPropertyChanged("LockedPosition");
             AppModel.MainWindow.MoveAbsolute((int)LockedPosition); //再生位置を移動
+            TB_Memo.Focus();
         }
 
         private void Btn_Speaker_Decrease_Click(object sender, RoutedEventArgs e)
@@ -135,13 +142,14 @@ namespace do_gagan2
             if (SpeakerID > 0)
                 SpeakerID -= 1;
             OnPropertyChanged("SpeakerID");
-
+            TB_Memo.Focus();
         }
 
         private void Btn_Speaker_Increase_Click(object sender, RoutedEventArgs e)
         {
             SpeakerID += 1;
             OnPropertyChanged("SpeakerID");
+            TB_Memo.Focus();
         }
 
 
