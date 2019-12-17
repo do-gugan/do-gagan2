@@ -160,6 +160,7 @@ namespace do_gagan2
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        //行保存を実行
         private void Btn_Save_Click(object sender, RoutedEventArgs e)
         {
             Dogagan_Record rec = new Dogagan_Record();

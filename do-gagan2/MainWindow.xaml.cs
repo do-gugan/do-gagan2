@@ -199,10 +199,16 @@ namespace do_gagan2
 
             if (!LogReader.SearchDGGFile(moviePath))
             {
-                LogReader.SearchTXTFile(moviePath);
-            }
+                if (!LogReader.SearchTXTFile(moviePath)){
+                    //どちらのファイルを存在しない場合
+                    //設定形式を調べる
+                    //ログファイルパスを作成してセットする
+                    //string logPath = Path.Combine(Path.GetDirectoryName(moviePath), Path.GetFileNameWithoutExtension(moviePath) + ".dggn.txt"); //2.0形式
+                    //
 
-            ListBoxAutoScrollEnabled = true;
+                }
+
+                ListBoxAutoScrollEnabled = true;
 
             //動画を再生
             if (_storyboard != null)
