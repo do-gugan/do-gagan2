@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -837,6 +838,7 @@ namespace do_gagan2
             {
                 writer.WriteLine(body);
             }
+            AppModel.IsCurrentFileDirty = false;
             return true;
         }
 
