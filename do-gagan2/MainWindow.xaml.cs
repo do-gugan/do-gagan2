@@ -815,6 +815,9 @@ namespace do_gagan2
         }
         private bool SaveLog()
         {
+            //編集中のセルから抜けるために、検索欄にフォーカス
+            TB_Search.Focus();
+
             string body = "";
             Encoding enc;
             if (Path.GetFileName(AppModel.CurrentLogFilePath).EndsWith(".dggn.txt"))
@@ -849,6 +852,9 @@ namespace do_gagan2
         /// <param name="e"></param>
         private void MI_SaveNew_Click(object sender, RoutedEventArgs e)
         {
+            //編集中のセルから抜けるために、検索欄にフォーカス
+            TB_Search.Focus();
+
             if (_storyboard == null) return;
             _storyboard.Pause(this);
 
