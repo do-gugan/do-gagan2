@@ -202,55 +202,56 @@ namespace do_gagan2
             {
                 if (!LogReader.SearchTXTFile(moviePath))
                 {
-                    //どちらのファイルを存在しない場合
+                    Console.WriteLine("どちらのファイルも存在しない");
                     //設定形式を調べる
                     //ログファイルパスを作成してセットする
-                    //string logPath = Path.Combine(Path.GetDirectoryName(moviePath), Path.GetFileNameWithoutExtension(moviePath) + ".dggn.txt"); //2.0形式
-                    //
-
+                    string logPath = Path.Combine(Path.GetDirectoryName(moviePath), Path.GetFileNameWithoutExtension(moviePath) + ".dggn.txt"); //2.0形式
+                    Console.WriteLine("new log:" + logPath);
+                    AppModel.CurrentLogFilePath = logPath;
+                    AppModel.MainWindow.ListBox_Records.DataContext = AppModel.Records.Records;
+                    AppModel.MainWindow.MI_Replace.IsEnabled = true;
                 }
-
-                ListBoxAutoScrollEnabled = true;
-
-                //動画を再生
-                if (_storyboard != null)
-                    Stop();
-
-                //ウインドウタイトルにファイル名を表示
-                AppModel.IsCurrentFileDirty = false;
-
-                //メディアタイムラインを作成
-                MediaTimeline mediaTimeline = new MediaTimeline(new Uri(moviePath));
-                mediaTimeline.CurrentTimeInvalidated += new EventHandler(mediaTimeline_CurrentTimeInvalidated);
-                Storyboard.SetTargetName(mediaTimeline, Player.Name);
-
-                //ストーリーボードを作成・開始
-                _storyboard = new Storyboard();
-                _storyboard.Children.Add(mediaTimeline);
-                _storyboard.Begin(this, true);
-                Slider_Time.IsEnabled = true;
-                isPlaying = true;
-
-                //UIを有効化
-                TB_Search.IsEnabled = true;
-                Btn_SkipBackward.IsEnabled = true;
-                Btn_Play.IsEnabled = true;
-                Btn_SkipForward.IsEnabled = true;
-                MI_PlayBackControl.IsEnabled = true;
-                MI_AddLog.IsEnabled = true;
-                MI_Save.IsEnabled = true;
-                MI_SaveNew.IsEnabled = true;
-                Btn_NewLog.IsEnabled = true;
-
-                //動画ファイルの時だけキャプチャボタンを有効化
-                if (AppModel.getMediaType() == MediaType.Video)
-                {
-                    Btn_Capture.IsEnabled = true;
-                }
-
-                TB_Search.Focus();
-
             }
+
+            ListBoxAutoScrollEnabled = true;
+
+            //動画を再生
+            if (_storyboard != null)
+                _storyboard.Stop();
+
+            //ウインドウタイトルにファイル名を表示
+            AppModel.IsCurrentFileDirty = false;
+
+            //メディアタイムラインを作成
+            MediaTimeline mediaTimeline = new MediaTimeline(new Uri(moviePath));
+            mediaTimeline.CurrentTimeInvalidated += new EventHandler(mediaTimeline_CurrentTimeInvalidated);
+            Storyboard.SetTargetName(mediaTimeline, Player.Name);
+
+            //ストーリーボードを作成・開始
+            _storyboard = new Storyboard();
+            _storyboard.Children.Add(mediaTimeline);
+            _storyboard.Begin(this, true);
+            Slider_Time.IsEnabled = true;
+            isPlaying = true;
+
+            //UIを有効化
+            TB_Search.IsEnabled = true;
+            Btn_SkipBackward.IsEnabled = true;
+            Btn_Play.IsEnabled = true;
+            Btn_SkipForward.IsEnabled = true;
+            MI_PlayBackControl.IsEnabled = true;
+            MI_AddLog.IsEnabled = true;
+            MI_Save.IsEnabled = true;
+            MI_SaveNew.IsEnabled = true;
+            Btn_NewLog.IsEnabled = true;
+
+            //動画ファイルの時だけキャプチャボタンを有効化
+            if (AppModel.getMediaType() == MediaType.Video)
+            {
+                Btn_Capture.IsEnabled = true;
+            }
+
+            TB_Search.Focus();
         }
 
         //再生・一時停止ボタン
