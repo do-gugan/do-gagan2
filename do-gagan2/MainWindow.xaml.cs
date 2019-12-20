@@ -250,7 +250,7 @@ namespace do_gagan2
                 Btn_Capture.IsEnabled = true;
             }
 
-            TB_Search.Focus();
+            Btn_Play.Focus();
         }
 
         //再生・一時停止ボタン
@@ -372,9 +372,22 @@ namespace do_gagan2
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
 
-            if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.S)
+            if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.Space)
             {
                 PlayPause();
+                e.Handled = true; //テキストボックスなどにスペースが挿入されない様、イベントを断ち切る
+            }
+            if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.S)
+            {
+                SaveLog();
+            }
+            if (Keyboard.Modifiers == ModifierKeys.Alt && e.Key == Key.W)
+            {
+                MoveRelative(Properties.Settings.Default.SkipForwardSec);
+            }
+            if (Keyboard.Modifiers == ModifierKeys.Alt && e.Key == Key.Q)
+            {
+                MoveRelative(Properties.Settings.Default.SkipBackwardSec * -1);
             }
             if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.W)
             {
@@ -383,6 +396,10 @@ namespace do_gagan2
             if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.Q)
             {
                 MoveRelative(Properties.Settings.Default.SkipBackwardSec * -1);
+            }
+            if (Keyboard.Modifiers == ModifierKeys.Alt && e.Key == Key.M)
+            {
+                OpenNewLogWindow();
             }
             if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.M)
             {
@@ -816,7 +833,7 @@ namespace do_gagan2
         private bool SaveLog()
         {
             //編集中のセルから抜けるために、検索欄にフォーカス
-            TB_Search.Focus();
+            Btn_Play.Focus();
 
             string body = "";
             Encoding enc;
@@ -853,7 +870,7 @@ namespace do_gagan2
         private void MI_SaveNew_Click(object sender, RoutedEventArgs e)
         {
             //編集中のセルから抜けるために、検索欄にフォーカス
-            TB_Search.Focus();
+            Btn_Play.Focus();
 
             if (_storyboard == null) return;
             _storyboard.Pause(this);

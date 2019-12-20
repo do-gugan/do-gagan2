@@ -32,7 +32,7 @@
                 <Separator />
                 <MenuItem x:Name="MI_AddLog" Header="ログを追加する" Click="MI_AddLog_Click" IsEnabled="false"/>
                 <Separator />
-                <MenuItem x:Name="MI_Save" Header="上書き保存(_S)" Click="MI_Save_Click" IsEnabled="false"/>
+                <MenuItem x:Name="MI_Save" Header="上書き保存(_S)" Click="MI_Save_Click" IsEnabled="false" InputGestureText="Ctrl+S"/>
                 <MenuItem x:Name="MI_SaveNew" Header="名前を付けて書き出し(_A)..." Click="MI_SaveNew_Click" IsEnabled="False" />
                 <Separator />
                 <MenuItem Header="終了(_X)" Click="Quit" />
@@ -45,7 +45,7 @@
                 <MenuItem x:Name="MI_Replace" Header="置換" Click="MI_Replace_Click" IsEnabled="False"/>
             </MenuItem>
             <MenuItem x:Name="MI_PlayBackControl" Header="再生操作(_P)" IsCheckable="False" Height="22" IsEnabled="False">
-                <MenuItem x:Name="MI_PlayPause" Header="再生/一時停止(_S)" Click="Btn_PlayPause_click" InputGestureText="Ctrl+S"/>
+                <MenuItem x:Name="MI_PlayPause" Header="再生/一時停止(_S)" Click="Btn_PlayPause_click" InputGestureText="Ctrl+Space"/>
                 <MenuItem x:Name="MI_SkipForward" Header="前へジャンプ" Click="Btn_SkipForward_click"  InputGestureText="Ctrl+W"/>
                 <MenuItem x:Name="MI_SkipBackward" Header="後ろへジャンプ" Click="Btn_SkipBackward_click"  InputGestureText="Ctrl+Q"/>
                 <Separator />

@@ -31,7 +31,7 @@ namespace do_gagan2
             if (Properties.Settings.Default.MemoWindowPositionLeft != 0 && Properties.Settings.Default.MemoWindowPositionTop != 0)
             {
                 RecoverWindowBounds();
-                Console.WriteLine("Memo Resuming Positon: Left=" + Left + " Top=" + Top);
+                //Console.WriteLine("Memo Resuming Positon: Left=" + Left + " Top=" + Top);
             }
 
             this.DataContext = this;
@@ -195,7 +195,7 @@ namespace do_gagan2
         /// </summary>
         void SaveWindowBounds()
         {
-            Console.WriteLine("Memo Closing: Left=" + Left + " Top=" + Top);
+            //Console.WriteLine("Memo Closing: Left=" + Left + " Top=" + Top);
 
             var settings = Properties.Settings.Default;
             settings.MemoWindowPositionLeft = Left;
