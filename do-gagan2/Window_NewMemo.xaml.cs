@@ -26,6 +26,14 @@ namespace do_gagan2
         public Window_NewMemo(double position, int speaker)
         {
             InitializeComponent();
+
+            //保存位置を復元
+            if (Properties.Settings.Default.MemoWindowPositionLeft != 0 && Properties.Settings.Default.MemoWindowPositionTop != 0)
+            {
+                RecoverWindowBounds();
+                Console.WriteLine("Memo Resuming Positon: Left=" + Left + " Top=" + Top);
+            }
+
             this.DataContext = this;
             LockedPosition = position;
             SpeakerID = speaker;
@@ -170,7 +178,45 @@ namespace do_gagan2
 
             AppModel.Records.Add(rec);
             AppModel.IsCurrentFileDirty = true;
+
             Close();
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            //ウインドウ位置を保存
+            SaveWindowBounds();
+
+            //base.OnClosing(e);
+        }
+
+        /// <summary>
+        /// ウィンドウの位置・サイズを保存します。
+        /// </summary>
+        void SaveWindowBounds()
+        {
+            Console.WriteLine("Memo Closing: Left=" + Left + " Top=" + Top);
+
+            var settings = Properties.Settings.Default;
+            settings.MemoWindowPositionLeft = Left;
+            settings.MemoWindowPositionTop = Top;
+            settings.Save();
+        }
+
+        /// <summary>
+        /// ウィンドウの位置・サイズを復元します。
+        /// </summary>
+        private void RecoverWindowBounds()
+        {
+            var settings = Properties.Settings.Default;
+            // 左
+            if (settings.MemoWindowPositionLeft >= 0 &&
+                (settings.MemoWindowPositionLeft + Width) < SystemParameters.VirtualScreenWidth)
+            { Left = settings.MemoWindowPositionLeft; }
+            // 上
+            if (settings.MemoWindowPositionTop >= 0 &&
+                (settings.MemoWindowPositionTop + Height) < SystemParameters.VirtualScreenHeight)
+            { Top = settings.MemoWindowPositionTop; }
         }
     }
 }
