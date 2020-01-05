@@ -6,13 +6,12 @@
         xmlns:local="clr-namespace:do_gagan2"
 
         mc:Ignorable="d"
-        KeyDown="Window_KeyDown"
         Closing="Window_Closing"
-        Title="動画眼2" Height="450" Width="800">
+        Title="動画眼2" Height="450" Width="800" PreviewKeyDown="Window_PreviewKeyDown"
+        AccessKeyManager.AccessKeyPressed="Window_AccessKeyPressed">
     <Window.Resources>
         <local:MathConverter x:Key="MathConverter" />
     </Window.Resources>
-
     <!--メインレイアウト-->
     <Grid Background="Black">
         <Grid.RowDefinitions>

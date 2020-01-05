@@ -87,35 +87,73 @@ namespace do_gagan2
             TB_Memo.Select(TB_Memo.Text.Length, 0); //末尾にカーソル
             TB_Memo.Focus();
         }
-        private void Window_KeyDown(object sender, KeyEventArgs e)
+
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.F1)
+            switch (e.Key)
             {
-                Btn_F1_Click(null, null);
+                case Key.F1:
+                    Btn_F1_Click(null, null);
+                    break;
+                case Key.F2:
+                    Btn_F2_Click(null, null);
+                    break;
+                case Key.F3:
+                    Btn_F3_Click(null, null);
+                    break;
+                case Key.F4:
+                    Btn_F4_Click(null, null);
+                    break;
+                case Key.F5:
+                    Btn_F5_Click(null, null);
+                    break;
+                case Key.Enter:
+                    Btn_Save_Click(null, null);
+                    break;
+                case Key.L:
+                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        Update_LockOn();
+                    }
+                    break;
             }
-            if (e.Key == Key.F2)
-            {
-                Btn_F2_Click(null, null);
-            }
-            if (e.Key == Key.F3)
-            {
-                Btn_F3_Click(null, null);
-            }
-            if (e.Key == Key.F4)
-            {
-                Btn_F4_Click(null, null);
-            }
-            if (e.Key == Key.F5)
-            {
-                Btn_F5_Click(null, null);
-            }
-            if (e.Key == Key.Enter)
-            {
-                Btn_Save_Click(null, null);
-            }
+
+
+            //メインウインドウへ渡すイベント
+            AppModel.MainWindow.Window_PreviewKeyDown(sender, e);
+
         }
 
-        private void Btn_LoclOn_Decrease1sec_Click(object sender, RoutedEventArgs e)
+        //アクセスキー（Altショートカット）の処理
+        private void Window_AccessKeyPressed(object sender, AccessKeyPressedEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case "W":
+                    AppModel.MainWindow.MoveRelative(Properties.Settings.Default.SkipForwardSec);
+                    e.Handled = true;
+                    break;
+                case "Q":
+                    AppModel.MainWindow.MoveRelative(Properties.Settings.Default.SkipBackwardSec * -1);
+                    e.Handled = true;
+                    break;
+                case "S":
+                    AppModel.MainWindow.PlayPause();
+                    e.Handled = true;
+                    break;
+            }
+
+        }
+
+        //ロックオン秒数を現在の再生時間に更新
+        private void Update_LockOn()
+        {
+            Console.WriteLine("UpdateLockOn");
+            LockedPosition = AppModel.MainWindow.Player.Position.TotalSeconds;
+            OnPropertyChanged("LockedPosition");
+        }
+
+        private void Btn_LockOn_Decrease1sec_Click(object sender, RoutedEventArgs e)
         {
             if (LockedPosition -1.0 < 0)
             {
@@ -129,7 +167,7 @@ namespace do_gagan2
             TB_Memo.Focus();
         }
 
-        private void Btn_LoclOn_Increase1sec_Click(object sender, RoutedEventArgs e)
+        private void Btn_LockOn_Increase1sec_Click(object sender, RoutedEventArgs e)
         {
             if (LockedPosition + 1.0 < AppModel.MainWindow.GetMediaDuration())
             {
@@ -218,5 +256,11 @@ namespace do_gagan2
                 (settings.MemoWindowPositionTop + Height) < SystemParameters.VirtualScreenHeight)
             { Top = settings.MemoWindowPositionTop; }
         }
+
+        private void TB_LockedTimeCode_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            Update_LockOn();
+        }
+
     }
 }

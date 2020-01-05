@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:do_gagan2"
         mc:Ignorable="d"
-        Title="メモ" Height="62.583" Width="600" WindowStyle="None" ResizeMode="NoResize" ShowInTaskbar="False" WindowStartupLocation="Manual" MouseLeftButtonDown="Window_MouseLeftButtonDown" KeyDown="Window_KeyDown" Closing="Window_Closing">
-        <DockPanel Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+        Title="メモ" Height="62.583" Width="600" WindowStyle="None" ResizeMode="NoResize" ShowInTaskbar="False" WindowStartupLocation="Manual" MouseLeftButtonDown="Window_MouseLeftButtonDown" Closing="Window_Closing" PreviewKeyDown="Window_PreviewKeyDown" AccessKeyManager.AccessKeyPressed="Window_AccessKeyPressed">
+        
+    <DockPanel Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
             <Grid Width="600">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
@@ -31,9 +32,9 @@
                         </Grid.RowDefinitions>
                         <Label Content="タイムコード" Grid.Row="0" FontSize="10" Padding="0,0,0,0"/>
                         <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,0,0,5">
-                            <Button x:Name="Btn_LoclOn_Decrease1sec" Content="&lt;" Width="20" Padding="0,-1,0,0" Click="Btn_LoclOn_Decrease1sec_Click"/>
-                            <TextBox x:Name="TB_LockedTimeCode" Width="40" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding LockedPosition, StringFormat=F0}"/>
-                            <Button x:Name="Btn_LoclOn_Increase1sec" Content="&gt;" Width="20" Padding="0,-1,0,0" Click="Btn_LoclOn_Increase1sec_Click"/>
+                            <Button x:Name="Btn_LoclOn_Decrease1sec" Content="&lt;" Width="20" Padding="0,-1,0,0" Click="Btn_LockOn_Decrease1sec_Click"/>
+                            <TextBox x:Name="TB_LockedTimeCode" Width="40" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding LockedPosition, StringFormat=F0}" PreviewMouseUp="TB_LockedTimeCode_PreviewMouseUp"/>
+                            <Button x:Name="Btn_LoclOn_Increase1sec" Content="&gt;" Width="20" Padding="0,-1,0,0" Click="Btn_LockOn_Increase1sec_Click"/>
                         </StackPanel>
                     </Grid>
                     <Grid Grid.Column="3" Margin="5,0,5,0">

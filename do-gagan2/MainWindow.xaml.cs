@@ -260,7 +260,7 @@ namespace do_gagan2
         }
 
         //再生一時停止トグル操作
-        private void PlayPause()
+        public void PlayPause()
         {
             if (_storyboard != null)
             {
@@ -295,7 +295,7 @@ namespace do_gagan2
         }
 
         //指定秒数に相対移動
-        private void MoveRelative(int sec)
+        public void MoveRelative(int sec)
         {
             if (_storyboard != null)
             {
@@ -369,46 +369,67 @@ namespace do_gagan2
         }
 
         //キーボード入力に反応
-        private void Window_KeyDown(object sender, KeyEventArgs e)
+        public void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
+            switch (e.Key)
+            {
+                case Key.Space:
+                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        PlayPause();
+                        e.Handled = true; //テキストボックスなどにスペースが挿入されない様、イベントを断ち切る
+                    }
+                    break;
+                case Key.S:
+                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        SaveLog();
+                    }
+                    break;
+                case Key.W:
+                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        MoveRelative(Properties.Settings.Default.SkipForwardSec);
+                    }
+                    break;
+                case Key.Q:
+                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        MoveRelative(Properties.Settings.Default.SkipBackwardSec * -1);
+                    }
+                    break;
+                case Key.M:
+                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        OpenNewLogWindow();
+                    }
+                    break;
+            }
+        }
 
-            if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.Space)
+        //操作パネル上でAltショートカットが押された時の処理
+        private void Window_AccessKeyPressed(object sender, AccessKeyPressedEventArgs e)
+        {
+            switch (e.Key)
             {
-                PlayPause();
-                e.Handled = true; //テキストボックスなどにスペースが挿入されない様、イベントを断ち切る
+                case "W":
+                    MoveRelative(Properties.Settings.Default.SkipForwardSec);
+                    e.Handled = true;
+                    break;
+                case "Q":
+                    MoveRelative(Properties.Settings.Default.SkipBackwardSec * -1);
+                    e.Handled = true;
+                    break;
+                case "S":
+                    PlayPause();
+                    e.Handled = true;
+                    break;
+                //case "M":
+                //    OpenNewLogWindow();
+                //    e.Handled = true;
+                //    break;
             }
-            if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.S)
-            {
-                SaveLog();
-            }
-            if (Keyboard.Modifiers == ModifierKeys.Alt && e.Key == Key.W)
-            {
-                MoveRelative(Properties.Settings.Default.SkipForwardSec);
-            }
-            if (Keyboard.Modifiers == ModifierKeys.Alt && e.Key == Key.Q)
-            {
-                MoveRelative(Properties.Settings.Default.SkipBackwardSec * -1);
-            }
-            if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.W)
-            {
-                MoveRelative(Properties.Settings.Default.SkipForwardSec);
-            }
-            if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.Q)
-            {
-                MoveRelative(Properties.Settings.Default.SkipBackwardSec * -1);
-            }
-            if (Keyboard.Modifiers == ModifierKeys.Alt && e.Key == Key.M)
-            {
-                OpenNewLogWindow();
-            }
-            if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.M)
-            {
-                OpenNewLogWindow();
-            }
-            if (e.Key == Key.F1)
-            {
-                Console.WriteLine("F1");
-            }
+
         }
         #endregion
 
@@ -830,7 +851,7 @@ namespace do_gagan2
         {
             SaveLog();
         }
-        private bool SaveLog()
+        public bool SaveLog()
         {
             //編集中のセルから抜けるために、検索欄にフォーカス
             Btn_Play.Focus();
@@ -955,7 +976,7 @@ namespace do_gagan2
         {
             OpenNewLogWindow();
         }
-        private void OpenNewLogWindow()
+        public void OpenNewLogWindow()
         {
             if (_storyboard != null)
             {
