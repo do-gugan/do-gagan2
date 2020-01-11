@@ -26,7 +26,7 @@ namespace do_gagan2
     /// <summary>
     /// MainWindow.xaml の相互作用ロジック
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         Storyboard _storyboard = null;
         bool isPlaying = false;
@@ -95,6 +95,9 @@ namespace do_gagan2
             var collectionView = CollectionViewSource.GetDefaultView(AppModel.Records.Records);
             // Ageプロパティで昇順にソートする
             collectionView.SortDescriptions.Add(new SortDescription("TimeStamp", ListSortDirection.Ascending));
+
+            //NewMemoブロックを初期化
+            NewMemo_Initialize();
         }
 
         #region 基本再生操作
@@ -207,8 +210,8 @@ namespace do_gagan2
                     string logPath = Path.Combine(Path.GetDirectoryName(moviePath), Path.GetFileNameWithoutExtension(moviePath) + ".dggn.txt"); //2.0形式
                     Console.WriteLine("new log:" + logPath);
                     AppModel.CurrentLogFilePath = logPath;
-                    AppModel.MainWindow.ListBox_Records.DataContext = AppModel.Records.Records;
-                    AppModel.MainWindow.MI_Replace.IsEnabled = true;
+                    ListBox_Records.DataContext = AppModel.Records.Records;
+                    MI_Replace.IsEnabled = true;
                 }
             }
 
@@ -242,7 +245,7 @@ namespace do_gagan2
             MI_AddLog.IsEnabled = true;
             MI_Save.IsEnabled = true;
             MI_SaveNew.IsEnabled = true;
-            Btn_NewLog.IsEnabled = true;
+            //CB_NewLog.IsEnabled = true;
 
             //動画ファイルの時だけキャプチャボタンを有効化
             if (AppModel.getMediaType() == MediaType.Video)
@@ -401,7 +404,8 @@ namespace do_gagan2
                 case Key.M:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
                     {
-                        OpenNewLogWindow();
+                        Toggle_NewLogBlock();
+                        e.Handled = true;
                     }
                     break;
 
@@ -451,10 +455,14 @@ namespace do_gagan2
                     PlayPause();
                     e.Handled = true;
                     break;
-                //case "M":
-                //    OpenNewLogWindow();
-                //    e.Handled = true;
-                //    break;
+                case "L":
+                    Update_LockOn();
+                    e.Handled = true;
+                    break;
+                case "M":
+                    Toggle_NewLogBlock();
+                    e.Handled = true;
+                    break;
             }
 
         }
@@ -998,20 +1006,38 @@ namespace do_gagan2
         }
         #endregion
 
-        //新規メモボタン
-        private void Btn_NewLog_Click(object sender, RoutedEventArgs e)
+        //新規メモボタン（NewMemoブロックの表示トグル）
+        private void Toggle_NewLogBlock()
         {
-            OpenNewLogWindow();
-        }
-        public void OpenNewLogWindow()
-        {
-            if (_storyboard != null)
+            if (NewMemo.Visibility == Visibility.Visible)
             {
-                Window_NewMemo window_NewMemo = new Window_NewMemo(Player.Position.TotalSeconds,0);
-                window_NewMemo.Show();
+                CB_NewLog_Unchecked(null, null);
             }
-
+            else
+            {
+                CB_NewLog_Checked(null, null);
+            }
         }
+        private void MI_ToggleNewMemo_Click(object sender, RoutedEventArgs e)
+        {
+            Toggle_NewLogBlock();
+        }
+
+        private void CB_NewLog_Checked(object sender, RoutedEventArgs e)
+        {
+            CB_NewLog.IsChecked = true;
+            MI_ToggleNewMemo.IsChecked = true;
+            NewMemo.Visibility = Visibility.Visible;
+            Update_LockOn(); //こっちを後にすること
+        }
+
+        private void CB_NewLog_Unchecked(object sender, RoutedEventArgs e)
+        {
+            CB_NewLog.IsChecked = false;
+            MI_ToggleNewMemo.IsChecked = false;
+            NewMemo.Visibility = Visibility.Collapsed;
+        }
+
 
         //セルのテキストが変更された
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -1161,20 +1187,11 @@ namespace do_gagan2
 
         //メモ欄表示
         //public Window_NewMemo(double position, int speaker)
-        public void NewMemo_Showed (double position, int speaker)
+        public void NewMemo_Initialize ()
         {
-            //InitializeComponent();
-
-            //保存位置を復元
-            //if (Properties.Settings.Default.MemoWindowPositionLeft != 0 && Properties.Settings.Default.MemoWindowPositionTop != 0)
-            //{
-            //    RecoverWindowBounds();
-            //    //Console.WriteLine("Memo Resuming Positon: Left=" + Left + " Top=" + Top);
-            //}
-
-            this.DataContext = this;
-            LockedPosition = position;
-            SpeakerID = speaker;
+            DataContext = this;
+            LockedPosition = 0.0;
+            SpeakerID = 0;
             OnPropertyChanged("LockedPosition");
             OnPropertyChanged("SpeakerID");
             TB_Memo.Focus();
@@ -1217,8 +1234,13 @@ namespace do_gagan2
         private void Update_LockOn()
         {
             Console.WriteLine("UpdateLockOn");
-            LockedPosition = AppModel.MainWindow.Player.Position.TotalSeconds;
+            LockedPosition = Player.Position.TotalSeconds;
             OnPropertyChanged("LockedPosition");
+            if (NewMemo.Visibility != Visibility.Visible)
+            {
+                CB_NewLog_Checked(null, null); //NewLogブロックを表示
+            }
+            TB_Memo.Focus();
         }
 
         private void Btn_LockOn_Decrease1sec_Click(object sender, RoutedEventArgs e)
@@ -1232,24 +1254,24 @@ namespace do_gagan2
                 LockedPosition -= 1.0;
             }
             OnPropertyChanged("LockedPosition");
-            AppModel.MainWindow.MoveAbsolute((int)LockedPosition); //再生位置を移動
+            MoveAbsolute((int)LockedPosition); //再生位置を移動
             TB_Memo.Focus();
         }
 
         private void Btn_LockOn_Increase1sec_Click(object sender, RoutedEventArgs e)
         {
-            if (LockedPosition + 1.0 < AppModel.MainWindow.GetMediaDuration())
+            if (LockedPosition + 1.0 < GetMediaDuration())
             {
                 LockedPosition += 1.0;
 
             }
             else
             {
-                LockedPosition = AppModel.MainWindow.GetMediaDuration();
+                LockedPosition = GetMediaDuration();
             }
 
             OnPropertyChanged("LockedPosition");
-            AppModel.MainWindow.MoveAbsolute((int)LockedPosition); //再生位置を移動
+            MoveAbsolute((int)LockedPosition); //再生位置を移動
             TB_Memo.Focus();
         }
 
@@ -1273,7 +1295,7 @@ namespace do_gagan2
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string propertyName)
         {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         //行保存を実行
@@ -1287,6 +1309,9 @@ namespace do_gagan2
             AppModel.Records.Add(rec);
             AppModel.IsCurrentFileDirty = true;
 
+            //フィールドをクリア
+            LockedPosition = 0.0;
+            TB_Memo.Text = "";
         }
 
 
@@ -1295,6 +1320,11 @@ namespace do_gagan2
             Update_LockOn();
         }
         #endregion
+
+        private void TB_Speaker_GotFocus(object sender, RoutedEventArgs e)
+        {
+            TB_Memo.Focus();
+        }
 
     }
 }

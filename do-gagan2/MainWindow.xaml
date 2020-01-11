@@ -13,12 +13,16 @@
         <local:MathConverter x:Key="MathConverter" />
     </Window.Resources>
     <!--メインレイアウト-->
-    <Grid Background="Black">
+    <Grid Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" UseLayoutRounding="True">
         <Grid.RowDefinitions>
+            <!--Menu-->
             <RowDefinition Height="25" />
+            <!--メイン-->
             <RowDefinition Height="*" />
+            <!--再生ツールバー-->
             <RowDefinition Height="30" />
-            <RowDefinition Height="63" />
+            <!--NewMemo-->
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*" MinWidth="510" />
@@ -52,6 +56,10 @@
                 <MenuItem x:Name="MI_SkipSecFoward" Header="前ジャンプ秒数" />
                 <MenuItem x:Name="MI_SkipSecBackward" Header="後ジャンプ秒数" />
             </MenuItem>
+            <MenuItem Header="表示(_V)">
+                <MenuItem x:Name="MI_ToggleNewMemo" Header="新規メモ欄" Click="MI_ToggleNewMemo_Click" InputGestureText="Ctrl+M"/>
+            </MenuItem>
+
             <MenuItem Header="ヘルプ(_H)">
                 <MenuItem x:Name="MI_OpenUsagePage" IsCheckable="False" Header="サポートページ(_S)" Click="MenuItem_UsageGuide" />
                 <Separator></Separator>
@@ -60,7 +68,7 @@
 
         </Menu>
         <!--左動画プレーヤー-->
-        <DockPanel x:Name="MediaDockPanel" Grid.Row="1" Grid.Column="0" Background="Black" AllowDrop="True" DragEnter="MediaElement_DragEnter" Drop="MediaElement_Drop" DragLeave="MediaElement_DragLeave">
+        <DockPanel x:Name="MediaDockPanel" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" Background="Black" AllowDrop="True" DragEnter="MediaElement_DragEnter" Drop="MediaElement_Drop" DragLeave="MediaElement_DragLeave">
             <MediaElement x:Name="Player" MediaOpened="Element_MediaOpened" LoadedBehavior="Manual" />
         </DockPanel>
         <Label x:Name="Lb_DropHere" Content="動画、音声ファイルを「ファイル」メニューから読み込むか、&#xa;ここにドラッグ＆ドロップしてください。" AllowDrop="True" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Opacity="0.5" Width="auto" Height="auto" DragEnter="MediaElement_DragEnter" DragLeave="MediaElement_DragLeave" Drop="MediaElement_Drop" >
@@ -68,7 +76,7 @@
                 <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.HighlightTextColorKey}}"/>
             </Label.Foreground>
         </Label>
-        <InkCanvas x:Name="InkCanvas1" Grid.Row="1" Grid.Column="0" EditingMode="GestureOnly" Background="Transparent" Gesture="inkCanvas1_Gesture" AllowDrop="True" DragEnter="MediaElement_DragEnter" DragLeave="MediaElement_DragLeave" Drop="MediaElement_Drop"/>
+        <InkCanvas x:Name="InkCanvas1" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" EditingMode="GestureOnly" Background="Transparent" Gesture="inkCanvas1_Gesture" AllowDrop="True" DragEnter="MediaElement_DragEnter" DragLeave="MediaElement_DragLeave" Drop="MediaElement_Drop"/>
 
         <!--左動画プレーヤーコントロール-->
         <StackPanel Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Stretch">
@@ -109,7 +117,7 @@
         <!--ドラッガブル境界線-->
         <GridSplitter Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" Width="5" HorizontalAlignment="Stretch"/>
         <!--右リスト-->
-        <Grid  Grid.Row="1" Grid.Column="2" Background="White">
+        <Grid  Grid.Row="1" Grid.Column="2" Background="White" HorizontalAlignment="Stretch">
             <Grid.RowDefinitions>
                 <RowDefinition Height="25" />
                 <!--検索オブジェクト用-->
@@ -212,20 +220,20 @@
             </ListBox>
         </Grid>
         <DockPanel Grid.Row="2" Grid.Column="2" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
-            <StackPanel  HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Button x:Name="Btn_NewLog" Content="新規メモ(_M)" Height="30" Padding="5,0,5,0" Click="Btn_NewLog_Click" IsEnabled="false" />
+            <StackPanel  HorizontalAlignment="Right" VerticalAlignment="Center">
+                <CheckBox x:Name="CB_NewLog" Content="新規メモ欄(_M)" Padding="5,0,5,0" Checked="CB_NewLog_Checked" Unchecked="CB_NewLog_Unchecked" />
             </StackPanel>
         </DockPanel>
         <!--NewMemo-->
-        <DockPanel x:Name="NewMemo" Grid.Row="3" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <!--上段フィールド群列-->
-                    <RowDefinition Height="*" />
-                    <!--下段ファンクション列-->
-                    <RowDefinition Height="0.5*" />
-                </Grid.RowDefinitions>
-                <!--StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0,3,0,0"-->
+        <DockPanel x:Name="NewMemo" Grid.Row="3" Grid.ColumnSpan="3" Height="70" HorizontalAlignment="Stretch" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Margin="0 7 0 0" Visibility="Collapsed">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <!--上段フィールド群列-->
+                        <RowDefinition Height="*" />
+                        <!--下段ファンクション列-->
+                        <RowDefinition Height="0.5*" />
+                    </Grid.RowDefinitions>
+                    <!--StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0,3,0,0"-->
                     <Grid Grid.Row="0" HorizontalAlignment="Stretch">
                         <Grid.ColumnDefinitions>
                             <!--0.ロックオン秒数-->
@@ -244,9 +252,9 @@
                             </Grid.RowDefinitions>
                             <Label Content="タイムコード" Grid.Row="0" FontSize="10" Padding="0,0,0,0"/>
                             <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,0,0,5">
-                                <Button x:Name="Btn_LoclOn_Decrease1sec" Content="&lt;" Width="20" Padding="0,-1,0,0" Click="Btn_LockOn_Decrease1sec_Click"/>
-                                <TextBox x:Name="TB_LockedTimeCode" Width="40" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding LockedPosition, StringFormat=F0}" PreviewMouseUp="TB_LockedTimeCode_PreviewMouseUp"/>
-                                <Button x:Name="Btn_LoclOn_Increase1sec" Content="&gt;" Width="20" Padding="0,-1,0,0" Click="Btn_LockOn_Increase1sec_Click"/>
+                            <Button x:Name="Btn_LoclOn_Decrease1sec" Content="&lt;" Width="20" Height="20" Padding="0,-1,0,0" Click="Btn_LockOn_Decrease1sec_Click"/>
+                            <TextBox x:Name="TB_LockedTimeCode" Width="40" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding LockedPosition, StringFormat=F0}" PreviewMouseUp="TB_LockedTimeCode_PreviewMouseUp"/>
+                            <Button x:Name="Btn_LoclOn_Increase1sec" Content="&gt;" Width="20" Height="20" Padding="0,-1,0,0" Click="Btn_LockOn_Increase1sec_Click"/>
                             </StackPanel>
                         </Grid>
                         <Grid Grid.Column="1" Margin="5,0,5,0">
@@ -256,9 +264,9 @@
                             </Grid.RowDefinitions>
                             <Label Content="話者" Grid.Row="0" FontSize="10" Padding="0,0,0,0"/>
                             <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,0,0,5">
-                                <Button x:Name="Btn_Speaker_Decrease" Content="&lt;" Width="20" Padding="0,-1,0,0" Click="Btn_Speaker_Decrease_Click"/>
-                                <TextBox x:Name="TB_Speaker" Width="30" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding SpeakerID}"/>
-                                <Button x:Name="Btn_Speaker_Increase" Content="&gt;" Width="20" Padding="0,-1,0,0" Click="Btn_Speaker_Increase_Click"/>
+                                <Button x:Name="Btn_Speaker_Decrease" Content="&lt;" Width="20" Height="20" Padding="0,-1,0,0" Click="Btn_Speaker_Decrease_Click"/>
+                            <TextBox x:Name="TB_Speaker" Width="30" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding SpeakerID}" GotFocus="TB_Speaker_GotFocus"/>
+                            <Button x:Name="Btn_Speaker_Increase" Content="&gt;" Width="20" Height="20" Padding="0,-1,0,0" Click="Btn_Speaker_Increase_Click"/>
                             </StackPanel>
                         </Grid>
                         <Grid Grid.Column="2" Margin="5,0,5,0">
@@ -267,37 +275,32 @@
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
                             <Label Content="メモ" Grid.Row="0" FontSize="10" Padding="0,0,0,0"/>
-                            <TextBox x:Name="TB_Memo" Grid.Row="1" Margin="0,0,0,5" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                            <TextBox x:Name="TB_Memo" Height="20" Grid.Row="1" Margin="0,0,0,5" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
                         </Grid>
                         <Grid Grid.Column="3" Margin="5,0,5,0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="15"/>
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
-                            <Button x:Name="Btn_Save" Grid.Row="1" Content="追 加" Padding="5,-1,5,0" Margin="0,0,0,5"  HorizontalAlignment="Right" VerticalAlignment="Stretch" Click="Btn_Save_Click"/>
+                        <Button x:Name="Btn_Save" Grid.Row="1" Content="追 加" Padding="5,-1,5,0" Height="25" Margin="0,0,0,5"  HorizontalAlignment="Right" VerticalAlignment="Stretch" Click="Btn_Save_Click"/>
                         </Grid>
                     </Grid>
-                <!--/StackPanel-->
-                <Grid Grid.Row="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Button Grid.Column="0" x:Name="Btn_F1" Content="F1: タスク開始" Click="Btn_F1_Click" Padding="3,0,3,0" />
-                    <Button Grid.Column="1" x:Name="Btn_F2" Content="F2: 参加者発話" Click="Btn_F2_Click" Padding="3,0,3,0" />
-                    <Button Grid.Column="2" x:Name="Btn_F3" Content="F3: 進行役発話" Click="Btn_F3_Click" Padding="3,0,3,0" />
-                    <Button Grid.Column="3" x:Name="Btn_F4" Content="F4: 見所！" Click="Btn_F4_Click" Padding="3,0,3,0" />
-                    <Button Grid.Column="4" x:Name="Btn_F5" Content="F5: タスク完了" Click="Btn_F5_Click" Padding="3,0,3,0" />
+                    <!--/StackPanel-->
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" x:Name="Btn_F1" Content="F1: タスク開始" Click="Btn_F1_Click" Padding="3,0,3,0" />
+                        <Button Grid.Column="1" x:Name="Btn_F2" Content="F2: 参加者発話" Click="Btn_F2_Click" Padding="3,0,3,0" />
+                        <Button Grid.Column="2" x:Name="Btn_F3" Content="F3: 進行役発話" Click="Btn_F3_Click" Padding="3,0,3,0" />
+                        <Button Grid.Column="3" x:Name="Btn_F4" Content="F4: 見所！" Click="Btn_F4_Click" Padding="3,0,3,0" />
+                        <Button Grid.Column="4" x:Name="Btn_F5" Content="F5: タスク完了" Click="Btn_F5_Click" Padding="3,0,3,0" />
+                    </Grid>
                 </Grid>
-            </Grid>
-            <!--Canvas>
-                <Button x:Name="Btn_Close" Padding="0,0,0,0" Width="15" Height="15" Canvas.Top="0" Canvas.Right="0" VerticalAlignment="Top" Background="Transparent" BorderThickness="0" Click="Btn_Close_Click">
-                    <Label Content="×" FontWeight="Bold" FontSize="12" Margin="-2,-8,0,0"/>
-                </Button>
-            </Canvas>-->
         </DockPanel>
     </Grid>
 
