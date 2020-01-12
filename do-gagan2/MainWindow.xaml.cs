@@ -161,6 +161,54 @@ namespace do_gagan2
         }
 
         /// <summary>
+        /// 新規メディアに切り替える前に、未保存データを保存するか確認
+        /// </summary>
+        /// <returns>
+        /// true: 切り替えを続行してOK
+        /// false: 処理を中断する
+        /// </returns>
+        private bool ConfirmBeforeOpenMovie()
+        {
+            bool ret = false; //返値
+            //終了処理
+            if (AppModel.IsCurrentFileDirty)
+            {
+                MessageBoxResult result = System.Windows.MessageBox.Show("変更を上書き保存しますか？", "上書き保存確認", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
+
+                switch (result)
+                {
+                    case MessageBoxResult.Cancel:
+                        //キャンセルされたから中断
+                        ret = false;
+                        break;
+                    case MessageBoxResult.Yes:
+                        if (SaveLog())
+                        {
+                            //保存に成功したから大丈夫
+                            ret = true;
+                        }
+                        else
+                        {
+                            //保存に失敗したら閉じない
+                            ret = false;
+                        }
+                        break;
+                    case MessageBoxResult.No:
+                        //保存しないを選んだから大丈夫
+                        ret = true;
+                        break;
+
+                }
+            } else
+            {
+                //未保存データはなし
+                ret = true;
+            }
+            return ret;
+        }
+
+
+        /// <summary>
         /// 動画ファイルを選択するダイアログを表示
         /// </summary>
         /// <param name="sender"></param>
@@ -168,6 +216,9 @@ namespace do_gagan2
         private void OpenMovie(object sender, RoutedEventArgs e)
         {
             if (_storyboard != null) _storyboard.Pause(this);
+
+            //未保存データがある場合は確認
+            if (ConfirmBeforeOpenMovie() == false) return;
 
             OpenFileDialog ofd = new OpenFileDialog();
 
@@ -350,7 +401,7 @@ namespace do_gagan2
             }
         }
 
-        //動画の総再生時感を返す
+        //動画の総再生時間を返す
         public double GetMediaDuration()
         {
             if (_storyboard != null)
@@ -507,6 +558,9 @@ namespace do_gagan2
         //リストにドラッグされたファイルを逐次処理して登録
         private void MediaElement_Drop(object sender, DragEventArgs e)
         {
+            //未保存データがある場合は確認
+            if (ConfirmBeforeOpenMovie() == false) return;
+
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop, false);
             Console.WriteLine("Dropped:" + files.Count());
             if (files.Count() > 1)
@@ -1066,9 +1120,11 @@ namespace do_gagan2
         //セルのテキストが変更された
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            Console.WriteLine("Hoge");
             //フィルタリング時になぜか呼ばれるのでフラグで除外
             if (isWhileFiltering == false)
             {
+                Console.WriteLine("Fuga");
                 //var changedTextBox = e.Source as TextBox;
                 //Console.WriteLine("TextChanged:"+changedTextBox.Text);
                 //ダーティフラグを立てる
