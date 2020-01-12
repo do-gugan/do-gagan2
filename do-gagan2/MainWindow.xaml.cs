@@ -34,6 +34,20 @@ namespace do_gagan2
         DispatcherTimer Timer_KeepVolumeSliderOpen;
         bool isWhileFiltering = false;
 
+        //自動保存設定バインディングプロパティ
+        public bool isAutoSaveEnabled {
+            get {
+                Console.WriteLine("get:"+ Properties.Settings.Default.isAutoSaveEnabled);
+                return Properties.Settings.Default.isAutoSaveEnabled;
+            }
+            set {
+                Console.WriteLine("set:"+value);
+                Properties.Settings.Default.isAutoSaveEnabled = value;
+                Properties.Settings.Default.Save();
+                Console.WriteLine("saved:" + Properties.Settings.Default.isAutoSaveEnabled);
+            }
+        }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -98,6 +112,10 @@ namespace do_gagan2
 
             //NewMemoブロックを初期化
             NewMemo_Initialize();
+
+            //自動保存設定を反映
+            isAutoSaveEnabled = Properties.Settings.Default.isAutoSaveEnabled;
+            Console.WriteLine("AutoSaveEnabled:" + isAutoSaveEnabled);
         }
 
         #region 基本再生操作
@@ -244,6 +262,7 @@ namespace do_gagan2
             MI_PlayBackControl.IsEnabled = true;
             MI_AddLog.IsEnabled = true;
             MI_Save.IsEnabled = true;
+            MI_AutoSave.IsEnabled = true;
             MI_SaveNew.IsEnabled = true;
             //CB_NewLog.IsEnabled = true;
 
@@ -432,6 +451,7 @@ namespace do_gagan2
                     break;
                 case Key.Enter:
                     Btn_Save_Click(null, null);
+                    e.Handled = true;
                     break;
                 case Key.L:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
@@ -891,7 +911,7 @@ namespace do_gagan2
         {
             SaveLog();
         }
-        public bool SaveLog()
+        public bool SaveLog(bool suppressUpdateDirtyFlag = false)
         {
             //編集中のセルから抜けるために、検索欄にフォーカス
             Btn_Play.Focus();
@@ -1331,11 +1351,6 @@ namespace do_gagan2
         }
 
 
-        private void TB_LockedTimeCode_PreviewMouseUp(object sender, MouseButtonEventArgs e)
-        {
-            //Update_LockOn();
-            //e.Handled = true;
-        }
         #endregion
 
         private void TB_Speaker_GotFocus(object sender, RoutedEventArgs e)
@@ -1343,9 +1358,27 @@ namespace do_gagan2
             TB_Memo.Focus();
         }
 
-        private void TB_LockedTimeCode_GotFocus(object sender, RoutedEventArgs e)
+
+        //自動保存のON/OFF
+        private void MI_AutoSave_Click(object sender, RoutedEventArgs e)
+        {
+            //if (isAutoSaveEnabled == true)
+            //{
+            //    isAutoSaveEnabled = false;
+            //    //MI_AutoSave.IsChecked = false;
+            //} else
+            //{
+            //    isAutoSaveEnabled = true;
+            //    //MI_AutoSave.IsChecked = true;
+            //}
+            isAutoSaveEnabled = isAutoSaveEnabled;
+            OnPropertyChanged("isAutoSaveEnabled");
+        }
+
+        private void TB_LockedTimeCode_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             Update_LockOn();
+            e.Handled = true;
         }
     }
 }
