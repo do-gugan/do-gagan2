@@ -1029,6 +1029,8 @@ namespace do_gagan2
             MI_ToggleNewMemo.IsChecked = true;
             NewMemo.Visibility = Visibility.Visible;
             Update_LockOn(); //こっちを後にすること
+            Properties.Settings.Default.NewMemoBlockDisplayed = true;
+            Properties.Settings.Default.Save();
         }
 
         private void CB_NewLog_Unchecked(object sender, RoutedEventArgs e)
@@ -1036,6 +1038,8 @@ namespace do_gagan2
             CB_NewLog.IsChecked = false;
             MI_ToggleNewMemo.IsChecked = false;
             NewMemo.Visibility = Visibility.Collapsed;
+            Properties.Settings.Default.NewMemoBlockDisplayed = false;
+            Properties.Settings.Default.Save();
         }
 
 
@@ -1183,6 +1187,7 @@ namespace do_gagan2
         /// </summary>
 
         public double LockedPosition { get; set; } = 0.0;
+
         public int SpeakerID { get; set; } = 0;
 
         //メモ欄表示
@@ -1194,7 +1199,13 @@ namespace do_gagan2
             SpeakerID = 0;
             OnPropertyChanged("LockedPosition");
             OnPropertyChanged("SpeakerID");
-            TB_Memo.Focus();
+
+            if (Properties.Settings.Default.NewMemoBlockDisplayed==true)
+            {
+                CB_NewLog_Checked(null, null);
+                TB_Memo.Focus();
+            }
+
         }
 
         private void Btn_F1_Click(object sender, RoutedEventArgs e)
@@ -1317,7 +1328,8 @@ namespace do_gagan2
 
         private void TB_LockedTimeCode_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
-            Update_LockOn();
+            //Update_LockOn();
+            //e.Handled = true;
         }
         #endregion
 
@@ -1326,5 +1338,9 @@ namespace do_gagan2
             TB_Memo.Focus();
         }
 
+        private void TB_LockedTimeCode_GotFocus(object sender, RoutedEventArgs e)
+        {
+            Update_LockOn();
+        }
     }
 }

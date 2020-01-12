@@ -10,6 +10,7 @@
         Title="動画眼2" Height="450" Width="800" PreviewKeyDown="Window_PreviewKeyDown"
         AccessKeyManager.AccessKeyPressed="Window_AccessKeyPressed">
     <Window.Resources>
+        <local:LockedPositionConverter x:Key="LockedPositionConverter"/>
         <local:MathConverter x:Key="MathConverter" />
     </Window.Resources>
     <!--メインレイアウト-->
@@ -237,7 +238,7 @@
                     <Grid Grid.Row="0" HorizontalAlignment="Stretch">
                         <Grid.ColumnDefinitions>
                             <!--0.ロックオン秒数-->
-                            <ColumnDefinition Width="90" />
+                            <ColumnDefinition Width="95" />
                             <!--2.話者-->
                             <ColumnDefinition Width="80" />
                             <!--3.メモ-->
@@ -253,7 +254,7 @@
                             <Label Content="タイムコード" Grid.Row="0" FontSize="10" Padding="0,0,0,0"/>
                             <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,0,0,5">
                             <Button x:Name="Btn_LoclOn_Decrease1sec" Content="&lt;" Width="20" Height="20" Padding="0,-1,0,0" Click="Btn_LockOn_Decrease1sec_Click"/>
-                            <TextBox x:Name="TB_LockedTimeCode" Width="40" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding LockedPosition, StringFormat=F0}" PreviewMouseUp="TB_LockedTimeCode_PreviewMouseUp"/>
+                            <TextBox x:Name="TB_LockedTimeCode" Width="45" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding LockedPosition, Converter={StaticResource LockedPositionConverter}}" PreviewMouseUp="TB_LockedTimeCode_PreviewMouseUp" GotFocus="TB_LockedTimeCode_GotFocus"/>
                             <Button x:Name="Btn_LoclOn_Increase1sec" Content="&gt;" Width="20" Height="20" Padding="0,-1,0,0" Click="Btn_LockOn_Increase1sec_Click"/>
                             </StackPanel>
                         </Grid>
@@ -265,7 +266,7 @@
                             <Label Content="話者" Grid.Row="0" FontSize="10" Padding="0,0,0,0"/>
                             <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,0,0,5">
                                 <Button x:Name="Btn_Speaker_Decrease" Content="&lt;" Width="20" Height="20" Padding="0,-1,0,0" Click="Btn_Speaker_Decrease_Click"/>
-                            <TextBox x:Name="TB_Speaker" Width="30" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding SpeakerID}" GotFocus="TB_Speaker_GotFocus"/>
+                            <TextBox x:Name="TB_Speaker" Width="30" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding SpeakerID}" GotFocus="TB_Speaker_GotFocus"/>
                             <Button x:Name="Btn_Speaker_Increase" Content="&gt;" Width="20" Height="20" Padding="0,-1,0,0" Click="Btn_Speaker_Increase_Click"/>
                             </StackPanel>
                         </Grid>
