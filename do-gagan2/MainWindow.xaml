@@ -13,38 +13,6 @@
         <local:LockedPositionConverter x:Key="LockedPositionConverter"/>
         <local:MathConverter x:Key="MathConverter" />
         <FontFamily x:Key="FontAwesome">pack://application:,,,/FontAwesome.WPF;component/#FontAwesome</FontFamily>
-        <Style x:Key="AnimationImageStyle" TargetType="{x:Type fa:ImageAwesome}">
-            <Style.Triggers>
-                <!--一時停止インジゲーターのフェードインアニメーション定義-->
-                <DataTrigger Binding="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=Visibility}" Value="Hidden">
-                    <DataTrigger.EnterActions>
-                        <BeginStoryboard>
-                            <Storyboard>
-                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                             From="0.3" To="0.8"
-                                             Duration="0:0:1.5"
-                                 />
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </DataTrigger.EnterActions>
-                </DataTrigger>
-                <!--一時停止インジゲーターのフェードインアニメーション定義-->
-                <DataTrigger Binding="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=Visibility}" Value="Visible">
-                    <DataTrigger.EnterActions>
-                        <BeginStoryboard>
-                            <Storyboard>
-                                <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                             From="0.0" To="0.8"
-                                             Duration="0:0:0.1"
-                                 />
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </DataTrigger.EnterActions>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-
-
     </Window.Resources>
     <!--メインレイアウト-->
     <Grid Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" UseLayoutRounding="True">
@@ -111,7 +79,7 @@
             </Label.Foreground>
         </Label>
         <!--一時停止インジゲーター-->
-        <fa:ImageAwesome x:Name="PauseIndicator" Icon="Pause" Grid.Column="0" Foreground="White" Width="30" Height="30" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,20,20,0" Grid.Row="1" Opacity="0.8" Style="{StaticResource AnimationImageStyle}" Visibility="Hidden">
+        <fa:ImageAwesome x:Name="PauseIndicator" Icon="Pause" Grid.Column="0" Foreground="White" Width="30" Height="30" Opacity="0.8" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,20,20,0" Grid.Row="1" Visibility="Hidden">
             <fa:ImageAwesome.Effect>
                 <DropShadowEffect Opacity="0.5" Color="#FF444444"/>
             </fa:ImageAwesome.Effect>
