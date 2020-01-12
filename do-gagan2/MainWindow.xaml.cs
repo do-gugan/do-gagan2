@@ -235,7 +235,7 @@ namespace do_gagan2
             _storyboard.Begin(this, true);
             Slider_Time.IsEnabled = true;
             isPlaying = true;
-
+            
             //UIを有効化
             TB_Search.IsEnabled = true;
             Btn_SkipBackward.IsEnabled = true;
@@ -272,12 +272,17 @@ namespace do_gagan2
                     _storyboard.Pause(this);
                     //Player.Pause();
                     isPlaying = false;
-                } else
+                    PauseIndicator.Visibility = Visibility.Visible;
+                }
+                else
                 {
                     _storyboard.Resume(this);
                     //Player.Play();
                     isPlaying = true;
+                    PauseIndicator.Visibility = Visibility.Hidden;
                 }
+                OnPropertyChanged("isPlaying");
+
             }
         }
 

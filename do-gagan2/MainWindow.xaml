@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:do_gagan2"
-
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         mc:Ignorable="d"
         Closing="Window_Closing"
         Title="動画眼2" Height="450" Width="800" PreviewKeyDown="Window_PreviewKeyDown"
@@ -12,6 +12,7 @@
     <Window.Resources>
         <local:LockedPositionConverter x:Key="LockedPositionConverter"/>
         <local:MathConverter x:Key="MathConverter" />
+        <FontFamily x:Key="FontAwesome">pack://application:,,,/FontAwesome.WPF;component/#FontAwesome</FontFamily>
     </Window.Resources>
     <!--メインレイアウト-->
     <Grid Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" UseLayoutRounding="True">
@@ -77,6 +78,14 @@
                 <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.HighlightTextColorKey}}"/>
             </Label.Foreground>
         </Label>
+        <!--一時停止インジゲーター-->
+        <fa:ImageAwesome x:Name="PauseIndicator" Icon="Pause" Grid.Column="0" Foreground="White" Width="30" Height="30" Opacity="0.8" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,20,20,0" Grid.Row="1" Visibility="Hidden">
+            <fa:ImageAwesome.Effect>
+                <DropShadowEffect Opacity="0.5" Color="#FF444444"/>
+            </fa:ImageAwesome.Effect>
+            <fa:ImageAwesome.Triggers>
+            </fa:ImageAwesome.Triggers>
+        </fa:ImageAwesome>
         <InkCanvas x:Name="InkCanvas1" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" EditingMode="GestureOnly" Background="Transparent" Gesture="inkCanvas1_Gesture" AllowDrop="True" DragEnter="MediaElement_DragEnter" DragLeave="MediaElement_DragLeave" Drop="MediaElement_Drop"/>
 
         <!--左動画プレーヤーコントロール-->
