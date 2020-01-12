@@ -272,11 +272,13 @@ namespace do_gagan2
                     _storyboard.Pause(this);
                     //Player.Pause();
                     isPlaying = false;
+                    PauseIndicator.Visibility = Visibility.Visible;
                 } else
                 {
                     _storyboard.Resume(this);
                     //Player.Play();
                     isPlaying = true;
+                    PauseIndicator.Visibility = Visibility.Hidden;
                 }
             }
         }
