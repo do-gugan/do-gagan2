@@ -24,6 +24,10 @@ namespace do_gagan2
             set {
                 _isCurrentFileDirty = value;
                 string dirtyMark = "";
+                if (AppModel.MainWindow.isAutoSaveEnabled == true)
+                {
+                    dirtyMark = "（自動保存有効）";
+                }
                 if (_isCurrentFileDirty) {
                     Console.WriteLine("isAutoSaveEnabled"+ AppModel.MainWindow.isAutoSaveEnabled);
                     //上書き保存可能な状態で自動保存が有効ならば上書き保存
@@ -31,7 +35,6 @@ namespace do_gagan2
                     {
                         //Console.WriteLine("Auto Saving");
                         AppModel.MainWindow.SaveLog(true);
-                        dirtyMark = " (自動保存有効）";
                     } else
                     {
                         //Console.WriteLine("Not Auto Saving");
