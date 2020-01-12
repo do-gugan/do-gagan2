@@ -38,6 +38,7 @@
                 <MenuItem x:Name="MI_AddLog" Header="ログを追加する" Click="MI_AddLog_Click" IsEnabled="false"/>
                 <Separator />
                 <MenuItem x:Name="MI_Save" Header="上書き保存(_S)" Click="MI_Save_Click" IsEnabled="false" InputGestureText="Ctrl+S"/>
+                <MenuItem x:Name="MI_AutoSave" Header="自動上書き" Click="MI_AutoSave_Click" IsCheckable="True" IsChecked="{Binding isAutoSaveEnabled}" IsEnabled="False"/>
                 <MenuItem x:Name="MI_SaveNew" Header="名前を付けて書き出し(_A)..." Click="MI_SaveNew_Click" IsEnabled="False" />
                 <Separator />
                 <MenuItem Header="終了(_X)" Click="Quit" />
@@ -254,7 +255,7 @@
                             <Label Content="タイムコード" Grid.Row="0" FontSize="10" Padding="0,0,0,0"/>
                             <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,0,0,5">
                             <Button x:Name="Btn_LoclOn_Decrease1sec" Content="&lt;" Width="20" Height="20" Padding="0,-1,0,0" Click="Btn_LockOn_Decrease1sec_Click"/>
-                            <TextBox x:Name="TB_LockedTimeCode" Width="45" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding LockedPosition, Converter={StaticResource LockedPositionConverter}}" PreviewMouseUp="TB_LockedTimeCode_PreviewMouseUp" GotFocus="TB_LockedTimeCode_GotFocus"/>
+                            <TextBox x:Name="TB_LockedTimeCode" Width="45" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding LockedPosition, Converter={StaticResource LockedPositionConverter}}" IsEnabled="True" PreviewMouseDown="TB_LockedTimeCode_PreviewMouseDown"/>
                             <Button x:Name="Btn_LoclOn_Increase1sec" Content="&gt;" Width="20" Height="20" Padding="0,-1,0,0" Click="Btn_LockOn_Increase1sec_Click"/>
                             </StackPanel>
                         </Grid>

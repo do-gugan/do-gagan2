@@ -24,7 +24,20 @@ namespace do_gagan2
             set {
                 _isCurrentFileDirty = value;
                 string dirtyMark = "";
-                if (_isCurrentFileDirty) { dirtyMark = "*"; }
+                if (_isCurrentFileDirty) {
+                    Console.WriteLine("isAutoSaveEnabled"+ AppModel.MainWindow.isAutoSaveEnabled);
+                    //上書き保存可能な状態で自動保存が有効ならば上書き保存
+                    if (AppModel.MainWindow.isAutoSaveEnabled == true && AppModel.MainWindow.MI_Save.IsEnabled == true)
+                    {
+                        //Console.WriteLine("Auto Saving");
+                        AppModel.MainWindow.SaveLog(true);
+                        dirtyMark = " (自動保存有効）";
+                    } else
+                    {
+                        //Console.WriteLine("Not Auto Saving");
+                        dirtyMark = "*";
+                    }
+                }
                 AppModel.MainWindow.Title = "動画眼2 - " + Path.GetFileName(CurrentLogFilePath) + dirtyMark;
             }
         }
