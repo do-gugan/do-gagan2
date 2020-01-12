@@ -261,6 +261,9 @@ namespace do_gagan2
 
             AppModel.CurrentMovieFilePath = moviePath;
 
+            //ログファイルを切り離す
+            AppModel.CurrentLogFilePath = "suppress";
+
             //既存ログをクリア
             AppModel.Records.Clear();
 
@@ -592,7 +595,7 @@ namespace do_gagan2
         /// <param name="e"></param>
         private void MediaElement_DragLeave(object sender, DragEventArgs e)
         {
-            Console.WriteLine("DragCancelled");
+            //Console.WriteLine("DragCancelled");
             Lb_DropHere.Visibility = Visibility.Visible;
         }
         #endregion
@@ -967,7 +970,11 @@ namespace do_gagan2
 
             string body = "";
             Encoding enc;
-            if (Path.GetFileName(AppModel.CurrentLogFilePath).EndsWith(".dggn.txt"))
+
+            //メディアファイル切り替え時の保存は抑止
+            if (AppModel.CurrentLogFilePath== "suppress") return true;
+
+                if (Path.GetFileName(AppModel.CurrentLogFilePath).EndsWith(".dggn.txt"))
             {
                 //V2フォーマットで保存
                 Console.WriteLine("Save V2");
