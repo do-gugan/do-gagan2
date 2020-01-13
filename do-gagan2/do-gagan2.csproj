@@ -104,6 +104,9 @@
     <Compile Include="Window_Replace.xaml.cs">
       <DependentUpon>Window_Replace.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Window_Settings.xaml.cs">
+      <DependentUpon>Window_Settings.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -120,6 +123,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Window_Replace.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Window_Settings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

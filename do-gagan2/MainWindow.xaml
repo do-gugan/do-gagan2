@@ -42,6 +42,8 @@
                 <MenuItem x:Name="MI_AutoSave" Header="自動上書き" Click="MI_AutoSave_Click" IsCheckable="True" IsChecked="{Binding isAutoSaveEnabled}" IsEnabled="False"/>
                 <MenuItem x:Name="MI_SaveNew" Header="名前を付けて書き出し(_A)..." Click="MI_SaveNew_Click" IsEnabled="False" />
                 <Separator />
+                <MenuItem Header="設定..." Click="MI_OpenSettings_Click" />
+                <Separator />
                 <MenuItem Header="終了(_X)" Click="Quit" />
             </MenuItem>
             <MenuItem Header="編集(_E)" IsCheckable="False" Height="22">

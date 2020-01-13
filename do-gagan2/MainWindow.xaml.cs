@@ -1078,7 +1078,7 @@ namespace do_gagan2
                 Timer_AutoSave = null;
             }
             Timer_AutoSave = new DispatcherTimer(DispatcherPriority.Normal, this.Dispatcher);
-            Timer_AutoSave.Interval = TimeSpan.FromSeconds(Properties.Settings.Default.AutoSaveInterval);
+            Timer_AutoSave.Interval = TimeSpan.FromMinutes(Properties.Settings.Default.AutoSaveInterval);//分
             Timer_AutoSave.Tick += new EventHandler(AutoSaveTimer_Tick);
             Timer_AutoSave.Start();
         }
@@ -1546,6 +1546,17 @@ namespace do_gagan2
         {
             Update_LockOn();
             e.Handled = true;
+        }
+
+        /// <summary>
+        ///  設定ウインドウを開く
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MI_OpenSettings_Click(object sender, RoutedEventArgs e)
+        {
+            Window_Settings window_Settings = new Window_Settings();
+            window_Settings.ShowDialog();
         }
     }
 }
