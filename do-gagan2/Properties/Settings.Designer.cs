@@ -106,5 +106,17 @@ namespace do_gagan2.Properties {
                 this["AutoSaveInterval"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public double MultiplyFactorForSkipWithShiftKey {
+            get {
+                return ((double)(this["MultiplyFactorForSkipWithShiftKey"]));
+            }
+            set {
+                this["MultiplyFactorForSkipWithShiftKey"] = value;
+            }
+        }
     }
 }

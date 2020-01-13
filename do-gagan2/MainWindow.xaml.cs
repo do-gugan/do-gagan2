@@ -143,8 +143,14 @@ namespace do_gagan2
         protected virtual void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             //終了処理
-            Timer_AutoSave.Stop();
-            Timer_KeepVolumeSliderOpen.Stop();
+            if (Timer_AutoSave != null)
+            {
+                Timer_AutoSave.Stop();
+            }
+            if (Timer_KeepVolumeSliderOpen != null)
+            {
+                Timer_KeepVolumeSliderOpen.Stop();
+            }
 
             if (AppModel.IsCurrentFileDirty)
             {
@@ -387,12 +393,24 @@ namespace do_gagan2
         //前方ジャンプ
         private void Btn_SkipForward_click(object sender, RoutedEventArgs e)
         {
-            MoveRelative(Properties.Settings.Default.SkipForwardSec);
+            int sec = Properties.Settings.Default.SkipForwardSec;
+            if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+            {
+                Console.WriteLine("Shift Key");
+                sec = (int)(sec * Properties.Settings.Default.MultiplyFactorForSkipWithShiftKey);
+            }
+            MoveRelative(sec);
         }
         //後方ジャンプ
         private void Btn_SkipBackward_click(object sender, RoutedEventArgs e)
         {
-            MoveRelative(Properties.Settings.Default.SkipBackwardSec * -1);
+            int sec = Properties.Settings.Default.SkipBackwardSec * -1;
+            if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+            {
+                Console.WriteLine("Shift Key");
+                sec = (int)(sec * Properties.Settings.Default.MultiplyFactorForSkipWithShiftKey);
+            }
+            MoveRelative(sec);
         }
 
         //指定秒数に相対移動
@@ -488,13 +506,23 @@ namespace do_gagan2
                     }
                     break;
                 case Key.W:
-                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    if (Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
+                    {
+                        Console.WriteLine("Shift Key");
+                        MoveRelative((int)(Properties.Settings.Default.SkipForwardSec * Properties.Settings.Default.MultiplyFactorForSkipWithShiftKey));
+                    }
+                    else if (Keyboard.Modifiers == ModifierKeys.Control)
                     {
                         MoveRelative(Properties.Settings.Default.SkipForwardSec);
                     }
                     break;
                 case Key.Q:
-                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    if (Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
+                    {
+                        Console.WriteLine("Shift Key");
+                        MoveRelative((int)(Properties.Settings.Default.SkipBackwardSec * -1 * Properties.Settings.Default.MultiplyFactorForSkipWithShiftKey));
+                    }
+                    else if(Keyboard.Modifiers == ModifierKeys.Control)
                     {
                         MoveRelative(Properties.Settings.Default.SkipBackwardSec * -1);
                     }
@@ -540,14 +568,27 @@ namespace do_gagan2
         //操作パネル上でAltショートカットが押された時の処理
         private void Window_AccessKeyPressed(object sender, AccessKeyPressedEventArgs e)
         {
+            int sec;
             switch (e.Key)
             {
                 case "W":
-                    MoveRelative(Properties.Settings.Default.SkipForwardSec);
+                    sec = Properties.Settings.Default.SkipForwardSec;
+                    if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                    {
+                        Console.WriteLine("Shift Key");
+                        sec = (int)(sec * Properties.Settings.Default.MultiplyFactorForSkipWithShiftKey);
+                    }
+                    MoveRelative(sec);
                     e.Handled = true;
                     break;
                 case "Q":
-                    MoveRelative(Properties.Settings.Default.SkipBackwardSec * -1);
+                    sec = Properties.Settings.Default.SkipBackwardSec * -1;
+                    if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                    {
+                        Console.WriteLine("Shift Key");
+                        sec = (int)(sec * Properties.Settings.Default.MultiplyFactorForSkipWithShiftKey);
+                    }
+                    MoveRelative(sec);
                     e.Handled = true;
                     break;
                 case "S":
