@@ -82,5 +82,29 @@ namespace do_gagan2.Properties {
                 this["NewMemoBlockDisplayed"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool isAutoSaveEnabled {
+            get {
+                return ((bool)(this["isAutoSaveEnabled"]));
+            }
+            set {
+                this["isAutoSaveEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("300")]
+        public int AutoSaveInterval {
+            get {
+                return ((int)(this["AutoSaveInterval"]));
+            }
+            set {
+                this["AutoSaveInterval"] = value;
+            }
+        }
     }
 }

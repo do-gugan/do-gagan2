@@ -24,7 +24,9 @@ namespace do_gagan2
             set {
                 _isCurrentFileDirty = value;
                 string dirtyMark = "";
-                if (_isCurrentFileDirty) { dirtyMark = "*"; }
+                if (_isCurrentFileDirty) {
+                    dirtyMark = "*";
+                }
                 AppModel.MainWindow.Title = "動画眼2 - " + Path.GetFileName(CurrentLogFilePath) + dirtyMark;
             }
         }
