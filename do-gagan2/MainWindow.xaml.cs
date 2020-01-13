@@ -433,6 +433,12 @@ namespace do_gagan2
                     _storyboard.Resume(this);
 
                 ListBoxAutoScrollEnabled = true;
+
+                //ロックオン連動
+                if (Properties.Settings.Default.isLockOnAutoUpdate == true)
+                {
+                    Update_LockOn();
+                }
             }
 
         }
@@ -670,13 +676,13 @@ namespace do_gagan2
         //動画を開いた時にスライダーの最大値を動画の長さにあわせる
         private void Element_MediaOpened(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("Duraton:" + Player.NaturalDuration.TimeSpan.TotalSeconds + "sec");
+            //Console.WriteLine("Duraton:" + Player.NaturalDuration.TimeSpan.TotalSeconds + "sec");
             Slider_Time.Maximum = Player.NaturalDuration.TimeSpan.TotalMilliseconds;
         }
         //スライダーを更新（再生中に定期的に呼ばれる）→呼ばれてない
         private void MediaTimeChanged(object sender, EventArgs e)
         {
-            Console.WriteLine("Tick");
+            //Console.WriteLine("Tick");
             Slider_Time.Value = Player.Position.TotalMilliseconds;
 
             //ログのフォーカス行を移動する
@@ -686,7 +692,7 @@ namespace do_gagan2
         //タイムスライダがドラッグ開始した時
         private void sliderTime_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
         {
-            Console.WriteLine("Slider DragStarted");
+            //Console.WriteLine("Slider DragStarted");
             //再生を一時停止（mediaTimeline_CurrentTimeInvalidatedの発生を防ぐ）
             if (isPlaying)
                 _storyboard.Pause(this);
@@ -703,6 +709,12 @@ namespace do_gagan2
                 _storyboard.Resume(this);
 
             ListBoxAutoScrollEnabled = true;
+
+            //ロックオン連動
+            if (Properties.Settings.Default.isLockOnAutoUpdate == true)
+            {
+                Update_LockOn();
+            }
 
         }
 
