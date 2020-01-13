@@ -32,19 +32,29 @@ namespace do_gagan2
         bool isPlaying = false;
         bool ListBoxAutoScrollEnabled = false;
         DispatcherTimer Timer_KeepVolumeSliderOpen;
+        DispatcherTimer Timer_AutoSave;
         bool isWhileFiltering = false;
 
         //自動保存設定バインディングプロパティ
         public bool isAutoSaveEnabled {
             get {
-                Console.WriteLine("get:"+ Properties.Settings.Default.isAutoSaveEnabled);
+                //Console.WriteLine("get:"+ Properties.Settings.Default.isAutoSaveEnabled);
                 return Properties.Settings.Default.isAutoSaveEnabled;
             }
             set {
-                Console.WriteLine("set:"+value);
+                //Console.WriteLine("set:"+value);
                 Properties.Settings.Default.isAutoSaveEnabled = value;
                 Properties.Settings.Default.Save();
-                Console.WriteLine("saved:" + Properties.Settings.Default.isAutoSaveEnabled);
+
+                //自動タイマー起動
+                if (value == true)
+                {
+                    SetAutoSaveTimer();
+                } else
+                {
+                    ClearAutoSaveTimer();
+                }
+                //Console.WriteLine("saved:" + Properties.Settings.Default.isAutoSaveEnabled);
             }
         }
 
@@ -115,8 +125,9 @@ namespace do_gagan2
 
             //自動保存設定を反映
             isAutoSaveEnabled = Properties.Settings.Default.isAutoSaveEnabled;
-            Console.WriteLine("AutoSaveEnabled:" + isAutoSaveEnabled);
+            //Console.WriteLine("AutoSaveEnabled:" + isAutoSaveEnabled);
         }
+
 
         #region 基本再生操作
         /// <summary>
@@ -132,6 +143,9 @@ namespace do_gagan2
         protected virtual void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             //終了処理
+            Timer_AutoSave.Stop();
+            Timer_KeepVolumeSliderOpen.Stop();
+
             if (AppModel.IsCurrentFileDirty)
             {
                 MessageBoxResult result = System.Windows.MessageBox.Show("変更を上書き保存しますか？", "上書き保存確認", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
@@ -326,7 +340,13 @@ namespace do_gagan2
                 Btn_Capture.IsEnabled = true;
             }
 
-            Btn_Play.Focus();
+            //自動保存タイマーを起動
+            if (isAutoSaveEnabled == true)
+            {
+                SetAutoSaveTimer();
+            }
+
+            TB_Memo.Focus();
         }
 
         //再生・一時停止ボタン
@@ -550,7 +570,7 @@ namespace do_gagan2
         #region メディアのドラッグ＆ドロップ
         private void MediaElement_DragEnter(object sender, DragEventArgs e)
         {
-            Console.WriteLine("DragEnter");
+            //Console.WriteLine("DragEnter");
 
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
@@ -913,7 +933,6 @@ namespace do_gagan2
             Timer_KeepVolumeSliderOpen.Stop();
         }
 
-
         #endregion
 
         #region ジェスチャの認識
@@ -971,7 +990,7 @@ namespace do_gagan2
         public bool SaveLog(bool suppressUpdateDirtyFlag = false)
         {
             //編集中のセルから抜けるために、検索欄にフォーカス
-            Btn_Play.Focus();
+            TB_Memo.Focus();
 
             string body = "";
             Encoding enc;
@@ -1001,7 +1020,48 @@ namespace do_gagan2
                 writer.WriteLine(body);
             }
             AppModel.IsCurrentFileDirty = false;
+            if (isAutoSaveEnabled == true)
+            {
+                SetAutoSaveTimer();
+            }
             return true;
+        }
+
+        //自動保存タイマーを初期化
+        private void SetAutoSaveTimer()
+        {
+            //Console.WriteLine("SetAutoSaveTimer");
+            if (Timer_AutoSave != null)
+            {
+                Timer_AutoSave.Stop();
+                Timer_AutoSave = null;
+            }
+            Timer_AutoSave = new DispatcherTimer(DispatcherPriority.Normal, this.Dispatcher);
+            Timer_AutoSave.Interval = TimeSpan.FromSeconds(Properties.Settings.Default.AutoSaveInterval);
+            Timer_AutoSave.Tick += new EventHandler(AutoSaveTimer_Tick);
+            Timer_AutoSave.Start();
+        }
+
+        //自動保存タイマーを停止
+        private void ClearAutoSaveTimer()
+        {
+            //Console.WriteLine("ClearAutoSaveTimer");
+            if (Timer_AutoSave != null)
+            {
+                Timer_AutoSave.Stop();
+                Timer_AutoSave = null;
+            }
+        }
+
+        //自動保存処理
+        private void AutoSaveTimer_Tick(object sender, EventArgs e)
+        {
+            Console.WriteLine("AutoSave Tick");
+            if (AppModel.IsCurrentFileDirty == true)
+            {
+                SaveLog();
+            }
+            SetAutoSaveTimer();
         }
 
         /// <summary>
@@ -1012,7 +1072,7 @@ namespace do_gagan2
         private void MI_SaveNew_Click(object sender, RoutedEventArgs e)
         {
             //編集中のセルから抜けるために、検索欄にフォーカス
-            Btn_Play.Focus();
+            TB_Memo.Focus();
 
             if (_storyboard == null) return;
             _storyboard.Pause(this);
@@ -1088,6 +1148,8 @@ namespace do_gagan2
                 }
 
             }
+            TB_Memo.Focus();
+
 
         }
         #endregion
@@ -1409,8 +1471,9 @@ namespace do_gagan2
             AppModel.IsCurrentFileDirty = true;
 
             //フィールドをクリア
-            LockedPosition = 0.0;
+            //LockedPosition = 0.0;
             TB_Memo.Text = "";
+            Update_LockOn();
         }
 
 
