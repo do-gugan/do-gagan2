@@ -543,19 +543,19 @@ namespace do_gagan2
 
                 //NewMemoブロック
                 case Key.F1:
-                    Btn_F1_Click(null, null);
+                    InsertFunctionTemplate(Properties.Settings.Default.StringF1);
                     break;
                 case Key.F2:
-                    Btn_F2_Click(null, null);
+                    InsertFunctionTemplate(Properties.Settings.Default.StringF2);
                     break;
                 case Key.F3:
-                    Btn_F3_Click(null, null);
+                    InsertFunctionTemplate(Properties.Settings.Default.StringF3);
                     break;
                 case Key.F4:
-                    Btn_F4_Click(null, null);
+                    InsertFunctionTemplate(Properties.Settings.Default.StringF4);
                     break;
                 case Key.F5:
-                    Btn_F5_Click(null, null);
+                    InsertFunctionTemplate(Properties.Settings.Default.StringF5);
                     break;
                 case Key.Enter:
                     Btn_Save_Click(null, null);
@@ -1413,36 +1413,62 @@ namespace do_gagan2
 
         private void Btn_F1_Click(object sender, RoutedEventArgs e)
         {
-            TB_Memo.Text = "タスク開始:" + TB_Memo.Text;
-            TB_Memo.Select(TB_Memo.Text.Length, 0); //末尾にカーソル
-            TB_Memo.Focus();
+            InsertFunctionTemplate(Properties.Settings.Default.StringF1);
         }
         private void Btn_F2_Click(object sender, RoutedEventArgs e)
         {
-            TB_Memo.Text = "参加者「" + TB_Memo.Text + "」";
-            TB_Memo.Select(4, 0); //"「"の次にカーソル
-            TB_Memo.Focus();
+            InsertFunctionTemplate(Properties.Settings.Default.StringF2);
         }
 
         private void Btn_F3_Click(object sender, RoutedEventArgs e)
         {
-            TB_Memo.Text = "進行役「" + TB_Memo.Text + "」";
-            TB_Memo.Select(4, 0); //"「"の次にカーソル
-            TB_Memo.Focus();
+            InsertFunctionTemplate(Properties.Settings.Default.StringF3);
         }
         private void Btn_F4_Click(object sender, RoutedEventArgs e)
         {
-            TB_Memo.Text = "見所！:" + TB_Memo.Text;
-            TB_Memo.Select(TB_Memo.Text.Length, 0); //末尾にカーソル
-            TB_Memo.Focus();
+            InsertFunctionTemplate(Properties.Settings.Default.StringF4);
         }
 
         private void Btn_F5_Click(object sender, RoutedEventArgs e)
         {
-            TB_Memo.Text = "タスク完了:" + TB_Memo.Text;
-            TB_Memo.Select(TB_Memo.Text.Length, 0); //末尾にカーソル
+            InsertFunctionTemplate(Properties.Settings.Default.StringF5);
+        }
+
+        private void InsertFunctionTemplate(string template)
+        {
+            int tLoc = template.IndexOf("$t")+1;
+            int cLoc = template.IndexOf("$c")+1;
+            int tLen = TB_Memo.Text.Length;
+
+            //Console.WriteLine("cLoc:" + cLoc + " tLoc:" + tLoc + " tLen:" + tLen);
+
+            //$sを現在の文字列で置換
+            TB_Memo.Text = template.Replace("$t", TB_Memo.Text);
+
+            //$cにキャレット移動
+            int loc = TB_Memo.Text.IndexOf("$c");
+            if (loc == -1){
+                //$cが見つからない場合は最後にキャレット
+                TB_Memo.Select(TB_Memo.Text.Length, 0); //$cの位置にカーソル
+            }
+            else
+            {
+                TB_Memo.Text = TB_Memo.Text.Replace("$c", ""); //$cを削除
+                if (cLoc < tLoc)
+                {
+                    //Console.WriteLine("tが後ろ");
+                    TB_Memo.Select(cLoc -1, 0); //$cの位置にカーソル
+                }
+                else
+                {
+                    //Console.WriteLine("cが後ろ:" + (cLoc + tLen - 2));
+                    TB_Memo.Select(cLoc + tLen -3, 0); //$c+$tの位置にカーソル
+                }
+            }
             TB_Memo.Focus();
         }
+
+
 
         //ロックオン秒数を現在の再生時間に更新
         private void Update_LockOn()

@@ -42,8 +42,8 @@ namespace do_gagan2
         private void Reset_FunctionTemplates_Click(object sender, RoutedEventArgs e)
         {
             TB_F1.Text = "タスク開始:$t$c";
-            TB_F2.Text = "参加者「$c$t」";
-            TB_F3.Text = "進行役「$c$t」";
+            TB_F2.Text = "参加者「$t$c」";
+            TB_F3.Text = "進行役「$t$c」";
             TB_F4.Text = "見所！:$t$c";
             TB_F5.Text = "タスク完了:$t$c";
         }
