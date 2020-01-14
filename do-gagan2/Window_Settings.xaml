@@ -56,7 +56,7 @@
                     <Label Content="分 (有効化は「ファイル」メニューから）" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0 0 0 20">
-                    <CheckBox Content="新規メモ欄のタイムコードをジャンプ操作に連動する" IsChecked="{Binding Path=isLockOnAutoUpdate,Source={x:Static properties:Settings.Default}}" />
+                    <CheckBox Content="新規メモ欄のタイムコードを、新規入力開始時時やジャンプ操作に自動更新する" IsChecked="{Binding Path=isLockOnAutoUpdate,Source={x:Static properties:Settings.Default}}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0 0 0 20">
                     <Label Content="前後スキップ秒数の変更は「再生」メニューまたは◀◀／▶▶の右クリックで行えます。" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />

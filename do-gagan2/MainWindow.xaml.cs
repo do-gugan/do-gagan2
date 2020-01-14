@@ -1614,7 +1614,7 @@ namespace do_gagan2
             {
                 //Console.WriteLine("メモ欄が空欄になった");
                 isStartingLetter = true;
-            } else if (TB_Memo.Text.Length > 0 && isStartingLetter == true)
+            } else if (TB_Memo.Text.Length > 0 && isStartingLetter == true && Properties.Settings.Default.isLockOnAutoUpdate==true)
             {
                 Update_LockOn();
                 isStartingLetter = false;
