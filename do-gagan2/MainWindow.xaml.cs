@@ -1596,5 +1596,31 @@ namespace do_gagan2
             Window_Settings window_Settings = new Window_Settings();
             window_Settings.ShowDialog();
         }
+
+        /// <summary>
+        /// 新規メモの最初の1文字目の入力を判定するフラグ
+        /// メモ欄が空欄になった時にtrueがセットされる
+        /// </summary>
+        bool isStartingLetter = true;
+
+        private void TB_Memo_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            //Console.WriteLine("NewMemo Text.Changed; "+ TB_Memo.Text.Length + "isStartingLetter:"+ isStartingLetter);
+            if (TB_Memo.Text.Length == 0)
+            {
+                //Console.WriteLine("メモ欄が空欄になった");
+                isStartingLetter = true;
+            } else if (TB_Memo.Text.Length > 0 && isStartingLetter == true)
+            {
+                Update_LockOn();
+                isStartingLetter = false;
+            } else
+            {
+                //Console.WriteLine("1文字目以外の入力");
+                isStartingLetter = false;
+            }
+
+        }
+
     }
 }
