@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.IO;
+using System.Drawing;
 
 namespace do_gagan2
 {
@@ -260,6 +261,29 @@ namespace do_gagan2
         }
         #endregion
 
+        public static string SpeakerColorString(string Speaker) {
+            switch (Speaker)
+            {
+                case "0":
+                    return "#CCFFFF";
+                case "1":
+                    return "#FFD5EC";
+                case "2":
+                    return "#CCFFCC";
+                case "3":
+                    return "#FFAADD";
+                case "4":
+                    return "#FFFFCC";
+                case "5":
+                    return "#FFDBC9";
+                case "6":
+                    return "#E6FFE9";
+                case "7":
+                    return "#EAD9FF";
+                default:
+                    return "#CCFFFF";
+            }
+        }
     }
 
     enum MediaType

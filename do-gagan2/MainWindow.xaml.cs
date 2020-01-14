@@ -1393,6 +1393,8 @@ namespace do_gagan2
 
         public int SpeakerID { get; set; } = 0;
 
+        public string SpeakerColor { get { return AppModel.SpeakerColorString(SpeakerID.ToString()); } }
+
         //メモ欄表示
         //public Window_NewMemo(double position, int speaker)
         public void NewMemo_Initialize ()
@@ -1520,6 +1522,7 @@ namespace do_gagan2
             if (SpeakerID > 0)
                 SpeakerID -= 1;
             OnPropertyChanged("SpeakerID");
+            OnPropertyChanged("SpeakerColor");
             TB_Memo.Focus();
         }
 
@@ -1527,6 +1530,7 @@ namespace do_gagan2
         {
             SpeakerID += 1;
             OnPropertyChanged("SpeakerID");
+            OnPropertyChanged("SpeakerColor");
             TB_Memo.Focus();
         }
 
