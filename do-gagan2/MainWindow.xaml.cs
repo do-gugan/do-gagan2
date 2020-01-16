@@ -34,6 +34,7 @@ namespace do_gagan2
         DispatcherTimer Timer_KeepVolumeSliderOpen;
         DispatcherTimer Timer_AutoSave;
         bool isWhileFiltering = false;
+        public string StatusBarText { get; set; }
 
         //自動保存設定バインディングプロパティ
         public bool isAutoSaveEnabled {
@@ -372,6 +373,7 @@ namespace do_gagan2
                     //Player.Pause();
                     isPlaying = false;
                     PauseIndicator.Visibility = Visibility.Visible;
+                    ShowStatusBarMessage("一時停止");
                 }
                 else
                 {
@@ -379,6 +381,7 @@ namespace do_gagan2
                     //Player.Play();
                     isPlaying = true;
                     PauseIndicator.Visibility = Visibility.Hidden;
+                    ShowStatusBarMessage("再生");
                 }
                 OnPropertyChanged("isPlaying");
 
@@ -399,6 +402,7 @@ namespace do_gagan2
                 Console.WriteLine("Shift Key");
                 sec = (int)(sec * Properties.Settings.Default.MultiplyFactorForSkipWithShiftKey);
             }
+            ShowStatusBarMessage("▶▶ " + AppModel.SkipSecBtnLabel(sec), 0.5);
             MoveRelative(sec);
         }
         //後方ジャンプ
@@ -410,6 +414,7 @@ namespace do_gagan2
                 Console.WriteLine("Shift Key");
                 sec = (int)(sec * Properties.Settings.Default.MultiplyFactorForSkipWithShiftKey);
             }
+            ShowStatusBarMessage("◀◀ "+ AppModel.SkipSecBtnLabel(sec * -1), 0.5);
             MoveRelative(sec);
         }
 
@@ -424,7 +429,6 @@ namespace do_gagan2
                     offset = Player.NaturalDuration.TimeSpan - new TimeSpan(0, 0, 2);
                 } else if (offset < new TimeSpan(0))
                 {
-                    Console.WriteLine("minus");
                     offset = TimeSpan.Zero;
                 }
 
@@ -514,23 +518,31 @@ namespace do_gagan2
                 case Key.W:
                     if (Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
                     {
-                        Console.WriteLine("Shift Key");
-                        MoveRelative((int)(Properties.Settings.Default.SkipForwardSec * Properties.Settings.Default.MultiplyFactorForSkipWithShiftKey));
+                        //Console.WriteLine("Shift Key");
+                        int sec = (int)(Properties.Settings.Default.SkipForwardSec * Properties.Settings.Default.MultiplyFactorForSkipWithShiftKey);
+                        ShowStatusBarMessage("▶▶ " + AppModel.SkipSecBtnLabel(sec), 0.5);
+                        MoveRelative(sec);
                     }
                     else if (Keyboard.Modifiers == ModifierKeys.Control)
                     {
-                        MoveRelative(Properties.Settings.Default.SkipForwardSec);
+                        int sec = Properties.Settings.Default.SkipForwardSec;
+                        ShowStatusBarMessage("▶▶ " + AppModel.SkipSecBtnLabel(sec), 0.5);
+                        MoveRelative(sec);
                     }
                     break;
                 case Key.Q:
                     if (Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
                     {
-                        Console.WriteLine("Shift Key");
-                        MoveRelative((int)(Properties.Settings.Default.SkipBackwardSec * -1 * Properties.Settings.Default.MultiplyFactorForSkipWithShiftKey));
+                        //Console.WriteLine("Shift Key");
+                        int sec = (int)(Properties.Settings.Default.SkipBackwardSec * -1 * Properties.Settings.Default.MultiplyFactorForSkipWithShiftKey);
+                        ShowStatusBarMessage("◀◀ " + AppModel.SkipSecBtnLabel(sec * -1), 0.5);
+                        MoveRelative(sec);
                     }
                     else if(Keyboard.Modifiers == ModifierKeys.Control)
                     {
-                        MoveRelative(Properties.Settings.Default.SkipBackwardSec * -1);
+                        int sec = Properties.Settings.Default.SkipBackwardSec * -1;
+                        ShowStatusBarMessage("◀◀ " + AppModel.SkipSecBtnLabel(sec * -1), 0.5);
+                        MoveRelative(sec);
                     }
                     break;
                 case Key.M:
@@ -584,6 +596,7 @@ namespace do_gagan2
                         Console.WriteLine("Shift Key");
                         sec = (int)(sec * Properties.Settings.Default.MultiplyFactorForSkipWithShiftKey);
                     }
+                    ShowStatusBarMessage("▶▶ " + AppModel.SkipSecBtnLabel(sec), 0.5);
                     MoveRelative(sec);
                     e.Handled = true;
                     break;
@@ -594,6 +607,7 @@ namespace do_gagan2
                         Console.WriteLine("Shift Key");
                         sec = (int)(sec * Properties.Settings.Default.MultiplyFactorForSkipWithShiftKey);
                     }
+                    ShowStatusBarMessage("◀◀ " + AppModel.SkipSecBtnLabel(sec * -1), 0.5);
                     MoveRelative(sec);
                     e.Handled = true;
                     break;
@@ -1040,7 +1054,7 @@ namespace do_gagan2
         {
             SaveLog();
         }
-        public bool SaveLog(bool suppressUpdateDirtyFlag = false)
+        public bool SaveLog(bool suppressUpdateDirtyFlag = false, bool byTimer = false)
         {
             //編集中のセルから抜けるために、検索欄にフォーカス
             TB_Memo.Focus();
@@ -1077,6 +1091,14 @@ namespace do_gagan2
             {
                 SetAutoSaveTimer();
             }
+            if (byTimer == true)
+            {
+                ShowStatusBarMessage("自動保存");
+            }
+            else
+            {
+                ShowStatusBarMessage("上書き保存");
+            }
             return true;
         }
 
@@ -1112,7 +1134,7 @@ namespace do_gagan2
             Console.WriteLine("AutoSave Tick");
             if (AppModel.IsCurrentFileDirty == true)
             {
-                SaveLog();
+                SaveLog(false,true);
             }
             SetAutoSaveTimer();
         }
@@ -1559,6 +1581,44 @@ namespace do_gagan2
             Update_LockOn();
         }
 
+
+        #endregion
+
+
+        #region ステータスバーメッセージ
+
+        DispatcherTimer Timer_StatusBarMessageHide;
+        /// <summary>
+        /// ステータスバーにメッセージを表示し、指定秒数後に消す
+        /// </summary>
+        /// <param name="message">メッセージ</param>
+        /// <param name="duration">表示秒数（指定しなければ1秒）</param>
+        public void ShowStatusBarMessage(string message, double duration = 1.0)
+        {
+            StatusBarText = message;
+            OnPropertyChanged("StatusBarText");
+
+            if (Timer_StatusBarMessageHide != null)
+            {
+                Timer_StatusBarMessageHide.Stop();
+                Timer_StatusBarMessageHide = null;
+            }
+            Timer_StatusBarMessageHide = new DispatcherTimer(DispatcherPriority.Normal, this.Dispatcher);
+            Timer_StatusBarMessageHide.Interval = TimeSpan.FromSeconds(duration);
+            Timer_StatusBarMessageHide.Tick += new EventHandler(StatusMessageTimer_Tick);
+            Timer_StatusBarMessageHide.Start();
+
+        }
+
+        private void StatusMessageTimer_Tick(object sender, EventArgs e)
+        {
+            StatusBarText = "";
+            OnPropertyChanged("StatusBarText");
+
+            Timer_StatusBarMessageHide.Stop();
+            Timer_StatusBarMessageHide = null;
+
+        }
 
         #endregion
 

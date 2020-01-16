@@ -25,6 +25,8 @@
             <RowDefinition Height="30" />
             <!--NewMemo-->
             <RowDefinition Height="auto" />
+            <!--ステータスバー-->
+            <RowDefinition Height="23" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*" MinWidth="510" />
@@ -315,6 +317,10 @@
                     </Grid>
                 </Grid>
         </DockPanel>
+        <!--ステータスバー-->
+        <StatusBar Grid.Row="4" Grid.ColumnSpan="3" HorizontalContentAlignment="Left" >
+            <StatusBarItem x:Name="StatusBarTextBlock" Content="{Binding StatusBarText}" />
+        </StatusBar>
     </Grid>
 
 </Window>
