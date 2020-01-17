@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -47,5 +48,82 @@ namespace do_gagan2
             TB_F4.Text = "見所！:$t$c";
             TB_F5.Text = "タスク完了:$t$c";
         }
+
+
+        #region 入力値のチェック
+        private static readonly Regex _regex = new Regex("[^0-9.]"); //regex that matches disallowed text
+        private static bool IsTextAllowed(string text)
+        {
+            return !_regex.IsMatch(text);
+        }
+
+        //キー入力時点で数字以外はハネる
+        private void TB_AutoSaveInterval_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (!IsTextAllowed(e.Text))
+            {
+                e.Handled = true;
+            }
+        }
+
+        //入力完了時点で指定範囲外をハネる
+        private void TB_AutoSaveInterval_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            int i = 0;
+            if (int.TryParse(TB_AutoSaveInterval.Text, out i))
+            {
+                if (i>1 && i< 100)
+                {
+                    e.Handled = true;
+                } else
+                {
+                    MessageBox.Show("自動保存間隔は1-99分までの範囲で指定してください。");
+                    e.Handled = false;
+                    Properties.Settings.Default.AutoSaveInterval = 5;
+                }
+            } else
+            {
+                MessageBox.Show("自動保存間隔は数値で指定してください。");
+                e.Handled = false;
+                Properties.Settings.Default.AutoSaveInterval = 5;
+            }
+            Properties.Settings.Default.Save();
+        }
+
+        //Shift押下時のジャンプ倍率をチェック（数値のみ）
+        private void TB_MultiplyFactorForSkipWithShiftKey_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if (!IsTextAllowed(e.Text))
+            {
+                e.Handled = true;
+            }
+        }
+        //入力完了時点で指定範囲外をハネる
+        private void TB_MultiplyFactorForSkipWithShiftKey_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            double d = 0;
+            if (double.TryParse(TB_MultiplyFactorForSkipWithShiftKey.Text, out d))
+            {
+                if (d > 0.1 && d < 10)
+                {
+                    e.Handled = true;
+                }
+                else
+                {
+                    MessageBox.Show("ジャンプ倍率は0.1-10倍までの範囲で指定してください。");
+                    e.Handled = false;
+                    Properties.Settings.Default.MultiplyFactorForSkipWithShiftKey = 2;
+                }
+            }
+            else
+            {
+                MessageBox.Show("ジャンプ倍率は数値で指定してください。");
+                e.Handled = false;
+                Properties.Settings.Default.MultiplyFactorForSkipWithShiftKey = 5;
+            }
+            Properties.Settings.Default.Save();
+
+        }
+        #endregion
     }
 }
