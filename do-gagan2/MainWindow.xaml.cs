@@ -518,7 +518,6 @@ namespace do_gagan2
                 case Key.W:
                     if (Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
                     {
-                        //Console.WriteLine("Shift Key");
                         int sec = (int)(Properties.Settings.Default.SkipForwardSec * Properties.Settings.Default.MultiplyFactorForSkipWithShiftKey);
                         ShowStatusBarMessage("▶▶ " + AppModel.SkipSecBtnLabel(sec), 0.5);
                         MoveRelative(sec);
@@ -533,7 +532,6 @@ namespace do_gagan2
                 case Key.Q:
                     if (Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
                     {
-                        //Console.WriteLine("Shift Key");
                         int sec = (int)(Properties.Settings.Default.SkipBackwardSec * -1 * Properties.Settings.Default.MultiplyFactorForSkipWithShiftKey);
                         ShowStatusBarMessage("◀◀ " + AppModel.SkipSecBtnLabel(sec * -1), 0.5);
                         MoveRelative(sec);
@@ -593,7 +591,6 @@ namespace do_gagan2
                     sec = Properties.Settings.Default.SkipForwardSec;
                     if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
                     {
-                        Console.WriteLine("Shift Key");
                         sec = (int)(sec * Properties.Settings.Default.MultiplyFactorForSkipWithShiftKey);
                     }
                     ShowStatusBarMessage("▶▶ " + AppModel.SkipSecBtnLabel(sec), 0.5);
@@ -1497,7 +1494,7 @@ namespace do_gagan2
         //ロックオン秒数を現在の再生時間に更新
         private void Update_LockOn()
         {
-            Console.WriteLine("UpdateLockOn");
+            //Console.WriteLine("UpdateLockOn");
             LockedPosition = Player.Position.TotalSeconds;
             OnPropertyChanged("LockedPosition");
             if (NewMemo.Visibility != Visibility.Visible)

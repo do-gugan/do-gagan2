@@ -81,7 +81,10 @@ namespace do_gagan2
                     e.Handled = false;
                     Properties.Settings.Default.AutoSaveInterval = 5;
                 }
-            } else
+            } else if (TB_AutoSaveInterval.Text == "")
+            {
+
+            } else 
             {
                 MessageBox.Show("自動保存間隔は数値で指定してください。");
                 e.Handled = false;
@@ -104,7 +107,7 @@ namespace do_gagan2
             double d = 0;
             if (double.TryParse(TB_MultiplyFactorForSkipWithShiftKey.Text, out d))
             {
-                if (d > 0.1 && d < 10)
+                if (d >= 0 && d < 10)
                 {
                     e.Handled = true;
                 }
@@ -115,6 +118,9 @@ namespace do_gagan2
                     Properties.Settings.Default.MultiplyFactorForSkipWithShiftKey = 2;
                 }
             }
+            else if (TB_MultiplyFactorForSkipWithShiftKey.Text == "" || TB_MultiplyFactorForSkipWithShiftKey.Text == "0" || TB_MultiplyFactorForSkipWithShiftKey.Text == ".")
+            {
+            }
             else
             {
                 MessageBox.Show("ジャンプ倍率は数値で指定してください。");
@@ -122,6 +128,41 @@ namespace do_gagan2
                 Properties.Settings.Default.MultiplyFactorForSkipWithShiftKey = 5;
             }
             Properties.Settings.Default.Save();
+
+        }
+
+        //ウインドウを閉じる時に再チェック
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            int i = 0;
+            if (int.TryParse(TB_AutoSaveInterval.Text, out i))
+            {
+                if (i > 1 && i < 100)
+                {
+                    e.Cancel = false;
+                }
+                else
+                {
+                    MessageBox.Show("自動保存間隔は1-99分までの範囲で指定してください。");
+                    e.Cancel = true;
+                    Properties.Settings.Default.AutoSaveInterval = 5;
+                }
+            }
+
+            double d = 0;
+            if (double.TryParse(TB_MultiplyFactorForSkipWithShiftKey.Text, out d))
+            {
+                if (d >= 0.1 && d < 10)
+                {
+                    e.Cancel = false;
+                }
+                else
+                {
+                    MessageBox.Show("ジャンプ倍率は0.1-10倍までの範囲で指定してください。");
+                    e.Cancel = true;
+                    Properties.Settings.Default.MultiplyFactorForSkipWithShiftKey = 2;
+                }
+            }
 
         }
         #endregion

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:do_gagan2"
         xmlns:properties="clr-namespace:do_gagan2.Properties"
         mc:Ignorable="d"
-        Title="動画眼2 設定" Height="506.136" Width="529.577" ResizeMode="NoResize" ShowInTaskbar="False">
+        Title="動画眼2 設定" Height="506.136" Width="529.577" ResizeMode="NoResize" ShowInTaskbar="False" Closing="Window_Closing">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="448*"/>
