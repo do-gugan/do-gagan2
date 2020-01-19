@@ -568,8 +568,11 @@ namespace do_gagan2
                     InsertFunctionTemplate(Properties.Settings.Default.StringF5);
                     break;
                 case Key.Enter:
-                    Btn_Save_Click(null, null);
-                    e.Handled = true;
+                    if (TB_Memo.IsFocused == true)
+                    {
+                        Btn_Save_Click(null, null);
+                        e.Handled = true;
+                    }
                     break;
                 case Key.L:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
@@ -1266,11 +1269,9 @@ namespace do_gagan2
         //セルのテキストが変更された
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Console.WriteLine("Hoge");
             //フィルタリング時になぜか呼ばれるのでフラグで除外
             if (isWhileFiltering == false)
             {
-                Console.WriteLine("Fuga");
                 //var changedTextBox = e.Source as TextBox;
                 //Console.WriteLine("TextChanged:"+changedTextBox.Text);
                 //ダーティフラグを立てる
@@ -1400,6 +1401,7 @@ namespace do_gagan2
             {
                 encoder.Save(stream);
             }
+            ShowStatusBarMessage("スクリーンショット保存 - "+ Path.GetFileName(fileName),3);
         }
 
 
