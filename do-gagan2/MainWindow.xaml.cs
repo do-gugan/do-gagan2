@@ -59,6 +59,29 @@ namespace do_gagan2
             }
         }
 
+        //自動保存設定バインディングプロパティ
+        public bool isAutoSaveEnabled {
+            get {
+                //Console.WriteLine("get:"+ Properties.Settings.Default.isAutoSaveEnabled);
+                return Properties.Settings.Default.isAutoSaveEnabled;
+            }
+            set {
+                //Console.WriteLine("set:"+value);
+                Properties.Settings.Default.isAutoSaveEnabled = value;
+                Properties.Settings.Default.Save();
+
+                //自動タイマー起動
+                if (value == true)
+                {
+                    SetAutoSaveTimer();
+                } else
+                {
+                    ClearAutoSaveTimer();
+                }
+                //Console.WriteLine("saved:" + Properties.Settings.Default.isAutoSaveEnabled);
+            }
+        }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -1269,9 +1292,11 @@ namespace do_gagan2
         //セルのテキストが変更された
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            Console.WriteLine("Hoge");
             //フィルタリング時になぜか呼ばれるのでフラグで除外
             if (isWhileFiltering == false)
             {
+                Console.WriteLine("Fuga");
                 //var changedTextBox = e.Source as TextBox;
                 //Console.WriteLine("TextChanged:"+changedTextBox.Text);
                 //ダーティフラグを立てる
