@@ -97,13 +97,89 @@ namespace do_gagan2.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("300")]
-        public int AutoSaveInterval {
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public double MultiplyFactorForSkipWithShiftKey {
             get {
-                return ((int)(this["AutoSaveInterval"]));
+                return ((double)(this["MultiplyFactorForSkipWithShiftKey"]));
             }
             set {
-                this["AutoSaveInterval"] = value;
+                this["MultiplyFactorForSkipWithShiftKey"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool isLockOnAutoUpdate {
+            get {
+                return ((bool)(this["isLockOnAutoUpdate"]));
+            }
+            set {
+                this["isLockOnAutoUpdate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("タスク開始:$t$c")]
+        public string StringF1 {
+            get {
+                return ((string)(this["StringF1"]));
+            }
+            set {
+                this["StringF1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("参加者「$c$t」")]
+        public string StringF2 {
+            get {
+                return ((string)(this["StringF2"]));
+            }
+            set {
+                this["StringF2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("進行役「$c$t」")]
+        public string StringF3 {
+            get {
+                return ((string)(this["StringF3"]));
+            }
+            set {
+                this["StringF3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("見所！:$t$c")]
+        public string StringF4 {
+            get {
+                return ((string)(this["StringF4"]));
+            }
+            set {
+                this["StringF4"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("タスク完了:$t$c")]
+        public string StringF5 {
+            get {
+                return ((string)(this["StringF5"]));
+            }
+            set {
+                this["StringF5"] = value;
             }
         }
     }

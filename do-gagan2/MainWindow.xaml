@@ -25,6 +25,8 @@
             <RowDefinition Height="30" />
             <!--NewMemo-->
             <RowDefinition Height="auto" />
+            <!--ステータスバー-->
+            <RowDefinition Height="23" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*" MinWidth="510" />
@@ -41,6 +43,8 @@
                 <MenuItem x:Name="MI_Save" Header="上書き保存(_S)" Click="MI_Save_Click" IsEnabled="false" InputGestureText="Ctrl+S"/>
                 <MenuItem x:Name="MI_AutoSave" Header="自動上書き" Click="MI_AutoSave_Click" IsCheckable="True" IsChecked="{Binding isAutoSaveEnabled}" IsEnabled="False"/>
                 <MenuItem x:Name="MI_SaveNew" Header="名前を付けて書き出し(_A)..." Click="MI_SaveNew_Click" IsEnabled="False" />
+                <Separator />
+                <MenuItem Header="設定..." Click="MI_OpenSettings_Click" />
                 <Separator />
                 <MenuItem Header="終了(_X)" Click="Quit" />
             </MenuItem>
@@ -276,7 +280,7 @@
                             <Label Content="話者" Grid.Row="0" FontSize="10" Padding="0,0,0,0"/>
                             <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,0,0,5">
                                 <Button x:Name="Btn_Speaker_Decrease" Content="&lt;" Width="20" Height="20" Padding="0,-1,0,0" Click="Btn_Speaker_Decrease_Click"/>
-                            <TextBox x:Name="TB_Speaker" Width="30" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding SpeakerID}" GotFocus="TB_Speaker_GotFocus"/>
+                            <TextBox x:Name="TB_Speaker" Width="30" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding SpeakerID}" GotFocus="TB_Speaker_GotFocus" Background="{Binding SpeakerColor}"/>
                             <Button x:Name="Btn_Speaker_Increase" Content="&gt;" Width="20" Height="20" Padding="0,-1,0,0" Click="Btn_Speaker_Increase_Click"/>
                             </StackPanel>
                         </Grid>
@@ -286,7 +290,7 @@
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
                             <Label Content="メモ" Grid.Row="0" FontSize="10" Padding="0,0,0,0"/>
-                            <TextBox x:Name="TB_Memo" Height="20" Grid.Row="1" Margin="0,0,0,5" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                            <TextBox x:Name="TB_Memo" Height="20" Grid.Row="1" Margin="0,0,0,5" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextChanged="TB_Memo_TextChanged" />
                         </Grid>
                         <Grid Grid.Column="3" Margin="5,0,5,0">
                             <Grid.RowDefinitions>
@@ -313,6 +317,10 @@
                     </Grid>
                 </Grid>
         </DockPanel>
+        <!--ステータスバー-->
+        <StatusBar Grid.Row="4" Grid.ColumnSpan="3" HorizontalContentAlignment="Left" >
+            <StatusBarItem x:Name="StatusBarTextBlock" Content="{Binding StatusBarText}" />
+        </StatusBar>
     </Grid>
 
 </Window>

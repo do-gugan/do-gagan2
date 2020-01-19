@@ -34,6 +34,30 @@ namespace do_gagan2
         DispatcherTimer Timer_KeepVolumeSliderOpen;
         DispatcherTimer Timer_AutoSave;
         bool isWhileFiltering = false;
+        public string StatusBarText { get; set; }
+
+        //自動保存設定バインディングプロパティ
+        public bool isAutoSaveEnabled {
+            get {
+                //Console.WriteLine("get:"+ Properties.Settings.Default.isAutoSaveEnabled);
+                return Properties.Settings.Default.isAutoSaveEnabled;
+            }
+            set {
+                //Console.WriteLine("set:"+value);
+                Properties.Settings.Default.isAutoSaveEnabled = value;
+                Properties.Settings.Default.Save();
+
+                //自動タイマー起動
+                if (value == true)
+                {
+                    SetAutoSaveTimer();
+                } else
+                {
+                    ClearAutoSaveTimer();
+                }
+                //Console.WriteLine("saved:" + Properties.Settings.Default.isAutoSaveEnabled);
+            }
+        }
 
         //自動保存設定バインディングプロパティ
         public bool isAutoSaveEnabled {
@@ -143,8 +167,14 @@ namespace do_gagan2
         protected virtual void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             //終了処理
-            Timer_AutoSave.Stop();
-            Timer_KeepVolumeSliderOpen.Stop();
+            if (Timer_AutoSave != null)
+            {
+                Timer_AutoSave.Stop();
+            }
+            if (Timer_KeepVolumeSliderOpen != null)
+            {
+                Timer_KeepVolumeSliderOpen.Stop();
+            }
 
             if (AppModel.IsCurrentFileDirty)
             {
@@ -366,6 +396,7 @@ namespace do_gagan2
                     //Player.Pause();
                     isPlaying = false;
                     PauseIndicator.Visibility = Visibility.Visible;
+                    ShowStatusBarMessage("一時停止");
                 }
                 else
                 {
@@ -373,6 +404,7 @@ namespace do_gagan2
                     //Player.Play();
                     isPlaying = true;
                     PauseIndicator.Visibility = Visibility.Hidden;
+                    ShowStatusBarMessage("再生");
                 }
                 OnPropertyChanged("isPlaying");
 
@@ -387,12 +419,26 @@ namespace do_gagan2
         //前方ジャンプ
         private void Btn_SkipForward_click(object sender, RoutedEventArgs e)
         {
-            MoveRelative(Properties.Settings.Default.SkipForwardSec);
+            int sec = Properties.Settings.Default.SkipForwardSec;
+            if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+            {
+                Console.WriteLine("Shift Key");
+                sec = (int)(sec * Properties.Settings.Default.MultiplyFactorForSkipWithShiftKey);
+            }
+            ShowStatusBarMessage("▶▶ " + AppModel.SkipSecBtnLabel(sec), 0.5);
+            MoveRelative(sec);
         }
         //後方ジャンプ
         private void Btn_SkipBackward_click(object sender, RoutedEventArgs e)
         {
-            MoveRelative(Properties.Settings.Default.SkipBackwardSec * -1);
+            int sec = Properties.Settings.Default.SkipBackwardSec * -1;
+            if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+            {
+                Console.WriteLine("Shift Key");
+                sec = (int)(sec * Properties.Settings.Default.MultiplyFactorForSkipWithShiftKey);
+            }
+            ShowStatusBarMessage("◀◀ "+ AppModel.SkipSecBtnLabel(sec * -1), 0.5);
+            MoveRelative(sec);
         }
 
         //指定秒数に相対移動
@@ -406,7 +452,6 @@ namespace do_gagan2
                     offset = Player.NaturalDuration.TimeSpan - new TimeSpan(0, 0, 2);
                 } else if (offset < new TimeSpan(0))
                 {
-                    Console.WriteLine("minus");
                     offset = TimeSpan.Zero;
                 }
 
@@ -415,6 +460,12 @@ namespace do_gagan2
                     _storyboard.Resume(this);
 
                 ListBoxAutoScrollEnabled = true;
+
+                //ロックオン連動
+                if (Properties.Settings.Default.isLockOnAutoUpdate == true)
+                {
+                    Update_LockOn();
+                }
             }
 
         }
@@ -488,15 +539,31 @@ namespace do_gagan2
                     }
                     break;
                 case Key.W:
-                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    if (Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
                     {
-                        MoveRelative(Properties.Settings.Default.SkipForwardSec);
+                        int sec = (int)(Properties.Settings.Default.SkipForwardSec * Properties.Settings.Default.MultiplyFactorForSkipWithShiftKey);
+                        ShowStatusBarMessage("▶▶ " + AppModel.SkipSecBtnLabel(sec), 0.5);
+                        MoveRelative(sec);
+                    }
+                    else if (Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        int sec = Properties.Settings.Default.SkipForwardSec;
+                        ShowStatusBarMessage("▶▶ " + AppModel.SkipSecBtnLabel(sec), 0.5);
+                        MoveRelative(sec);
                     }
                     break;
                 case Key.Q:
-                    if (Keyboard.Modifiers == ModifierKeys.Control)
+                    if (Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
                     {
-                        MoveRelative(Properties.Settings.Default.SkipBackwardSec * -1);
+                        int sec = (int)(Properties.Settings.Default.SkipBackwardSec * -1 * Properties.Settings.Default.MultiplyFactorForSkipWithShiftKey);
+                        ShowStatusBarMessage("◀◀ " + AppModel.SkipSecBtnLabel(sec * -1), 0.5);
+                        MoveRelative(sec);
+                    }
+                    else if(Keyboard.Modifiers == ModifierKeys.Control)
+                    {
+                        int sec = Properties.Settings.Default.SkipBackwardSec * -1;
+                        ShowStatusBarMessage("◀◀ " + AppModel.SkipSecBtnLabel(sec * -1), 0.5);
+                        MoveRelative(sec);
                     }
                     break;
                 case Key.M:
@@ -509,23 +576,26 @@ namespace do_gagan2
 
                 //NewMemoブロック
                 case Key.F1:
-                    Btn_F1_Click(null, null);
+                    InsertFunctionTemplate(Properties.Settings.Default.StringF1);
                     break;
                 case Key.F2:
-                    Btn_F2_Click(null, null);
+                    InsertFunctionTemplate(Properties.Settings.Default.StringF2);
                     break;
                 case Key.F3:
-                    Btn_F3_Click(null, null);
+                    InsertFunctionTemplate(Properties.Settings.Default.StringF3);
                     break;
                 case Key.F4:
-                    Btn_F4_Click(null, null);
+                    InsertFunctionTemplate(Properties.Settings.Default.StringF4);
                     break;
                 case Key.F5:
-                    Btn_F5_Click(null, null);
+                    InsertFunctionTemplate(Properties.Settings.Default.StringF5);
                     break;
                 case Key.Enter:
-                    Btn_Save_Click(null, null);
-                    e.Handled = true;
+                    if (TB_Memo.IsFocused == true)
+                    {
+                        Btn_Save_Click(null, null);
+                        e.Handled = true;
+                    }
                     break;
                 case Key.L:
                     if (Keyboard.Modifiers == ModifierKeys.Control)
@@ -540,14 +610,28 @@ namespace do_gagan2
         //操作パネル上でAltショートカットが押された時の処理
         private void Window_AccessKeyPressed(object sender, AccessKeyPressedEventArgs e)
         {
+            int sec;
             switch (e.Key)
             {
                 case "W":
-                    MoveRelative(Properties.Settings.Default.SkipForwardSec);
+                    sec = Properties.Settings.Default.SkipForwardSec;
+                    if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                    {
+                        sec = (int)(sec * Properties.Settings.Default.MultiplyFactorForSkipWithShiftKey);
+                    }
+                    ShowStatusBarMessage("▶▶ " + AppModel.SkipSecBtnLabel(sec), 0.5);
+                    MoveRelative(sec);
                     e.Handled = true;
                     break;
                 case "Q":
-                    MoveRelative(Properties.Settings.Default.SkipBackwardSec * -1);
+                    sec = Properties.Settings.Default.SkipBackwardSec * -1;
+                    if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                    {
+                        Console.WriteLine("Shift Key");
+                        sec = (int)(sec * Properties.Settings.Default.MultiplyFactorForSkipWithShiftKey);
+                    }
+                    ShowStatusBarMessage("◀◀ " + AppModel.SkipSecBtnLabel(sec * -1), 0.5);
+                    MoveRelative(sec);
                     e.Handled = true;
                     break;
                 case "S":
@@ -629,13 +713,13 @@ namespace do_gagan2
         //動画を開いた時にスライダーの最大値を動画の長さにあわせる
         private void Element_MediaOpened(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("Duraton:" + Player.NaturalDuration.TimeSpan.TotalSeconds + "sec");
+            //Console.WriteLine("Duraton:" + Player.NaturalDuration.TimeSpan.TotalSeconds + "sec");
             Slider_Time.Maximum = Player.NaturalDuration.TimeSpan.TotalMilliseconds;
         }
         //スライダーを更新（再生中に定期的に呼ばれる）→呼ばれてない
         private void MediaTimeChanged(object sender, EventArgs e)
         {
-            Console.WriteLine("Tick");
+            //Console.WriteLine("Tick");
             Slider_Time.Value = Player.Position.TotalMilliseconds;
 
             //ログのフォーカス行を移動する
@@ -645,7 +729,7 @@ namespace do_gagan2
         //タイムスライダがドラッグ開始した時
         private void sliderTime_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
         {
-            Console.WriteLine("Slider DragStarted");
+            //Console.WriteLine("Slider DragStarted");
             //再生を一時停止（mediaTimeline_CurrentTimeInvalidatedの発生を防ぐ）
             if (isPlaying)
                 _storyboard.Pause(this);
@@ -662,6 +746,12 @@ namespace do_gagan2
                 _storyboard.Resume(this);
 
             ListBoxAutoScrollEnabled = true;
+
+            //ロックオン連動
+            if (Properties.Settings.Default.isLockOnAutoUpdate == true)
+            {
+                Update_LockOn();
+            }
 
         }
 
@@ -987,7 +1077,7 @@ namespace do_gagan2
         {
             SaveLog();
         }
-        public bool SaveLog(bool suppressUpdateDirtyFlag = false)
+        public bool SaveLog(bool suppressUpdateDirtyFlag = false, bool byTimer = false)
         {
             //編集中のセルから抜けるために、検索欄にフォーカス
             TB_Memo.Focus();
@@ -1024,6 +1114,14 @@ namespace do_gagan2
             {
                 SetAutoSaveTimer();
             }
+            if (byTimer == true)
+            {
+                ShowStatusBarMessage("自動保存");
+            }
+            else
+            {
+                ShowStatusBarMessage("上書き保存");
+            }
             return true;
         }
 
@@ -1037,7 +1135,7 @@ namespace do_gagan2
                 Timer_AutoSave = null;
             }
             Timer_AutoSave = new DispatcherTimer(DispatcherPriority.Normal, this.Dispatcher);
-            Timer_AutoSave.Interval = TimeSpan.FromSeconds(Properties.Settings.Default.AutoSaveInterval);
+            Timer_AutoSave.Interval = TimeSpan.FromMinutes(Properties.Settings.Default.AutoSaveInterval);//分
             Timer_AutoSave.Tick += new EventHandler(AutoSaveTimer_Tick);
             Timer_AutoSave.Start();
         }
@@ -1059,7 +1157,7 @@ namespace do_gagan2
             Console.WriteLine("AutoSave Tick");
             if (AppModel.IsCurrentFileDirty == true)
             {
-                SaveLog();
+                SaveLog(false,true);
             }
             SetAutoSaveTimer();
         }
@@ -1328,6 +1426,7 @@ namespace do_gagan2
             {
                 encoder.Save(stream);
             }
+            ShowStatusBarMessage("スクリーンショット保存 - "+ Path.GetFileName(fileName),3);
         }
 
 
@@ -1339,6 +1438,8 @@ namespace do_gagan2
         public double LockedPosition { get; set; } = 0.0;
 
         public int SpeakerID { get; set; } = 0;
+
+        public string SpeakerColor { get { return AppModel.SpeakerColorString(SpeakerID.ToString()); } }
 
         //メモ欄表示
         //public Window_NewMemo(double position, int speaker)
@@ -1360,41 +1461,67 @@ namespace do_gagan2
 
         private void Btn_F1_Click(object sender, RoutedEventArgs e)
         {
-            TB_Memo.Text = "タスク開始:" + TB_Memo.Text;
-            TB_Memo.Select(TB_Memo.Text.Length, 0); //末尾にカーソル
-            TB_Memo.Focus();
+            InsertFunctionTemplate(Properties.Settings.Default.StringF1);
         }
         private void Btn_F2_Click(object sender, RoutedEventArgs e)
         {
-            TB_Memo.Text = "参加者「" + TB_Memo.Text + "」";
-            TB_Memo.Select(4, 0); //"「"の次にカーソル
-            TB_Memo.Focus();
+            InsertFunctionTemplate(Properties.Settings.Default.StringF2);
         }
 
         private void Btn_F3_Click(object sender, RoutedEventArgs e)
         {
-            TB_Memo.Text = "進行役「" + TB_Memo.Text + "」";
-            TB_Memo.Select(4, 0); //"「"の次にカーソル
-            TB_Memo.Focus();
+            InsertFunctionTemplate(Properties.Settings.Default.StringF3);
         }
         private void Btn_F4_Click(object sender, RoutedEventArgs e)
         {
-            TB_Memo.Text = "見所！:" + TB_Memo.Text;
-            TB_Memo.Select(TB_Memo.Text.Length, 0); //末尾にカーソル
-            TB_Memo.Focus();
+            InsertFunctionTemplate(Properties.Settings.Default.StringF4);
         }
 
         private void Btn_F5_Click(object sender, RoutedEventArgs e)
         {
-            TB_Memo.Text = "タスク完了:" + TB_Memo.Text;
-            TB_Memo.Select(TB_Memo.Text.Length, 0); //末尾にカーソル
+            InsertFunctionTemplate(Properties.Settings.Default.StringF5);
+        }
+
+        private void InsertFunctionTemplate(string template)
+        {
+            int tLoc = template.IndexOf("$t")+1;
+            int cLoc = template.IndexOf("$c")+1;
+            int tLen = TB_Memo.Text.Length;
+
+            //Console.WriteLine("cLoc:" + cLoc + " tLoc:" + tLoc + " tLen:" + tLen);
+
+            //$sを現在の文字列で置換
+            TB_Memo.Text = template.Replace("$t", TB_Memo.Text);
+
+            //$cにキャレット移動
+            int loc = TB_Memo.Text.IndexOf("$c");
+            if (loc == -1){
+                //$cが見つからない場合は最後にキャレット
+                TB_Memo.Select(TB_Memo.Text.Length, 0); //$cの位置にカーソル
+            }
+            else
+            {
+                TB_Memo.Text = TB_Memo.Text.Replace("$c", ""); //$cを削除
+                if (cLoc < tLoc)
+                {
+                    //Console.WriteLine("tが後ろ");
+                    TB_Memo.Select(cLoc -1, 0); //$cの位置にカーソル
+                }
+                else
+                {
+                    //Console.WriteLine("cが後ろ:" + (cLoc + tLen - 2));
+                    TB_Memo.Select(cLoc + tLen -3, 0); //$c+$tの位置にカーソル
+                }
+            }
             TB_Memo.Focus();
         }
+
+
 
         //ロックオン秒数を現在の再生時間に更新
         private void Update_LockOn()
         {
-            Console.WriteLine("UpdateLockOn");
+            //Console.WriteLine("UpdateLockOn");
             LockedPosition = Player.Position.TotalSeconds;
             OnPropertyChanged("LockedPosition");
             if (NewMemo.Visibility != Visibility.Visible)
@@ -1441,6 +1568,7 @@ namespace do_gagan2
             if (SpeakerID > 0)
                 SpeakerID -= 1;
             OnPropertyChanged("SpeakerID");
+            OnPropertyChanged("SpeakerColor");
             TB_Memo.Focus();
         }
 
@@ -1448,6 +1576,7 @@ namespace do_gagan2
         {
             SpeakerID += 1;
             OnPropertyChanged("SpeakerID");
+            OnPropertyChanged("SpeakerColor");
             TB_Memo.Focus();
         }
 
@@ -1479,6 +1608,44 @@ namespace do_gagan2
 
         #endregion
 
+
+        #region ステータスバーメッセージ
+
+        DispatcherTimer Timer_StatusBarMessageHide;
+        /// <summary>
+        /// ステータスバーにメッセージを表示し、指定秒数後に消す
+        /// </summary>
+        /// <param name="message">メッセージ</param>
+        /// <param name="duration">表示秒数（指定しなければ1秒）</param>
+        public void ShowStatusBarMessage(string message, double duration = 1.0)
+        {
+            StatusBarText = message;
+            OnPropertyChanged("StatusBarText");
+
+            if (Timer_StatusBarMessageHide != null)
+            {
+                Timer_StatusBarMessageHide.Stop();
+                Timer_StatusBarMessageHide = null;
+            }
+            Timer_StatusBarMessageHide = new DispatcherTimer(DispatcherPriority.Normal, this.Dispatcher);
+            Timer_StatusBarMessageHide.Interval = TimeSpan.FromSeconds(duration);
+            Timer_StatusBarMessageHide.Tick += new EventHandler(StatusMessageTimer_Tick);
+            Timer_StatusBarMessageHide.Start();
+
+        }
+
+        private void StatusMessageTimer_Tick(object sender, EventArgs e)
+        {
+            StatusBarText = "";
+            OnPropertyChanged("StatusBarText");
+
+            Timer_StatusBarMessageHide.Stop();
+            Timer_StatusBarMessageHide = null;
+
+        }
+
+        #endregion
+
         private void TB_Speaker_GotFocus(object sender, RoutedEventArgs e)
         {
             TB_Memo.Focus();
@@ -1506,5 +1673,42 @@ namespace do_gagan2
             Update_LockOn();
             e.Handled = true;
         }
+
+        /// <summary>
+        ///  設定ウインドウを開く
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MI_OpenSettings_Click(object sender, RoutedEventArgs e)
+        {
+            Window_Settings window_Settings = new Window_Settings();
+            window_Settings.ShowDialog();
+        }
+
+        /// <summary>
+        /// 新規メモの最初の1文字目の入力を判定するフラグ
+        /// メモ欄が空欄になった時にtrueがセットされる
+        /// </summary>
+        bool isStartingLetter = true;
+
+        private void TB_Memo_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            //Console.WriteLine("NewMemo Text.Changed; "+ TB_Memo.Text.Length + "isStartingLetter:"+ isStartingLetter);
+            if (TB_Memo.Text.Length == 0)
+            {
+                //Console.WriteLine("メモ欄が空欄になった");
+                isStartingLetter = true;
+            } else if (TB_Memo.Text.Length > 0 && isStartingLetter == true && Properties.Settings.Default.isLockOnAutoUpdate==true)
+            {
+                Update_LockOn();
+                isStartingLetter = false;
+            } else
+            {
+                //Console.WriteLine("1文字目以外の入力");
+                isStartingLetter = false;
+            }
+
+        }
+
     }
 }

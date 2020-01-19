@@ -140,26 +140,7 @@ namespace do_gagan2
         }
         public string SpeakerColor {
             get {
-                switch(Speaker){
-                    case "0":
-                        return "#CCFFFF";
-                    case "1":
-                        return "#FFD5EC";
-                    case "2":
-                        return "#CCFFCC";
-                    case "3":
-                        return "#FFCCFF";
-                    case "4":
-                        return "#FFFFCC";
-                    case "5":
-                        return "#FFDBC9";
-                    case "6":
-                        return "#E6FFE9";
-                    case "7":
-                        return "#EAD9FF";
-                    default:
-                        return "#CCFFFF";
-                }
+                return AppModel.SpeakerColorString(Speaker);
             }
         }
 

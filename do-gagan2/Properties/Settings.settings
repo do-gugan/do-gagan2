@@ -21,7 +21,28 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="AutoSaveInterval" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">300</Value>
+      <Value Profile="(Default)">5</Value>
+    </Setting>
+    <Setting Name="MultiplyFactorForSkipWithShiftKey" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="isLockOnAutoUpdate" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="StringF1" Type="System.String" Scope="User">
+      <Value Profile="(Default)">タスク開始:$t$c</Value>
+    </Setting>
+    <Setting Name="StringF2" Type="System.String" Scope="User">
+      <Value Profile="(Default)">参加者「$c$t」</Value>
+    </Setting>
+    <Setting Name="StringF3" Type="System.String" Scope="User">
+      <Value Profile="(Default)">進行役「$c$t」</Value>
+    </Setting>
+    <Setting Name="StringF4" Type="System.String" Scope="User">
+      <Value Profile="(Default)">見所！:$t$c</Value>
+    </Setting>
+    <Setting Name="StringF5" Type="System.String" Scope="User">
+      <Value Profile="(Default)">タスク完了:$t$c</Value>
     </Setting>
   </Settings>
 </SettingsFile>

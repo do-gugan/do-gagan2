@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.IO;
+using System.Drawing;
 
 namespace do_gagan2
 {
@@ -142,38 +143,14 @@ namespace do_gagan2
         public static string SkipSecBtnLabel(int sec)
         {
             string result = "";
-            switch (sec)
+            if (sec > 120 && (sec%60)==0 )
             {
-                case 3:
-                    result = "3sec";
-                    break;
-                case 5:
-                    result = "5sec";
-                    break;
-                case 10:
-                    result = "10sec";
-                    break;
-                case 15:
-                    result = "15sec";
-                    break;
-                case 30:
-                    result = "30sec";
-                    break;
-                case 60:
-                    result = "60sec";
-                    break;
-                case 90:
-                    result = "90sec";
-                    break;
-                case 180:
-                    result = "3min";
-                    break;
-                case 300:
-                    result = "5min";
-                    break;
-                case 600:
-                    result = "10min";
-                    break;
+                int mm = (int)(sec / 60);
+                int ss = sec - (mm * 60);
+                result = mm.ToString() + "min";
+            } else
+            {
+                result = sec.ToString() + "sec";
             }
             return result;
         }
@@ -260,6 +237,29 @@ namespace do_gagan2
         }
         #endregion
 
+        public static string SpeakerColorString(string Speaker) {
+            switch (Speaker)
+            {
+                case "0":
+                    return "#CCFFFF";
+                case "1":
+                    return "#FFD5EC";
+                case "2":
+                    return "#CCFFCC";
+                case "3":
+                    return "#FFAADD";
+                case "4":
+                    return "#FFFFCC";
+                case "5":
+                    return "#FFDBC9";
+                case "6":
+                    return "#E6FFE9";
+                case "7":
+                    return "#EAD9FF";
+                default:
+                    return "#CCFFFF";
+            }
+        }
     }
 
     enum MediaType
