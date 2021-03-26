@@ -59,29 +59,6 @@ namespace do_gagan2
             }
         }
 
-        //自動保存設定バインディングプロパティ
-        public bool isAutoSaveEnabled {
-            get {
-                //Console.WriteLine("get:"+ Properties.Settings.Default.isAutoSaveEnabled);
-                return Properties.Settings.Default.isAutoSaveEnabled;
-            }
-            set {
-                //Console.WriteLine("set:"+value);
-                Properties.Settings.Default.isAutoSaveEnabled = value;
-                Properties.Settings.Default.Save();
-
-                //自動タイマー起動
-                if (value == true)
-                {
-                    SetAutoSaveTimer();
-                } else
-                {
-                    ClearAutoSaveTimer();
-                }
-                //Console.WriteLine("saved:" + Properties.Settings.Default.isAutoSaveEnabled);
-            }
-        }
-
         public MainWindow()
         {
             InitializeComponent();
