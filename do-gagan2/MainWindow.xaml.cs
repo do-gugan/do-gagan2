@@ -297,14 +297,17 @@ namespace do_gagan2
             {
                 if (!LogReader.SearchTXTFile(moviePath))
                 {
-                    Console.WriteLine("どちらのファイルも存在しない");
-                    //設定形式を調べる
-                    //ログファイルパスを作成してセットする
-                    string logPath = Path.Combine(Path.GetDirectoryName(moviePath), Path.GetFileNameWithoutExtension(moviePath) + ".dggn.txt"); //2.0形式
-                    Console.WriteLine("new log:" + logPath);
-                    AppModel.CurrentLogFilePath = logPath;
-                    ListBox_Records.DataContext = AppModel.Records.Records;
-                    MI_Replace.IsEnabled = true;
+                    if (!LogReader.SearchSRTFile(moviePath))
+                    {
+                        Console.WriteLine("どのファイルも存在しない");
+                        //設定形式を調べる
+                        //ログファイルパスを作成してセットする
+                        string logPath = Path.Combine(Path.GetDirectoryName(moviePath), Path.GetFileNameWithoutExtension(moviePath) + ".dggn.txt"); //2.0形式
+                        Console.WriteLine("new log:" + logPath);
+                        AppModel.CurrentLogFilePath = logPath;
+                        ListBox_Records.DataContext = AppModel.Records.Records;
+                        MI_Replace.IsEnabled = true;
+                    }
                 }
             }
 
@@ -1065,19 +1068,30 @@ namespace do_gagan2
             //メディアファイル切り替え時の保存は抑止
             if (AppModel.CurrentLogFilePath== "suppress") return true;
 
-                if (Path.GetFileName(AppModel.CurrentLogFilePath).EndsWith(".dggn.txt"))
+            if (Path.GetFileName(AppModel.CurrentLogFilePath).EndsWith(".dggn.txt"))
             {
                 //V2フォーマットで保存
                 Console.WriteLine("Save V2");
-                body = AppModel.Records.ToString(false,FileFormatVersion.Type2);
+                body = AppModel.Records.ToString(false, FileFormatVersion.Type2);
                 enc = Encoding.GetEncoding("UTF-8");
-            } else if (Path.GetExtension(AppModel.CurrentLogFilePath) == ".txt")
+            }
+            else if (Path.GetExtension(AppModel.CurrentLogFilePath) == ".txt")
             {
                 //V1フォーマットで保存
                 Console.WriteLine("Save V1");
-                body = AppModel.Records.ToString(false,FileFormatVersion.Type1);
+                body = AppModel.Records.ToString(false, FileFormatVersion.Type1);
                 enc = Encoding.GetEncoding("Shift_JIS");
-            } else
+            } else if (Path.GetFileName(AppModel.CurrentLogFilePath).EndsWith(".srt"))
+            {
+                //srtをインポートした場合、V2フォーマットで保存し、現在のファイル拡張子を変更）
+                Console.WriteLine("Save V2");
+                body = AppModel.Records.ToString(false, FileFormatVersion.Type2);
+                enc = Encoding.GetEncoding("UTF-8");
+
+                AppModel.CurrentLogFilePath = Path.Combine(Path.GetDirectoryName(AppModel.CurrentLogFilePath), Path.GetFileNameWithoutExtension(AppModel.CurrentLogFilePath) +".dggn.txt");
+                Console.WriteLine("NewLogPath:" + AppModel.CurrentLogFilePath);
+            }
+                else
             {
                 MessageBox.Show("未知の拡張子のため上書き保存できませんでした。");
                 return false;
