@@ -41,7 +41,11 @@ namespace do_gagan2
         //バージョン情報を開く
         public static void ShowVersionInfo()
         {
-            MessageBox.Show("動画眼 Version " + GetVersion() + "\r\r©2019 Do-gugan");
+            MessageBoxResult result = MessageBox.Show("動画眼 Version " + GetVersion() + "\r\r©2019 Do-gugan\rReleased under the MIT license\r\r「OK」でライセンス詳細ページを開きます。","動画眼について",MessageBoxButton.OKCancel);
+            if (result == MessageBoxResult.OK)
+            {
+                System.Diagnostics.Process.Start("https://do-gugan.com/tools/do-gagan2/license/");
+            }
         }
         public static string GetVersion()
         {

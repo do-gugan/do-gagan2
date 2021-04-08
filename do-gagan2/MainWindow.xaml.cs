@@ -342,6 +342,7 @@ namespace do_gagan2
             MI_Save.IsEnabled = true;
             MI_AutoSave.IsEnabled = true;
             MI_SaveNew.IsEnabled = true;
+            MI_ExportLite.IsEnabled = true;
             //CB_NewLog.IsEnabled = true;
 
             //動画ファイルの時だけキャプチャボタンを有効化
@@ -1241,6 +1242,98 @@ namespace do_gagan2
 
 
         }
+
+
+        
+        /// <summary>
+        /// 動画眼Lite用の.json.jsファイルを書き出し
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MI_ExportLite_Click(object sender, RoutedEventArgs e)
+        {
+            //編集中のセルから抜けるために、検索欄にフォーカス
+            TB_Memo.Focus();
+
+            if (_storyboard == null) return;
+            _storyboard.Pause(this);
+
+            //動画形式がMP4でない時の警告
+            string ext = Path.GetExtension(AppModel.CurrentMovieFilePath).ToLower();
+            if (Path.GetExtension(ext) != ".mp4")
+            {
+                var result = MessageBox.Show("現在の動画形式(" + ext + ")ではブラウザで表示できません。\n詳細は「ヘルプ」から「サポートページ」、「動画眼Lite」タブをご確認ください。\nエクスポートは続けますか？", "動画形式の確認", MessageBoxButton.OKCancel, MessageBoxImage.Asterisk);
+                if (result == MessageBoxResult.Cancel) return;
+            }
+
+            string newJsonJsFilePath = Path.Combine(Path.GetDirectoryName(AppModel.CurrentMovieFilePath), Path.GetFileNameWithoutExtension(AppModel.CurrentMovieFilePath) + ".json.js");
+
+            bool go = false; //保存実行フラグ
+            if (File.Exists(newJsonJsFilePath))
+            {
+                var result2 = MessageBox.Show(newJsonJsFilePath + "は存在します。\n上書きしますか？", "JSファイル上書き確認", MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
+                if (result2 == MessageBoxResult.OK) go = true;
+            }
+            else
+            {
+                //既存ファイルがないからgo
+                go = true;
+            }
+
+            if (go)
+            {
+                string body = AppModel.Records.ToString(true, FileFormatVersion.JsonJS);
+                Encoding enc = Encoding.GetEncoding("UTF-8");
+                using (StreamWriter writer = new StreamWriter(newJsonJsFilePath, false, enc))
+                {
+                    writer.WriteLine(body);
+                }
+                var result = MessageBox.Show("動画眼Lite用データファイル「"+ Path.GetFileName(newJsonJsFilePath) +"」を動画と同じフォルダに保存しました。\n動画眼Liteの最新HTMLファイルをダウンロードして配置しますか？\n（インターネット接続が必要です）", "動画眼Liteのダウンロード確認", MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
+                if (result == MessageBoxResult.OK)
+                {
+                    //サーバーから最新の動画眼Liteを取得し、ファイル名を書き換えて保存
+                    //Githubの最新版
+                    string latest = "https://github.com/do-gugan/do-gagan_lite/releases/latest/download/index.html";
+                    string html = Path.Combine(Path.GetDirectoryName(AppModel.CurrentMovieFilePath), Path.GetFileNameWithoutExtension(AppModel.CurrentMovieFilePath) + ".html");
+                    //htmlファイル上書き確認
+                    bool go2 = false; //保存実行フラグ
+                    if (File.Exists(html))
+                    {
+                        var result2 = MessageBox.Show(html + "は存在します。\n上書きしますか？","HTMLファイル上書き確認", MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
+                        if (result2 == MessageBoxResult.OK) go2 = true;
+                    } else
+                    {
+                        //既存ファイルがないからgo
+                        go2 = true;
+                    }
+                    if (go2)
+                    {
+                        try
+                        {
+                            //ダウンロードして改名して保存
+                            System.Net.WebClient wc = new System.Net.WebClient();
+                            wc.DownloadFile(latest, html);
+                            wc.Dispose();
+                        }
+                        catch (System.Net.WebException)
+                        {
+                            var result3 = MessageBox.Show("ダウンロードに失敗しました。\nOKでダウンロードページをブラウザで開きます。index.htmlをダウンロードし、動画ファイルと同じフォルダに拡張子違いの同名で保存してください。\n（例：hoge.mp4に対しhoge.html）", "動画眼Liteのダウンロードエラー", MessageBoxButton.OKCancel, MessageBoxImage.Error);
+                            if (result3 == MessageBoxResult.OK)
+                            {
+                                System.Diagnostics.Process.Start("https://github.com/do-gugan/do-gagan_lite/releases/latest/");
+                            }
+                        }
+                    }
+
+
+                }
+            }
+
+            TB_Memo.Focus();
+
+
+        }
+
         #endregion
 
         //新規メモボタン（NewMemoブロックの表示トグル）
