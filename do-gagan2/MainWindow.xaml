@@ -43,6 +43,7 @@
                 <MenuItem x:Name="MI_Save" Header="上書き保存(_S)" Click="MI_Save_Click" IsEnabled="false" InputGestureText="Ctrl+S"/>
                 <MenuItem x:Name="MI_AutoSave" Header="自動上書き" Click="MI_AutoSave_Click" IsCheckable="True" IsChecked="{Binding isAutoSaveEnabled}" IsEnabled="False"/>
                 <MenuItem x:Name="MI_SaveNew" Header="名前を付けて書き出し(_A)..." Click="MI_SaveNew_Click" IsEnabled="False" />
+                <MenuItem x:Name="MI_ExportLite" Header="動画眼Lite形式で書き出し(_E)..." Click="MI_ExportLite_Click" IsEnabled="False" />
                 <Separator />
                 <MenuItem Header="設定..." Click="MI_OpenSettings_Click" />
                 <Separator />

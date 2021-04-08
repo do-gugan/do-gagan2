@@ -35,6 +35,13 @@ namespace do_gagan2
         public string ToString(bool WithSpeakerLabel = false, FileFormatVersion version = FileFormatVersion.Type2)
         {
             string result = "";
+
+            //JsonJSのヘッダー
+            if (version == FileFormatVersion.JsonJS)
+            {
+                result += "const scriptsJson = [\r\n";
+            }
+
             List<Dogagan_Record> sortedRecords = _records.OrderBy(r => r.TimeStamp).ToList();
             foreach (var r in sortedRecords)
             {
@@ -53,7 +60,10 @@ namespace do_gagan2
                             result += r.Transcript;
                         }
                         break;
-
+                    case FileFormatVersion.JsonJS:
+                        //動画眼Lite用のJSON形式を含むJSファイル。SpeakerLabelは強制で付与
+                        result += "\t{ in:" + r.TimeStamp + ", script:\"" + r.Transcript + "\", speaker:" + r.Speaker + " },";
+                        break;
                     default:
                         //動画眼2.x形式（タイムスタンプそのまま、話者フィールド対応）
                         result += r.TimeStamp;
@@ -71,6 +81,16 @@ namespace do_gagan2
                 }
                 result += "\r\n";
             }
+
+            //JsonJSのフッター処理
+            if (version == FileFormatVersion.JsonJS)
+            {
+                //最終行のカンマを削除
+                result = result.Substring(0, result.Length - 3); //末尾のカンマ、\r、\nの3文字を削る
+
+                result += "\r\n];";
+            }
+
             return result;
         }
 
@@ -189,7 +209,8 @@ namespace do_gagan2
     public enum FileFormatVersion
     {
         Type1,
-        Type2
+        Type2,
+        JsonJS
     }
 
 }
