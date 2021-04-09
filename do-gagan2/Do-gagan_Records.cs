@@ -62,7 +62,7 @@ namespace do_gagan2
                         break;
                     case FileFormatVersion.JsonJS:
                         //動画眼Lite用のJSON形式を含むJSファイル。SpeakerLabelは強制で付与
-                        result += "\t{ in:" + r.TimeStamp + ", script:\"" + r.Transcript + "\", speaker:" + r.Speaker + " },";
+                        result += "\t{ in:" + r.TimeStamp + ", script:\"" + r.Transcript.Replace("\"","\\\"") + "\", speaker:" + r.Speaker + " },";
                         break;
                     default:
                         //動画眼2.x形式（タイムスタンプそのまま、話者フィールド対応）
