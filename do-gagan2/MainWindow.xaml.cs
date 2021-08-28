@@ -710,17 +710,17 @@ namespace do_gagan2
         //タイムスライダがドラッグ開始した時
         private void sliderTime_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
         {
-            Console.WriteLine("Slider DragStarted");
+            //Console.WriteLine("Slider DragStarted");
             //再生を一時停止（mediaTimeline_CurrentTimeInvalidatedの発生を防ぐ）
             if (isPlaying)
-                Console.WriteLine("pause");
+                //Console.WriteLine("pause");
             _storyboard.Pause(this);
         }
 
         //タイムスライダがドラッグ完了した時
         private void sliderTime_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
         {
-            Console.WriteLine("Slider Ended");
+            //Console.WriteLine("Slider Ended");
             //シークする
             _storyboard.Seek(this, new TimeSpan((long)Math.Floor(Slider_Time.Value * TimeSpan.TicksPerMillisecond)), TimeSeekOrigin.BeginTime);
             //再生を再開
