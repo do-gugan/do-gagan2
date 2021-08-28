@@ -109,6 +109,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AddFnumLabelConverter.cs" />
     <Compile Include="LockedPositionConverter.cs" />
     <Compile Include="Window_Replace.xaml.cs">
       <DependentUpon>Window_Replace.xaml</DependentUpon>
