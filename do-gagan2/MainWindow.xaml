@@ -98,29 +98,38 @@
 
         <!--左動画プレーヤーコントロール-->
         <StackPanel Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Stretch">
-            <StackPanel x:Name="PlayerControls" Width="auto" Height="30" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.ColumnSpan="2" Margin="0,0,11,0">
+            <Grid x:Name="PlayerControls" Height="30">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30" /><!--キャプチャボタンー-->
+                    <ColumnDefinition Width="40" /><!--後方ジャンプボタン-->
+                    <ColumnDefinition Width="40" /><!--再生／一時停止ボタン-->
+                    <ColumnDefinition Width="40" /><!--前方ジャンプボタン-->
+                    <ColumnDefinition Width="*" /><!--スライダー-->
+                    <ColumnDefinition Width="78" />
+                    <ColumnDefinition Width="30" />
+                </Grid.ColumnDefinitions>
                 <!--キャプチャボタン-->
-                <Button x:Name="Btn_Capture" Content="📷" ToolTip="静止画で保存" Width="30"  IsEnabled="false" Click="Btn_Capture_Click" Background="Transparent" FontFamily="Segoe UI Emoji" BorderBrush="Transparent" />
+                <Button Grid.Column="0" x:Name="Btn_Capture" Content="📷" ToolTip="静止画で保存" IsEnabled="false" Click="Btn_Capture_Click" Background="Transparent" FontFamily="Segoe UI Emoji" BorderBrush="Transparent" />
                 <!--後方ジャンプボタン-->
-                <Button x:Name="Btn_SkipBackward" Click="Btn_SkipBackward_click" IsEnabled="false" FontFamily="Calibri" Width="40" >
+                <Button Grid.Column="1" x:Name="Btn_SkipBackward" Click="Btn_SkipBackward_click" IsEnabled="false" FontFamily="Calibri" >
                     <StackPanel Orientation="Vertical">
                         <Label Content="7" Padding="0,0,0,0" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="Webdings"/>
                         <Label x:Name="Btn_SkipBackwardSecLabel" Content="10sec" FontSize="9" Padding="0,0,0,0" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </Button>
                 <!--再生／一時停止ボタン-->
-                <Button x:Name="Btn_Play" Content="▶/II" Click="Btn_PlayPause_click" IsEnabled="false" Padding="5,0,5,0" FontFamily="Calibri" FontWeight="Bold" Width="40"/>
+                <Button Grid.Column="2" x:Name="Btn_Play" Content="▶/II" Click="Btn_PlayPause_click" IsEnabled="false" Padding="5,0,5,0" FontFamily="Calibri" FontWeight="Bold"/>
                 <!--前方ジャンプボタン-->
-                <Button x:Name="Btn_SkipForward" Click="Btn_SkipForward_click" IsEnabled="false" FontFamily="Calibri" Width="40">
+                <Button Grid.Column="3" x:Name="Btn_SkipForward" Click="Btn_SkipForward_click" IsEnabled="false" FontFamily="Calibri">
                     <StackPanel Orientation="Vertical">
                         <Label Content="8" Padding="0,0,0,0" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="Webdings"/>
                         <Label x:Name="Btn_SkipForwardSecLabel" Content="10sec" FontSize="9" Padding="0,0,0,0" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </Button>
-                <Slider Name="Slider_Time" Margin="5" Width="250" HorizontalAlignment="Center" IsEnabled="False" Thumb.DragStarted="sliderTime_DragStarted" Thumb.DragCompleted="sliderTime_DragCompleted"/>
-                <TextBlock Name="TextBlock_Time" VerticalAlignment="Center" HorizontalAlignment="Center" >00:00/00:00</TextBlock>
-                <Button x:Name="Btn_Volume" Content="🔊" Width="30" Click="Btn_Volume_Click" Background="Transparent" FontFamily="Segoe UI Emoji" BorderBrush="Transparent"/>
-                <Popup x:Name="Popup_VolumeSlider" Width="30" Placement="Top" HorizontalAlignment="Center" PlacementTarget="{Binding ElementName=Btn_Volume}" MouseEnter="Popup_VolumeSlider_MouseEnter" MouseLeave="Popup_VolumeSlider_MouseLeave">
+                <Slider Grid.Column="4" Name="Slider_Time" Margin="5" MinWidth="250" IsEnabled="False" Thumb.DragStarted="sliderTime_DragStarted" Thumb.DragCompleted="sliderTime_DragCompleted"/>
+                <TextBlock Grid.Column="5" Name="TextBlock_Time" VerticalAlignment="Center" HorizontalAlignment="Right" Padding="0,0,3,0" >00:00/00:00</TextBlock>
+                <Button Grid.Column="6" x:Name="Btn_Volume" Content="🔊" Width="30" Click="Btn_Volume_Click" Background="Transparent" FontFamily="Segoe UI Emoji" BorderBrush="Transparent" HorizontalAlignment="Right"/>
+                <Popup x:Name="Popup_VolumeSlider" Width="30" Placement="Top" HorizontalAlignment="Right" PlacementTarget="{Binding ElementName=Btn_Volume}" MouseEnter="Popup_VolumeSlider_MouseEnter" MouseLeave="Popup_VolumeSlider_MouseLeave">
                     <StackPanel Orientation="Vertical" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
                         <Label x:Name="Lbl_CurrentVolume" FontSize="9" HorizontalAlignment="Center" ContentStringFormat="0" Padding="0,6,0,1">
                             <Label.Content>
@@ -130,7 +139,7 @@
                         <Slider x:Name="Slider_Volume" Orientation="Vertical" Height="100" Margin="5,0,5,5" Maximum="100" Minimum="0" ValueChanged="Slider_Volume_ValueChanged" />
                     </StackPanel>
                 </Popup>
-            </StackPanel>
+            </Grid>
         </StackPanel>
         <!--ドラッガブル境界線-->
         <GridSplitter Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" Width="5" HorizontalAlignment="Stretch"/>

@@ -710,10 +710,11 @@ namespace do_gagan2
         //タイムスライダがドラッグ開始した時
         private void sliderTime_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
         {
-            //Console.WriteLine("Slider DragStarted");
+            Console.WriteLine("Slider DragStarted");
             //再生を一時停止（mediaTimeline_CurrentTimeInvalidatedの発生を防ぐ）
             if (isPlaying)
-                _storyboard.Pause(this);
+                Console.WriteLine("pause");
+            _storyboard.Pause(this);
         }
 
         //タイムスライダがドラッグ完了した時
