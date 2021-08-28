@@ -105,7 +105,7 @@
                     <ColumnDefinition Width="40" /><!--再生／一時停止ボタン-->
                     <ColumnDefinition Width="40" /><!--前方ジャンプボタン-->
                     <ColumnDefinition Width="*" /><!--スライダー-->
-                    <ColumnDefinition Width="70" />
+                    <ColumnDefinition Width="78" />
                     <ColumnDefinition Width="30" />
                 </Grid.ColumnDefinitions>
                 <!--キャプチャボタン-->
@@ -127,7 +127,7 @@
                     </StackPanel>
                 </Button>
                 <Slider Grid.Column="4" Name="Slider_Time" Margin="5" MinWidth="250" IsEnabled="False" Thumb.DragStarted="sliderTime_DragStarted" Thumb.DragCompleted="sliderTime_DragCompleted"/>
-                <TextBlock Grid.Column="5" Name="TextBlock_Time" VerticalAlignment="Center" HorizontalAlignment="Center" >00:00/00:00</TextBlock>
+                <TextBlock Grid.Column="5" Name="TextBlock_Time" VerticalAlignment="Center" HorizontalAlignment="Right" Padding="0,0,3,0" >00:00/00:00</TextBlock>
                 <Button Grid.Column="6" x:Name="Btn_Volume" Content="🔊" Width="30" Click="Btn_Volume_Click" Background="Transparent" FontFamily="Segoe UI Emoji" BorderBrush="Transparent" HorizontalAlignment="Right"/>
                 <Popup x:Name="Popup_VolumeSlider" Width="30" Placement="Top" HorizontalAlignment="Right" PlacementTarget="{Binding ElementName=Btn_Volume}" MouseEnter="Popup_VolumeSlider_MouseEnter" MouseLeave="Popup_VolumeSlider_MouseLeave">
                     <StackPanel Orientation="Vertical" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
