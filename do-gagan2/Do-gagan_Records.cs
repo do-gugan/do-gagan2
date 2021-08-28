@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -39,7 +40,8 @@ namespace do_gagan2
             //JsonJSのヘッダー
             if (version == FileFormatVersion.JsonJS)
             {
-                result += "const scriptsJson = [\r\n";
+                string title = Path.GetFileNameWithoutExtension(AppModel.CurrentMovieFilePath) + " | 動画眼Lite";
+                result += "document.title=\"" + title + "\";\r\nconst scriptsJson = [\r\n";
             }
 
             List<Dogagan_Record> sortedRecords = _records.OrderBy(r => r.TimeStamp).ToList();
