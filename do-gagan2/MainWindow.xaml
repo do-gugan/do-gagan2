@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:do_gagan2"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:properties="clr-namespace:do_gagan2.Properties"
         mc:Ignorable="d"
         Closing="Window_Closing"
         Title="動画眼2" Height="450" Width="800" PreviewKeyDown="Window_PreviewKeyDown"
@@ -12,6 +13,7 @@
     <Window.Resources>
         <local:LockedPositionConverter x:Key="LockedPositionConverter"/>
         <local:MathConverter x:Key="MathConverter" />
+        <local:AddFnumLabelConverter x:Key="AddFnumLabelConverter" />
         <FontFamily x:Key="FontAwesome">pack://application:,,,/FontAwesome.WPF;component/#FontAwesome</FontFamily>
     </Window.Resources>
     <!--メインレイアウト-->
@@ -310,12 +312,22 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" x:Name="Btn_F1" Content="F1: タスク開始" Click="Btn_F1_Click" Padding="3,0,3,0" />
-                        <Button Grid.Column="1" x:Name="Btn_F2" Content="F2: 参加者発話" Click="Btn_F2_Click" Padding="3,0,3,0" />
-                        <Button Grid.Column="2" x:Name="Btn_F3" Content="F3: 進行役発話" Click="Btn_F3_Click" Padding="3,0,3,0" />
-                        <Button Grid.Column="3" x:Name="Btn_F4" Content="F4: 見所！" Click="Btn_F4_Click" Padding="3,0,3,0" />
-                        <Button Grid.Column="4" x:Name="Btn_F5" Content="F5: タスク完了" Click="Btn_F5_Click" Padding="3,0,3,0" />
-                    </Grid>
+                        <Button Grid.Column="0" x:Name="Btn_F1" Click="Btn_F1_Click" Padding="3,0,3,0" >
+                            <Run Text="{Binding Path=StringF1,Source={x:Static properties:Settings.Default}, Converter={StaticResource AddFnumLabelConverter},ConverterParameter=1}" />
+                        </Button>
+                        <Button Grid.Column="1" x:Name="Btn_F2" Click="Btn_F2_Click" Padding="3,0,3,0">
+                            <Run Text="{Binding Path=StringF2,Source={x:Static properties:Settings.Default}, Converter={StaticResource AddFnumLabelConverter},ConverterParameter=2}" />
+                        </Button>
+                        <Button Grid.Column="2" x:Name="Btn_F3" Click="Btn_F3_Click" Padding="3,0,3,0">
+                            <Run Text="{Binding Path=StringF3,Source={x:Static properties:Settings.Default}, Converter={StaticResource AddFnumLabelConverter},ConverterParameter=3}" />
+                        </Button>
+                        <Button Grid.Column="3" x:Name="Btn_F4" Click="Btn_F4_Click" Padding="3,0,3,0">
+                            <Run Text="{Binding Path=StringF4,Source={x:Static properties:Settings.Default}, Converter={StaticResource AddFnumLabelConverter},ConverterParameter=4}" />
+                        </Button>
+                        <Button Grid.Column="4" x:Name="Btn_F5" Click="Btn_F5_Click" Padding="3,0,3,0">
+                            <Run Text="{Binding Path=StringF5,Source={x:Static properties:Settings.Default}, Converter={StaticResource AddFnumLabelConverter},ConverterParameter=5}" />
+                        </Button>
+                </Grid>
                 </Grid>
         </DockPanel>
         <!--ステータスバー-->
