@@ -1474,36 +1474,21 @@ namespace do_gagan2
         //現在のコマを静止画で保存
         private void Btn_Capture_Click(object sender, RoutedEventArgs e)
         {
-
+            //元動画の解像度を取得
             int width = (int)(Player.NaturalVideoWidth);
             int height = (int)(Player.NaturalVideoHeight);
 
-            Console.WriteLine("x:" + Player.ActualWidth + " NaturalX"+Player.NaturalVideoWidth);
-            Console.WriteLine("media w:"+ MediaDockPanel.ActualWidth);
-            //画面のdpiを取得
-            PresentationSource source = PresentationSource.FromVisual(this);
-            double dpiX, dpiY;
-            if (source != null)
-            {
-                dpiX = 96.0 * source.CompositionTarget.TransformToDevice.M11;
-                dpiY = 96.0 * source.CompositionTarget.TransformToDevice.M22;
-            } else
-            {
-                dpiX = 96.0;
-                dpiY = 96.0;
-            }
-            Console.WriteLine(source.CompositionTarget.TransformToDevice.M11);
-            // レンダリングするビットマップを用意
-            var bitmap = new RenderTargetBitmap(width, height, dpiX, dpiY, PixelFormats.Pbgra32);
+            //一時的にレンダリングサイズを生解像度に合わせる
+            MediaDockPanel.Width = width;
+            MediaDockPanel.Height = height;
+            MediaDockPanel.UpdateLayout();
 
-            // ビットマップに Visual をレンダリング
+            var bitmap = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Pbgra32);
             bitmap.Render(Player);
 
             // PNG として保存
             var encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(bitmap));
-
-            //
             var current = Player.Position.ToString(@"hh\Hmm\Mss\S");
             //ファイル名
             string fileName = Path.Combine(Path.GetDirectoryName(AppModel.CurrentMovieFilePath), Path.GetFileNameWithoutExtension(AppModel.CurrentMovieFilePath) + "_" + current + ".png");
@@ -1512,6 +1497,12 @@ namespace do_gagan2
                 encoder.Save(stream);
             }
             ShowStatusBarMessage("スクリーンショット保存 - "+ Path.GetFileName(fileName),3);
+
+            //一時変更したサイズを戻す
+            MediaDockPanel.Width = Double.NaN; //auto
+            MediaDockPanel.Height = Double.NaN; //auto
+            MediaDockPanel.UpdateLayout();
+
         }
 
 
